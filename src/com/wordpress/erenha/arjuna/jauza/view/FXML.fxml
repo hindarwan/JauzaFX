@@ -96,9 +96,8 @@
             <Button mnemonicParsing="false" onAction="#forward" text="Forward" />
             <TextField fx:id="txt" onAction="#go" prefWidth="286.0" text="http://localhost/selectorgadget/" />
             <Button mnemonicParsing="false" onAction="#go" text="Go" />
-            <Button mnemonicParsing="false" onAction="#inspect" text="Inspect" />
+            <ToggleButton mnemonicParsing="false" onAction="#inspect" text="Inspect" />
             <Button mnemonicParsing="false" onAction="#getSelectedElement" text="Get Selected" />
-            <Button mnemonicParsing="false" onAction="#viewSource" text="View Source" />
             <Button mnemonicParsing="false" onAction="#test" text="Test" />
           </items>
         </ToolBar>

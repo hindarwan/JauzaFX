@@ -1,0 +1,1 @@
+document.querySelectorAll('[jfxid="id"').item(0);
