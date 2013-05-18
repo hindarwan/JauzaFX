@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.*?>
+<?scenebuilder-background-color 0xdfdfdfff?>
+
+<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.FXMLController">
+  <children>
+    <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="708.0" prefWidth="1024.0" styleClass="mainFxmlClass" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+        <MenuBar prefWidth="899.0">
+          <menus>
+            <Menu mnemonicParsing="false" text="File">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Close" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Delete" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+              <items>
+                <MenuItem mnemonicParsing="false" text="About" />
+              </items>
+            </Menu>
+          </menus>
+        </MenuBar>
+        <SplitPane dividerPositions="0.30039138943248533, 0.8003913894324853" focusTraversable="true" prefHeight="180.0" prefWidth="1024.0">
+          <items>
+            <StackPane id="StackPane" prefHeight="173.0" prefWidth="640.0">
+              <children>
+                <VBox id="VBox" alignment="CENTER">
+                  <children>
+                    <ToolBar>
+                      <items>
+                        <Label text="Individuals" />
+                      </items>
+                    </ToolBar>
+                    <TableView prefHeight="200.0" prefWidth="200.0">
+                      <columns>
+                        <TableColumn prefWidth="75.0" text="id" />
+                        <TableColumn prefWidth="100.0" text="Class" />
+                      </columns>
+                    </TableView>
+                  </children>
+                </VBox>
+              </children>
+            </StackPane>
+            <StackPane id="StackPane">
+              <children>
+                <VBox id="VBox" alignment="CENTER">
+                  <children>
+                    <ToolBar>
+                      <items>
+                        <Label text="Individual Details" />
+                      </items>
+                    </ToolBar>
+                    <TableView fx:id="tableExtInd" prefHeight="200.0" prefWidth="200.0">
+                      <columns>
+                        <TableColumn minWidth="25.0" prefWidth="75.0" text="id" fx:id="columnID" />
+                        <TableColumn minWidth="220.0" prefWidth="240.0" text="Content" fx:id="columnContent" />
+                        <TableColumn prefWidth="140.0" text="Property" fx:id="columnProperty" />
+                      </columns>
+                    </TableView>
+                  </children>
+                </VBox>
+              </children>
+            </StackPane>
+            <StackPane id="StackPane" prefHeight="173.0" prefWidth="640.0">
+              <children>
+                <VBox id="VBox" alignment="CENTER">
+                  <children>
+                    <ToolBar>
+                      <items>
+                        <Label text="Extracted Content" />
+                      </items>
+                    </ToolBar>
+                    <TextArea prefWidth="200.0" wrapText="true" />
+                  </children>
+                </VBox>
+              </children>
+            </StackPane>
+          </items>
+        </SplitPane>
+        <ToolBar>
+          <items>
+            <Button mnemonicParsing="false" onAction="#back" text="Back" />
+            <Button mnemonicParsing="false" onAction="#forward" text="Forward" />
+            <TextField fx:id="txt" onAction="#go" prefWidth="286.0" text="http://localhost/selectorgadget/" />
+            <Button mnemonicParsing="false" onAction="#go" text="Go" />
+            <Button mnemonicParsing="false" onAction="#inspect" text="Inspect" />
+            <Button mnemonicParsing="false" onAction="#getSelectedElement" text="Get Selected" />
+            <Button mnemonicParsing="false" onAction="#viewSource" text="View Source" />
+            <Button mnemonicParsing="false" onAction="#test" text="Test" />
+          </items>
+        </ToolBar>
+        <WebView fx:id="webx" minHeight="316.0" minWidth="959.0" prefHeight="445.0" prefWidth="1024.0">
+          <VBox.margin>
+            <Insets fx:id="x1" />
+          </VBox.margin>
+        </WebView>
+        <Separator prefWidth="200.0" />
+        <HBox alignment="CENTER_LEFT" minHeight="14.0" prefHeight="20.0" prefWidth="1024.0" spacing="10.0" VBox.vgrow="NEVER">
+          <children>
+            <ProgressBar fx:id="progress" prefWidth="200.0" progress="0.0">
+              <HBox.margin>
+                <Insets left="10.0" />
+              </HBox.margin>
+            </ProgressBar>
+            <Label fx:id="progressText" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefWidth="33.0" text="0%" textAlignment="RIGHT" />
+            <Separator orientation="VERTICAL" prefHeight="200.0" />
+            <Label fx:id="status" maxWidth="-Infinity" prefWidth="734.0" text="Ready" HBox.margin="$x1" />
+          </children>
+        </HBox>
+      </children>
+      <stylesheets>
+        <URL value="@fxml.css" />
+      </stylesheets>
+    </VBox>
+  </children>
+  <stylesheets>
+    <URL value="@fxml.css" />
+  </stylesheets>
+</AnchorPane>
