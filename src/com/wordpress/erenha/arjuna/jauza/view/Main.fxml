@@ -10,7 +10,7 @@
 <?import javafx.scene.web.*?>
 <?scenebuilder-background-color 0xdfdfdfff?>
 
-<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.FXMLController">
+<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.MainController">
   <children>
     <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="708.0" prefWidth="1024.0" styleClass="mainFxmlClass" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
@@ -121,11 +121,11 @@
         </HBox>
       </children>
       <stylesheets>
-        <URL value="@fxml.css" />
+        <URL value="@main.css" />
       </stylesheets>
     </VBox>
   </children>
   <stylesheets>
-    <URL value="@fxml.css" />
+    <URL value="@main.css" />
   </stylesheets>
 </AnchorPane>

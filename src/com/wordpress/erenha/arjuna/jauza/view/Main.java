@@ -15,11 +15,11 @@ import javafx.stage.Stage;
  *
  * @author Hindarwan
  */
-public class FXMain extends Application {
+public class Main extends Application {
     
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("FXML.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
 
         Scene scene = new Scene(root);
         
