@@ -33,7 +33,7 @@
             </Menu>
           </menus>
         </MenuBar>
-        <SplitPane dividerPositions="0.30039138943248533, 0.8003913894324853" focusTraversable="true" prefHeight="180.0" prefWidth="1024.0">
+        <SplitPane dividerPositions="0.30039138943248533, 0.5" focusTraversable="true" prefHeight="180.0" prefWidth="1024.0">
           <items>
             <StackPane id="StackPane" prefHeight="173.0" prefWidth="640.0">
               <children>
@@ -41,13 +41,35 @@
                   <children>
                     <ToolBar>
                       <items>
-                        <Label text="Individuals" />
+                        <Label prefWidth="98.0" text="Current Selection" />
+                        <Button mnemonicParsing="false" onAction="#createInvAction" text="Create Individual" />
                       </items>
                     </ToolBar>
-                    <TableView prefHeight="200.0" prefWidth="200.0">
+                    <TableView id="tableExtInd" fx:id="current" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true">
                       <columns>
-                        <TableColumn prefWidth="75.0" text="id" />
-                        <TableColumn prefWidth="100.0" text="Class" />
+                        <TableColumn editable="false" minWidth="25.0" prefWidth="75.0" text="id" fx:id="currentID" />
+                        <TableColumn minWidth="220.0" prefWidth="240.0" text="Extracted Content" fx:id="currentContent" />
+                      </columns>
+                    </TableView>
+                  </children>
+                </VBox>
+              </children>
+            </StackPane>
+            <StackPane id="StackPane" prefHeight="173.0" prefWidth="640.0">
+              <children>
+                <VBox id="VBox" alignment="CENTER">
+                  <children>
+                    <ToolBar>
+                      <items>
+                        <Label prefWidth="64.0" text="Individuals" />
+                        <Button mnemonicParsing="false" onAction="#suggestNextAction" prefWidth="96.0" text="Suggest Next" />
+                      </items>
+                    </ToolBar>
+                    <TableView fx:id="inv" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true">
+                      <columns>
+                        <TableColumn prefWidth="20.0" text="v" fx:id="invSelected" />
+                        <TableColumn editable="false" prefWidth="75.0" text="id" fx:id="invID" />
+                        <TableColumn prefWidth="100.0" text="Class" fx:id="invClass" />
                       </columns>
                     </TableView>
                   </children>
@@ -61,29 +83,16 @@
                     <ToolBar>
                       <items>
                         <Label text="Individual Details" />
+                        <Button mnemonicParsing="false" text="Save" visible="false" />
                       </items>
                     </ToolBar>
-                    <TableView fx:id="tableExtInd" prefHeight="200.0" prefWidth="200.0">
+                    <TableView id="tableExtInd" fx:id="invDetails" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true">
                       <columns>
-                        <TableColumn minWidth="25.0" prefWidth="75.0" text="id" fx:id="columnID" />
-                        <TableColumn minWidth="220.0" prefWidth="240.0" text="Content" fx:id="columnContent" />
-                        <TableColumn prefWidth="140.0" text="Property" fx:id="columnProperty" />
+                        <TableColumn editable="false" minWidth="25.0" prefWidth="75.0" text="id" fx:id="invDetailsID" />
+                        <TableColumn minWidth="220.0" prefWidth="220.0" text="Value" fx:id="invDetailsValue" />
+                        <TableColumn prefWidth="150.0" text="Property" fx:id="invDetailsProperty" />
                       </columns>
                     </TableView>
-                  </children>
-                </VBox>
-              </children>
-            </StackPane>
-            <StackPane id="StackPane" prefHeight="173.0" prefWidth="640.0">
-              <children>
-                <VBox id="VBox" alignment="CENTER">
-                  <children>
-                    <ToolBar>
-                      <items>
-                        <Label text="Extracted Content" />
-                      </items>
-                    </ToolBar>
-                    <TextArea prefWidth="200.0" wrapText="true" />
                   </children>
                 </VBox>
               </children>
@@ -97,11 +106,10 @@
             <TextField fx:id="txt" onAction="#go" prefWidth="286.0" text="http://localhost/selectorgadget/" />
             <Button mnemonicParsing="false" onAction="#go" text="Go" />
             <ToggleButton mnemonicParsing="false" onAction="#inspect" text="Inspect" />
-            <Button mnemonicParsing="false" onAction="#getSelectedElement" text="Get Selected" />
-            <Button mnemonicParsing="false" onAction="#test" text="Test" />
+            <Button mnemonicParsing="false" onAction="#test" text="Test" visible="false" />
           </items>
         </ToolBar>
-        <WebView fx:id="webx" minHeight="316.0" minWidth="959.0" prefHeight="445.0" prefWidth="1024.0">
+        <WebView fx:id="webx" minHeight="316.0" minWidth="959.0" onMouseClicked="#onMouseClick" prefHeight="445.0" prefWidth="1024.0">
           <VBox.margin>
             <Insets fx:id="x1" />
           </VBox.margin>
