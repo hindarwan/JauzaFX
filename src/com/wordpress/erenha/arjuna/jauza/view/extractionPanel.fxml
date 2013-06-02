@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="javafx.scene.layout.VBox" prefHeight="180.0" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.ExtractionPanelController">
+  <SplitPane dividerPositions="0.3131115459882583, 0.5684931506849316" focusTraversable="true" prefHeight="180.0" prefWidth="1024.0">
+    <items>
+      <StackPane id="StackPane" prefHeight="173.0" prefWidth="640.0">
+        <children>
+          <VBox id="VBox" alignment="CENTER">
+            <children>
+              <ToolBar>
+                <items>
+                  <Label prefWidth="98.0" text="Current Selection" />
+                  <Button mnemonicParsing="false" onAction="#createInvAction" text="Create Individual" />
+                </items>
+              </ToolBar>
+              <TableView id="tableExtInd" fx:id="current" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true">
+                <columns>
+                  <TableColumn editable="false" minWidth="25.0" prefWidth="75.0" text="id" fx:id="currentID" />
+                  <TableColumn minWidth="220.0" prefWidth="240.0" text="Extracted Content" fx:id="currentContent" />
+                </columns>
+              </TableView>
+            </children>
+          </VBox>
+        </children>
+      </StackPane>
+      <StackPane id="StackPane" prefHeight="173.0" prefWidth="640.0">
+        <children>
+          <VBox id="VBox" alignment="CENTER">
+            <children>
+              <ToolBar>
+                <items>
+                  <Label prefWidth="64.0" text="Individuals" />
+                  <Button mnemonicParsing="false" onAction="#suggestNextAction" prefWidth="96.0" text="Suggest Next" />
+                </items>
+              </ToolBar>
+              <TableView fx:id="inv" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true">
+                <columns>
+                  <TableColumn prefWidth="20.0" text="v" fx:id="invSelected" />
+                  <TableColumn editable="false" prefWidth="75.0" text="id" fx:id="invID" />
+                  <TableColumn prefWidth="100.0" text="Class" fx:id="invClass" />
+                </columns>
+              </TableView>
+            </children>
+          </VBox>
+        </children>
+      </StackPane>
+      <StackPane id="StackPane">
+        <children>
+          <VBox id="VBox" alignment="CENTER">
+            <children>
+              <ToolBar>
+                <items>
+                  <Label text="Individual Details" />
+                  <Button mnemonicParsing="false" text="Save" visible="false" />
+                </items>
+              </ToolBar>
+              <TableView id="tableExtInd" fx:id="invDetails" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true">
+                <columns>
+                  <TableColumn editable="false" minWidth="25.0" prefWidth="75.0" text="id" fx:id="invDetailsID" />
+                  <TableColumn prefWidth="150.0" text="Property" fx:id="invDetailsProperty" />
+                  <TableColumn minWidth="220.0" prefWidth="220.0" text="Value" fx:id="invDetailsValue" />
+                </columns>
+              </TableView>
+            </children>
+          </VBox>
+        </children>
+      </StackPane>
+    </items>
+  </SplitPane>
+</fx:root>
