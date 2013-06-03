@@ -9,22 +9,23 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.web.*?>
 
-<fx:root type="javafx.scene.layout.VBox" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.BrowserController">
+<fx:root type="javafx.scene.layout.VBox" prefHeight="400.0" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.BrowserController">
   <ToolBar>
     <items>
-      <Button mnemonicParsing="false" onAction="#back" text="Back" />
-      <Button mnemonicParsing="false" onAction="#forward" text="Forward" />
+      <Button fx:id="backButton" mnemonicParsing="false" onAction="#back" text="Back" />
+      <Button fx:id="forwardButton" mnemonicParsing="false" onAction="#forward" text="Forward" />
       <TextField fx:id="txt" onAction="#go" prefWidth="286.0" text="http://localhost/selectorgadget/" />
-      <Button mnemonicParsing="false" onAction="#go" text="Go" />
-      <ToggleButton mnemonicParsing="false" onAction="#inspect" text="Inspect" />
+      <Button fx:id="goButton" mnemonicParsing="false" onAction="#go" text="Go" />
+      <ToggleButton fx:id="inspectButton" mnemonicParsing="false" onAction="#inspect" text="Inspect" />
       <Button mnemonicParsing="false" onAction="#test" text="Test" visible="false" />
     </items>
   </ToolBar>
-  <WebView fx:id="webx" minHeight="316.0" minWidth="959.0" onMouseClicked="#onMouseClick" prefHeight="445.0" prefWidth="1024.0" VBox.vgrow="ALWAYS">
+  <WebView fx:id="webx" minHeight="316.0" minWidth="959.0" prefHeight="445.0" prefWidth="1024.0" VBox.vgrow="ALWAYS">
     <VBox.margin>
       <Insets fx:id="x1" />
     </VBox.margin>
   </WebView>
+  <Separator prefWidth="200.0" />
   <HBox alignment="CENTER_LEFT" minHeight="14.0" prefHeight="20.0" prefWidth="1024.0" spacing="10.0" VBox.vgrow="NEVER">
     <children>
       <ProgressBar fx:id="progress" prefWidth="200.0" progress="0.0">
@@ -34,7 +35,7 @@
       </ProgressBar>
       <Label fx:id="progressText" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefWidth="33.0" text="0%" textAlignment="RIGHT" />
       <Separator orientation="VERTICAL" prefHeight="200.0" />
-      <Label fx:id="status" maxWidth="-Infinity" prefWidth="734.0" text="Ready" />
+      <Label fx:id="status" maxWidth="-Infinity" prefWidth="748.0" text="Ready" HBox.hgrow="ALWAYS" />
     </children>
   </HBox>
 </fx:root>

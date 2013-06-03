@@ -37,11 +37,6 @@ public class MainController implements Initializable {
         assert extractionPanel != null : "fx:id=\"extractionPanel\" was not injected: check your FXML file 'Main.fxml'.";
 
         currentSelections = FXCollections.observableList(new ArrayList<CurrentSelection>());
-        System.out.println(browser);
-        System.out.println(browserController);
-
-        System.out.println(extractionPanel);
-        System.out.println(extractionPanelController);
         browserController.setMainController(this);
         extractionPanelController.setMainController(this);
         extractionPanelController.getCurrent().setItems(currentSelections);

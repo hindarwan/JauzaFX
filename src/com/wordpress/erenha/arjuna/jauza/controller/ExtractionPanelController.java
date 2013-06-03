@@ -7,6 +7,7 @@ package com.wordpress.erenha.arjuna.jauza.controller;
 import com.wordpress.erenha.arjuna.jauza.model.CurrentSelection;
 import com.wordpress.erenha.arjuna.jauza.model.Individual;
 import com.wordpress.erenha.arjuna.jauza.model.IndividualDetail;
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 import javafx.util.Callback;
 
 /**
@@ -63,6 +65,7 @@ public class ExtractionPanelController implements Initializable {
     //Class
     private ObservableList<String> classes = FXCollections.observableArrayList("Dataset", "Catalog", "Distribution", "Observation");
     private ObservableList<String> properties = FXCollections.observableArrayList("provinsi", "tahun", "jenisKelamin", "persentasePenduduk");
+    private File file;
 
     /**
      * Initializes the controller class.
@@ -86,12 +89,8 @@ public class ExtractionPanelController implements Initializable {
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
     }
-    
-    
 
     private void initModel() {
-//        currentSelections = FXCollections.observableList(new ArrayList<CurrentSelection>());
-//        current.setItems(currentSelections);
         individuals = FXCollections.observableList(new ArrayList<Individual>());
         inv.setItems(individuals);
         individualDetails = FXCollections.observableList(new ArrayList<IndividualDetail>());
@@ -139,13 +138,27 @@ public class ExtractionPanelController implements Initializable {
     }
 
     @FXML
+    public void importOntology(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+
+        //Set extension filter
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("OWL files ", "*.rdf", "*.ttl", "*.n3", "*.owl", "*.nt");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        //Show open file dialog
+        file = fileChooser.showOpenDialog(null);
+
+        System.out.println(file.getPath());
+    }
+
+    @FXML
     public void createInvAction(ActionEvent event) {
         int i = individuals.size();
         List<IndividualDetail> l = new ArrayList<>();
         for (CurrentSelection currentSelection : mainController.getCurrentSelections()) {
             l.add(new IndividualDetail(currentSelection.getId(), currentSelection.getContent(), ""));
         }
-        individuals.add(new Individual("inv" + i, "", l));
+        individuals.add(new Individual("individual" + i, "", l));
     }
     private boolean step = false;
     private List<Integer> step1;
@@ -188,5 +201,4 @@ public class ExtractionPanelController implements Initializable {
         this.step = true;
         return step;
     }
-    
 }

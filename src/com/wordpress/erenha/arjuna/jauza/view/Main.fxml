@@ -33,7 +33,7 @@
           </menus>
         </MenuBar>
         <fx:include fx:id="extractionPanel" source="extractionPanel.fxml" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="180.0" />
-        <fx:include fx:id="browser" source="browser.fxml" VBox.vgrow="ALWAYS" />
+        <fx:include fx:id="browser" source="browser.fxml" prefHeight="451.0" prefWidth="1024.0" VBox.vgrow="ALWAYS" />
       </children>
     </VBox>
   </children>
