@@ -6,7 +6,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root type="javafx.scene.layout.VBox" prefHeight="580.0" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.AnnotationTabController">
-    <fx:include source="extractionPanel.fxml"/>
-    <fx:include source="browser.fxml"/>
+<fx:root type="javafx.scene.layout.HBox" prefHeight="580.0" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.AnnotationTabController">
+  <SplitPane id="SplitPane" dividerPositions="0.2534246575342466" HBox.hgrow="ALWAYS">
+    <items>
+      <fx:include fx:id="extractionPanel" source="extractionPanel.fxml" />
+      <fx:include fx:id="browser" source="browser.fxml" />
+    </items>
+  </SplitPane>
 </fx:root>

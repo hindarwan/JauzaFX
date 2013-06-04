@@ -6,30 +6,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root type="javafx.scene.layout.VBox" prefHeight="180.0" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.ExtractionPanelController">
-  <SplitPane dividerPositions="0.19960861056751467, 0.4500978473581213, 0.6996086105675147" focusTraversable="true" prefHeight="180.0" prefWidth="1024.0" VBox.vgrow="ALWAYS">
+<fx:root type="javafx.scene.layout.VBox" minWidth="256.0" prefHeight="580.0" prefWidth="256.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.ExtractionPanelController">
+  <SplitPane dividerPositions="0.33217993079584773, 0.6678200692041523" focusTraversable="true" orientation="VERTICAL" prefHeight="580.0" prefWidth="256.0" VBox.vgrow="ALWAYS">
     <items>
-      <StackPane id="StackPane" maxHeight="1.7976931348623157E308" prefHeight="173.0" prefWidth="640.0">
-        <children>
-          <VBox id="VBox" alignment="CENTER">
-            <children>
-              <ToolBar>
-                <items>
-                  <Label prefWidth="96.0" text="Loaded Ontology" />
-                  <Button mnemonicParsing="false" onAction="#importOntology" text="Import" />
-                </items>
-              </ToolBar>
-              <TableView id="tableExtInd" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
-                <columns>
-                  <TableColumn editable="false" minWidth="25.0" prefWidth="75.0" text="id" visible="false" />
-                  <TableColumn minWidth="180.0" prefWidth="180.0" text="Ontology" fx:id="ontologyName" />
-                </columns>
-              </TableView>
-            </children>
-          </VBox>
-        </children>
-      </StackPane>
-      <StackPane id="StackPane" prefHeight="173.0" prefWidth="640.0">
+      <StackPane id="StackPane">
         <children>
           <VBox id="VBox" alignment="CENTER">
             <children>
@@ -49,7 +29,7 @@
           </VBox>
         </children>
       </StackPane>
-      <StackPane id="StackPane" prefHeight="173.0" prefWidth="640.0">
+      <StackPane id="StackPane">
         <children>
           <VBox id="VBox" alignment="CENTER">
             <children>

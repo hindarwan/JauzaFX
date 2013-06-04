@@ -32,8 +32,19 @@
             </Menu>
           </menus>
         </MenuBar>
-        <fx:include fx:id="extractionPanel" source="extractionPanel.fxml" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="180.0" />
-        <fx:include fx:id="browser" source="browser.fxml" prefHeight="451.0" prefWidth="1024.0" VBox.vgrow="ALWAYS" />
+        <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+          <tabs>
+            <Tab text="Annotation">
+              <fx:include fx:id="annotationTab" source="annotationTab.fxml" />
+            </Tab>
+            <Tab text="Ontology">
+              <fx:include fx:id="ontologyTab" source="ontologyTab.fxml" />
+            </Tab>
+            <Tab text="Individual">
+              <fx:include fx:id="individualTab" source="individualTab.fxml" />
+            </Tab>
+          </tabs>
+        </TabPane>
       </children>
     </VBox>
   </children>

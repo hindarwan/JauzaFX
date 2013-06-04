@@ -12,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
@@ -21,30 +22,35 @@ import javafx.scene.layout.VBox;
  */
 public class MainController implements Initializable {
 
-    @FXML
-    private VBox browser;
-    @FXML
-    private BrowserController browserController;
-    @FXML
-    private VBox extractionPanel;
-    @FXML
-    private ExtractionPanelController extractionPanelController;
     private ObservableList<CurrentSelection> currentSelections;
+    @FXML //  fx:id="annotationTab"
+    private HBox annotationTab; // Value injected by FXMLLoader
+    @FXML
+    private AnnotationTabController annotationTabController;
+    @FXML //  fx:id="individualTab"
+    private VBox individualTab; // Value injected by FXMLLoader
+    @FXML
+    private IndividualTabController individualTabController;
+    @FXML //  fx:id="ontologyTab"
+    private VBox ontologyTab; // Value injected by FXMLLoader
+    @FXML
+    private OntologyTabController ontologyTabController;
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        assert browser != null : "fx:id=\"browser\" was not injected: check your FXML file 'Main.fxml'.";
-        assert extractionPanel != null : "fx:id=\"extractionPanel\" was not injected: check your FXML file 'Main.fxml'.";
+    @Override // This method is called by the FXMLLoader when initialization is complete
+    public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
+        assert annotationTab != null : "fx:id=\"annotationTab\" was not injected: check your FXML file 'Main.fxml'.";
+        assert individualTab != null : "fx:id=\"individualTab\" was not injected: check your FXML file 'Main.fxml'.";
+        assert ontologyTab != null : "fx:id=\"ontologyTab\" was not injected: check your FXML file 'Main.fxml'.";
 
+        // initialize your logic here: all @FXML variables will have been injected
         currentSelections = FXCollections.observableList(new ArrayList<CurrentSelection>());
-        browserController.setMainController(this);
-        extractionPanelController.setMainController(this);
-        extractionPanelController.getCurrent().setItems(currentSelections);
-        
+        annotationTabController.getBrowserController().setMainController(this);
+        annotationTabController.getExtractionPanelController().setMainController(this);
+        annotationTabController.getExtractionPanelController().getCurrent().setItems(currentSelections);
+
     }
 
     public ObservableList<CurrentSelection> getCurrentSelections() {
         return currentSelections;
     }
-
 }
