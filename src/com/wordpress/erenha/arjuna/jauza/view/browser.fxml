@@ -27,16 +27,15 @@
     </VBox.margin>
   </WebView>
   <Separator prefWidth="200.0" />
-  <HBox alignment="CENTER_LEFT" minHeight="14.0" prefHeight="20.0" prefWidth="768.0" spacing="10.0" VBox.vgrow="NEVER">
+  <HBox alignment="CENTER_LEFT" prefWidth="768.0" spacing="10.0" VBox.vgrow="NEVER">
     <children>
-      <ProgressBar fx:id="progress" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" progress="0.0">
-        <HBox.margin>
-          <Insets left="10.0" />
-        </HBox.margin>
-      </ProgressBar>
-      <Label fx:id="progressText" alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="33.0" text="0%" textAlignment="RIGHT" />
-      <Separator orientation="VERTICAL" prefHeight="200.0" />
-      <Label fx:id="status" maxWidth="-Infinity" prefWidth="748.0" text="Ready" HBox.hgrow="ALWAYS" />
+      <AnchorPane id="AnchorPane" prefWidth="768.0" HBox.hgrow="ALWAYS">
+        <children>
+          <Label fx:id="status" layoutY="-1.0" text="Ready" AnchorPane.leftAnchor="5.0" />
+          <ProgressBar fx:id="progress" layoutY="2.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" progress="0.0" AnchorPane.rightAnchor="45.0" />
+          <Label fx:id="progressText" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutY="-1.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="33.0" text="0%" textAlignment="RIGHT" AnchorPane.rightAnchor="5.0" />
+        </children>
+      </AnchorPane>
     </children>
   </HBox>
 </fx:root>

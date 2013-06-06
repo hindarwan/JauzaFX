@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="javafx.scene.layout.VBox" minHeight="85.0" prefHeight="85.0" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.SuggestionPanelController">
+  <children>
+    <GridPane>
+      <children>
+        <ComboBox prefHeight="21.0" prefWidth="206.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+          <items>
+            <FXCollections fx:factory="observableArrayList">
+              <String fx:value="Item 1" />
+              <String fx:value="Item 2" />
+              <String fx:value="Item 3" />
+            </FXCollections>
+          </items>
+        </ComboBox>
+        <TextField alignment="CENTER" prefWidth="200.0" text="5" GridPane.columnIndex="14" GridPane.rowIndex="1" />
+        <Label text="Breaks Time" GridPane.columnIndex="13" GridPane.rowIndex="1" />
+        <TextField alignment="CENTER" prefWidth="200.0" text="1" GridPane.columnIndex="12" GridPane.rowIndex="1" />
+        <Label text="Step" GridPane.columnIndex="11" GridPane.rowIndex="1" />
+        <Button mnemonicParsing="false" prefWidth="94.0" text="Run" GridPane.columnIndex="8" GridPane.rowIndex="1" />
+        <Button mnemonicParsing="false" prefWidth="148.0" text="&lt;&lt;Prev" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+        <ComboBox prefHeight="21.0" prefWidth="206.0" GridPane.columnIndex="5" GridPane.rowIndex="1">
+          <items>
+            <FXCollections fx:factory="observableArrayList">
+              <String fx:value="Item 1" />
+              <String fx:value="Item 2" />
+              <String fx:value="Item 3" />
+            </FXCollections>
+          </items>
+        </ComboBox>
+        <Button mnemonicParsing="false" prefWidth="155.0" text="Next&gt;&gt;" GridPane.columnIndex="9" GridPane.rowIndex="1" />
+        <Label text="Second Individual" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+        <Label text="First Individual" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      </children>
+      <columnConstraints>
+        <ColumnConstraints hgrow="NEVER" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="20.0" minWidth="20.0" prefWidth="20.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="20.0" minWidth="20.0" prefWidth="20.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="20.0" minWidth="20.0" prefWidth="20.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="20.0" minWidth="20.0" prefWidth="20.0" />
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints maxHeight="28.0" minHeight="10.0" prefHeight="28.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="28.0" minHeight="10.0" prefHeight="28.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="29.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES" />
+      </rowConstraints>
+    </GridPane>
+  </children>
+</fx:root>

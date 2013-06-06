@@ -6,6 +6,65 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root type="javafx.scene.layout.VBox" prefHeight="580.0" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.OntologyTabController">
-    
+<fx:root type="javafx.scene.layout.VBox" prefHeight="579.9999000000025" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.OntologyTabController">
+  <children>
+    <SplitPane dividerPositions="0.4134948096885813" focusTraversable="true" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" VBox.vgrow="ALWAYS">
+      <items>
+        <VBox id="VBox">
+          <children>
+            <ToolBar>
+              <items>
+                <Label prefWidth="118.0" text="Loaded Ontology" />
+                <TextField fx:id="urlFileImport" prefWidth="323.0" promptText="Enter a File URL or Browse File" />
+                <Button mnemonicParsing="false" onAction="#browseFile" text="Browse" />
+                <Button mnemonicParsing="false" onAction="#importOntology" text="Import" />
+              </items>
+            </ToolBar>
+            <TableView prefHeight="205.0" prefWidth="1022.0" VBox.vgrow="ALWAYS">
+              <columns>
+                <TableColumn prefWidth="75.0" text="Column X" />
+                <TableColumn prefWidth="75.0" text="Column X" />
+              </columns>
+            </TableView>
+          </children>
+        </VBox>
+        <SplitPane dividerPositions="0.5" focusTraversable="true" prefHeight="160.0" prefWidth="200.0">
+          <items>
+            <VBox id="VBox" alignment="CENTER">
+              <children>
+                <ToolBar>
+                  <items>
+                    <Label text="Classes" />
+                    <Button mnemonicParsing="false" text="Button" visible="false" />
+                  </items>
+                </ToolBar>
+                <TableView fx:id="classesTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                  <columns>
+                    <TableColumn minWidth="200.0" prefWidth="200.0" text="URI" fx:id="classesURIColumn" />
+                    <TableColumn minWidth="200.0" prefWidth="200.0" text="Class Name" fx:id="classesLabelColumn" />
+                  </columns>
+                </TableView>
+              </children>
+            </VBox>
+            <VBox id="VBox" alignment="CENTER">
+              <children>
+                <ToolBar>
+                  <items>
+                    <Label text="Properties" />
+                    <Button mnemonicParsing="false" text="Button" visible="false" />
+                  </items>
+                </ToolBar>
+                <TableView fx:id="propertiesTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                  <columns>
+                    <TableColumn minWidth="200.0" prefWidth="200.0" text="URI" fx:id="propertiesURIColumn" />
+                    <TableColumn minWidth="200.0" prefWidth="200.0" text="Property Name" fx:id="propertiesLabelColumn" />
+                  </columns>
+                </TableView>
+              </children>
+            </VBox>
+          </items>
+        </SplitPane>
+      </items>
+    </SplitPane>
+  </children>
 </fx:root>

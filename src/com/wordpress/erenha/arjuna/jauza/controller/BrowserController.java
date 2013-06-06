@@ -147,6 +147,13 @@ public class BrowserController implements Initializable {
                 double d = newValue.doubleValue();
                 progress.setProgress(d / 100);
                 progressText.setText((int) d + "%");
+                if (d == 100) {
+                    progress.setVisible(false);
+                    progressText.setVisible(false);
+                }else{
+                    progress.setVisible(true);
+                    progressText.setVisible(true);
+                }
             }
         });
 

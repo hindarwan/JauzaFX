@@ -7,7 +7,6 @@ package com.wordpress.erenha.arjuna.jauza.controller;
 import com.wordpress.erenha.arjuna.jauza.model.CurrentSelection;
 import com.wordpress.erenha.arjuna.jauza.model.Individual;
 import com.wordpress.erenha.arjuna.jauza.model.IndividualDetail;
-import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.FileChooser;
 import javafx.util.Callback;
 
 /**
@@ -36,27 +34,28 @@ import javafx.util.Callback;
 public class ExtractionPanelController implements Initializable {
 
     @FXML //  fx:id="current"
-    private TableView<CurrentSelection> current; // Value injected by FXMLLoader
+    private TableView<CurrentSelection> currentSelectionTable; // Value injected by FXMLLoader
     @FXML //  fx:id="currentContent"
-    private TableColumn<CurrentSelection, String> currentContent; // Value injected by FXMLLoader
+    private TableColumn<CurrentSelection, String> currentSelectionContentColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="currentID"
-    private TableColumn<CurrentSelection, String> currentID; // Value injected by FXMLLoader
+    private TableColumn<CurrentSelection, String> currentSelectionIDColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="inv"
-    private TableView<Individual> inv; // Value injected by FXMLLoader
+    private TableView<Individual> individualTable; // Value injected by FXMLLoader
     @FXML //  fx:id="invClass"
-    private TableColumn<Individual, String> invClass; // Value injected by FXMLLoader
-    @FXML //  fx:id="invDetails"
-    private TableView<IndividualDetail> invDetails; // Value injected by FXMLLoader
-    @FXML //  fx:id="invDetailsID"
-    private TableColumn<IndividualDetail, String> invDetailsID; // Value injected by FXMLLoader
-    @FXML //  fx:id="invDetailsProperty"
-    private TableColumn<IndividualDetail, String> invDetailsProperty; // Value injected by FXMLLoader
-    @FXML //  fx:id="invDetailsValue"
-    private TableColumn<IndividualDetail, String> invDetailsValue; // Value injected by FXMLLoader
+    private TableColumn<Individual, String> individualClassColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="invID"
-    private TableColumn<Individual, String> invID; // Value injected by FXMLLoader
+    private TableColumn<Individual, String> individualIDColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="invSelected"
-    private TableColumn<Individual, Boolean> invSelected; // Value injected by FXMLLoader
+    private TableColumn<Individual, Boolean> individualSelectedColumn; // Value injected by FXMLLoader
+    @FXML //  fx:id="invDetails"
+    private TableView<IndividualDetail> individualDetailsTable; // Value injected by FXMLLoader
+    @FXML //  fx:id="invDetailsID"
+    private TableColumn<IndividualDetail, String> individualDetailsIDColumn; // Value injected by FXMLLoader
+    @FXML //  fx:id="invDetailsProperty"
+    private TableColumn<IndividualDetail, String> individualDetailsPropertyColumn; // Value injected by FXMLLoader
+    @FXML //  fx:id="invDetailsValue"
+    private TableColumn<IndividualDetail, String> individualDetailsValueColumn; // Value injected by FXMLLoader
+    //NON FXML
     private MainController mainController;
     //tabel model
 //    private ObservableList<CurrentSelection> currentSelections;
@@ -65,7 +64,6 @@ public class ExtractionPanelController implements Initializable {
     //Class
     private ObservableList<String> classes = FXCollections.observableArrayList("Dataset", "Catalog", "Distribution", "Observation");
     private ObservableList<String> properties = FXCollections.observableArrayList("provinsi", "tahun", "jenisKelamin", "persentasePenduduk");
-    private File file;
 
     /**
      * Initializes the controller class.
@@ -82,8 +80,8 @@ public class ExtractionPanelController implements Initializable {
 
     }
 
-    public TableView<CurrentSelection> getCurrent() {
-        return current;
+    public TableView<CurrentSelection> getCurrentSelectionTable() {
+        return currentSelectionTable;
     }
 
     public void setMainController(MainController mainController) {
@@ -92,10 +90,10 @@ public class ExtractionPanelController implements Initializable {
 
     private void initModel() {
         individuals = FXCollections.observableList(new ArrayList<Individual>());
-        inv.setItems(individuals);
+        individualTable.setItems(individuals);
         individualDetails = FXCollections.observableList(new ArrayList<IndividualDetail>());
-        invDetails.setItems(individualDetails);
-        inv.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Individual>() {
+        individualDetailsTable.setItems(individualDetails);
+        individualTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Individual>() {
             @Override
             public void changed(ObservableValue<? extends Individual> ov, Individual t, Individual t1) {
                 individualDetails.clear();
@@ -106,29 +104,29 @@ public class ExtractionPanelController implements Initializable {
     }
 
     private void initCurrent() {
-        currentID.setCellValueFactory(new PropertyValueFactory("id"));
-        currentContent.setCellValueFactory(new PropertyValueFactory("content"));
+        currentSelectionIDColumn.setCellValueFactory(new PropertyValueFactory("id"));
+        currentSelectionContentColumn.setCellValueFactory(new PropertyValueFactory("content"));
     }
 
     private void initInv() {
-        invID.setCellValueFactory(new PropertyValueFactory("id"));
-        invClass.setCellValueFactory(new PropertyValueFactory("typeOf"));
-        invClass.setCellFactory(new Callback<TableColumn<Individual, String>, TableCell<Individual, String>>() {
+        individualIDColumn.setCellValueFactory(new PropertyValueFactory("id"));
+        individualClassColumn.setCellValueFactory(new PropertyValueFactory("typeOf"));
+        individualClassColumn.setCellFactory(new Callback<TableColumn<Individual, String>, TableCell<Individual, String>>() {
             @Override
             public TableCell<Individual, String> call(TableColumn<Individual, String> p) {
                 TableCell<Individual, String> cell = new ComboBoxTableCell<>(classes);
                 return cell;
             }
         });
-        invSelected.setCellValueFactory(new PropertyValueFactory("selected"));
-        invSelected.setCellFactory(CheckBoxTableCell.forTableColumn(invSelected));
+        individualSelectedColumn.setCellValueFactory(new PropertyValueFactory("selected"));
+        individualSelectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(individualSelectedColumn));
     }
 
     private void initInvDetails() {
-        invDetailsID.setCellValueFactory(new PropertyValueFactory("id"));
-        invDetailsProperty.setCellValueFactory(new PropertyValueFactory("property"));
-        invDetailsValue.setCellValueFactory(new PropertyValueFactory("value"));
-        invDetailsProperty.setCellFactory(new Callback<TableColumn<IndividualDetail, String>, TableCell<IndividualDetail, String>>() {
+        individualDetailsIDColumn.setCellValueFactory(new PropertyValueFactory("id"));
+        individualDetailsPropertyColumn.setCellValueFactory(new PropertyValueFactory("property"));
+        individualDetailsValueColumn.setCellValueFactory(new PropertyValueFactory("value"));
+        individualDetailsPropertyColumn.setCellFactory(new Callback<TableColumn<IndividualDetail, String>, TableCell<IndividualDetail, String>>() {
             @Override
             public TableCell<IndividualDetail, String> call(TableColumn<IndividualDetail, String> p) {
                 TableCell<IndividualDetail, String> cell = new ComboBoxTableCell<>(properties);
@@ -138,27 +136,13 @@ public class ExtractionPanelController implements Initializable {
     }
 
     @FXML
-    public void importOntology(ActionEvent event) {
-        FileChooser fileChooser = new FileChooser();
-
-        //Set extension filter
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("OWL files ", "*.rdf", "*.ttl", "*.n3", "*.owl", "*.nt");
-        fileChooser.getExtensionFilters().add(extFilter);
-
-        //Show open file dialog
-        file = fileChooser.showOpenDialog(null);
-
-        System.out.println(file.getPath());
-    }
-
-    @FXML
     public void createInvAction(ActionEvent event) {
         int i = individuals.size();
         List<IndividualDetail> l = new ArrayList<>();
         for (CurrentSelection currentSelection : mainController.getCurrentSelections()) {
-            l.add(new IndividualDetail(currentSelection.getId(), currentSelection.getContent(), ""));
+            l.add(new IndividualDetail(currentSelection.getId(), currentSelection.getContent(), "<<Choose Property>>"));
         }
-        individuals.add(new Individual("individual" + i, "", l));
+        individuals.add(new Individual("individual" + i, "<<Choose Class>>", l));
     }
     private boolean step = false;
     private List<Integer> step1;
