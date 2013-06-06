@@ -5,10 +5,14 @@
 package com.wordpress.erenha.arjuna.jauza.controller;
 
 import com.wordpress.erenha.arjuna.jauza.rdf.RDFClass;
+import com.wordpress.erenha.arjuna.jauza.rdf.RDFContext;
 import com.wordpress.erenha.arjuna.jauza.rdf.RDFProperty;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,6 +29,12 @@ import javafx.stage.FileChooser;
  */
 public class OntologyTabController implements Initializable {
 
+    @FXML //  fx:id="ontologyLabelColumn"
+    private TableColumn<RDFContext, String> ontologyLabelColumn; // Value injected by FXMLLoader
+    @FXML //  fx:id="ontologyTable"
+    private TableView<RDFContext> ontologyTable; // Value injected by FXMLLoader
+    @FXML //  fx:id="ontologyURIColumn"
+    private TableColumn<RDFContext, String> ontologyURIColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="classesLabelColumn"
     private TableColumn<RDFClass, String> classesLabelColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="classesTable"
@@ -48,6 +58,9 @@ public class OntologyTabController implements Initializable {
 
     @Override // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
+        assert ontologyLabelColumn != null : "fx:id=\"ontologyLabelColumn\" was not injected: check your FXML file 'ontologyTab.fxml'.";
+        assert ontologyTable != null : "fx:id=\"ontologyTable\" was not injected: check your FXML file 'ontologyTab.fxml'.";
+        assert ontologyURIColumn != null : "fx:id=\"ontologyURIColumn\" was not injected: check your FXML file 'ontologyTab.fxml'.";
         assert classesLabelColumn != null : "fx:id=\"classesLabelColumn\" was not injected: check your FXML file 'ontologyTab.fxml'.";
         assert classesTable != null : "fx:id=\"classesTable\" was not injected: check your FXML file 'ontologyTab.fxml'.";
         assert classesURIColumn != null : "fx:id=\"classesURIColumn\" was not injected: check your FXML file 'ontologyTab.fxml'.";
@@ -62,10 +75,16 @@ public class OntologyTabController implements Initializable {
     }
 
     private void initTableColumn() {
+        ontologyLabelColumn.setCellValueFactory(new PropertyValueFactory("label"));
+        ontologyURIColumn.setCellValueFactory(new PropertyValueFactory("uri"));
         classesLabelColumn.setCellValueFactory(new PropertyValueFactory("label"));
         classesURIColumn.setCellValueFactory(new PropertyValueFactory("uri"));
         propertiesLabelColumn.setCellValueFactory(new PropertyValueFactory("label"));
         propertiesURIColumn.setCellValueFactory(new PropertyValueFactory("uri"));
+    }
+
+    public TableView<RDFContext> getOntologyTable() {
+        return ontologyTable;
     }
 
     public TableView<RDFClass> getClassesTable() {
@@ -79,7 +98,15 @@ public class OntologyTabController implements Initializable {
     @FXML
     public void importOntology(ActionEvent event) {
         if (!urlFileImport.getText().trim().isEmpty()) {
-            mainController.getRepository().add(new File(urlFileImport.getText()));
+            if (urlFileImport.getText().startsWith("http")) {
+                try {
+                    mainController.getRepository().add(new URL(urlFileImport.getText()));
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(OntologyTabController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                mainController.getRepository().add(new File(urlFileImport.getText()));
+            }
             mainController.getRepository().getClasses();
             mainController.getRepository().getProperties();
         }

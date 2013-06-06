@@ -7,10 +7,11 @@ package com.wordpress.erenha.arjuna.jauza.rdf;
 import com.wordpress.erenha.arjuna.jauza.controller.MainController;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
@@ -23,6 +24,7 @@ import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
@@ -45,6 +47,12 @@ public class RDFController {
     public void initRepository(String data) {
         try {
             File dataDir = new File(data);
+            if (dataDir.exists()) {
+                File[] listFiles = dataDir.listFiles();
+                for (File file : listFiles) {
+                    file.delete();
+                }
+            }
             String indexes = "spoc,posc,cosp";
             repo = new SailRepository(new ForwardChainingRDFSInferencer(new NativeStore(dataDir, indexes)));
             repo.initialize();
@@ -71,13 +79,54 @@ public class RDFController {
         } catch (IOException | RDFParseException | RepositoryException ex) {
             Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        getContext();
+    }
+
+    public void add(URL url) {
+        try {
+            RepositoryConnection connection = repo.getConnection();
+            ValueFactory factory = repo.getValueFactory();
+            URI context = factory.createURI(url.toString());
+            RDFFormat format = RDFFormat.forFileName(url.toString());
+            try {
+                connection.begin();
+                connection.add(url, null, format, context);
+                connection.commit();
+            } catch (RepositoryException re) {
+                connection.rollback();
+            } finally {
+                connection.close();
+            }
+        } catch (IOException | RDFParseException | RepositoryException ex) {
+            Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        getContext();
+    }
+
+    public void getContext() {
+        try {
+            mainController.getCurrentContext().clear();
+            RepositoryConnection connection = repo.getConnection();
+            try {
+                RepositoryResult<Resource> contextIDs = connection.getContextIDs();
+                while (contextIDs.hasNext()) {
+                    URI resource = (URI) contextIDs.next();
+                    mainController.getCurrentContext().add(new RDFContext(resource.toString(), resource.getLocalName()));
+                }
+            } finally {
+                connection.close();
+            }
+
+        } catch (RepositoryException ex) {
+            Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void getClasses() {
         try {
-
+            mainController.getCurrentClasses().clear();
             RepositoryConnection connection = repo.getConnection();
-            String query = "SELECT ?c ?cLabel\n"
+            String query = "SELECT DISTINCT ?c ?cLabel\n"
                     + "WHERE\n"
                     + "{\n"
                     + "?c rdf:type rdfs:Class.\n"
@@ -105,8 +154,9 @@ public class RDFController {
 
     public void getProperties() {
         try {
+            mainController.getCurrentProperties().clear();
             RepositoryConnection connection = repo.getConnection();
-            String query = "SELECT ?p ?pLabel\n"
+            String query = "SELECT DISTINCT ?p ?pLabel\n"
                     + "WHERE\n"
                     + "{\n"
                     + "?p rdf:type rdf:Property.\n"

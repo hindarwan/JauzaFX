@@ -6,6 +6,7 @@ package com.wordpress.erenha.arjuna.jauza.controller;
 
 import com.wordpress.erenha.arjuna.jauza.model.CurrentSelection;
 import com.wordpress.erenha.arjuna.jauza.rdf.RDFClass;
+import com.wordpress.erenha.arjuna.jauza.rdf.RDFContext;
 import com.wordpress.erenha.arjuna.jauza.rdf.RDFProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.RDFController;
 import java.net.URL;
@@ -26,6 +27,7 @@ import javafx.scene.layout.VBox;
 public class MainController implements Initializable {
 
     private ObservableList<CurrentSelection> currentSelections;
+    private ObservableList<RDFContext> currentContext;
     private ObservableList<RDFClass> currentClasses;
     private ObservableList<RDFProperty> currentProperties;
     private RDFController rdfController;
@@ -51,6 +53,7 @@ public class MainController implements Initializable {
         // initialize your logic here: all @FXML variables will have been injected
         //Global Model
         currentSelections = FXCollections.observableList(new ArrayList<CurrentSelection>());
+        currentContext = FXCollections.observableList(new ArrayList<RDFContext>());
         currentClasses = FXCollections.observableList(new ArrayList<RDFClass>());
         currentProperties = FXCollections.observableList(new ArrayList<RDFProperty>());
 
@@ -59,18 +62,23 @@ public class MainController implements Initializable {
         annotationTabController.getExtractionPanelController().getCurrentSelectionTable().setItems(currentSelections);
 
         ontologyTabController.setMainController(this);
+        ontologyTabController.getOntologyTable().setItems(currentContext);
         ontologyTabController.getClassesTable().setItems(currentClasses);
         ontologyTabController.getPropertiesTable().setItems(currentProperties);
 
         rdfController = new RDFController();
         rdfController.setMainController(this);
         rdfController.initRepository("data");
-        rdfController.getClasses();
+        rdfController.getClasses(); //load class in start
         rdfController.getProperties();
     }
 
     public ObservableList<CurrentSelection> getCurrentSelections() {
         return currentSelections;
+    }
+
+    public ObservableList<RDFContext> getCurrentContext() {
+        return currentContext;
     }
 
     public ObservableList<RDFClass> getCurrentClasses() {
