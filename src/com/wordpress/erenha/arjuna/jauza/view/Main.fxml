@@ -10,45 +10,50 @@
 <?import javafx.scene.web.*?>
 
 <AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.MainController">
-  <children>
-    <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="708.0" prefWidth="1024.0" styleClass="mainFxmlClass" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <children>
-        <MenuBar prefWidth="899.0">
-          <menus>
-            <Menu mnemonicParsing="false" text="File">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Close" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Delete" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-              <items>
-                <MenuItem mnemonicParsing="false" text="About" />
-              </items>
-            </Menu>
-          </menus>
-        </MenuBar>
-        <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
-          <tabs>
-            <Tab text="Annotation">
-              <fx:include fx:id="annotationTab" source="annotationTab.fxml" />
-            </Tab>
-            <Tab text="Ontology">
-              <fx:include fx:id="ontologyTab" source="ontologyTab.fxml" />
-            </Tab>
-            <Tab text="Individual">
-              <fx:include fx:id="individualTab" source="individualTab.fxml" />
-            </Tab>
-          </tabs>
-        </TabPane>
-      </children>
-    </VBox>
-  </children>
-  <stylesheets>
-    <URL value="@main.css" />
-  </stylesheets>
+    <children>
+        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="708.0" prefWidth="1024.0" styleClass="mainFxmlClass" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <MenuBar prefWidth="899.0">
+                    <menus>
+                        <Menu mnemonicParsing="false" text="File">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Close" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Edit">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Delete" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Help">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="About" />
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+                <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                    <tabs>
+                        <Tab text="Ontology">
+                            <fx:include fx:id="ontologyTab" source="ontologyTab.fxml" />
+                        </Tab>
+                        <Tab text="Annotation">
+                            <fx:include fx:id="annotationTab" source="annotationTab.fxml" />
+                        </Tab>
+                        <Tab text="Entity Matching">
+                            <fx:include fx:id="individualTab" source="individualTab.fxml" />
+                        </Tab>
+                        <Tab text="Export">
+                            <content>
+                                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+            </children>
+        </VBox>
+    </children>
+    <stylesheets>
+        <URL value="@main.css" />
+    </stylesheets>
 </AnchorPane>

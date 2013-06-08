@@ -36,14 +36,13 @@
               <ToolBar>
                 <items>
                   <Label prefWidth="64.0" text="Individuals" />
-                  <Button mnemonicParsing="false" onAction="#suggestNextAction" prefWidth="96.0" text="Suggest Next" />
+                  <Button mnemonicParsing="false" onAction="#suggestNextAction" prefWidth="96.0" text="Suggest Next" visible="false" />
                 </items>
               </ToolBar>
               <TableView fx:id="individualTable" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
                 <columns>
-                  <TableColumn prefWidth="20.0" text="v" fx:id="individualSelectedColumn" />
-                  <TableColumn editable="false" prefWidth="75.0" text="id" fx:id="individualIDColumn" />
-                  <TableColumn prefWidth="100.0" text="Class" fx:id="individualClassColumn" />
+                  <TableColumn editable="false" minWidth="150.0" prefWidth="150.0" text="id" fx:id="individualIDColumn" />
+                  <TableColumn minWidth="220.0" prefWidth="220.0" text="Class" fx:id="individualClassColumn" />
                 </columns>
               </TableView>
             </children>
@@ -63,7 +62,7 @@
               <TableView id="tableExtInd" fx:id="individualDetailsTable" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
                 <columns>
                   <TableColumn editable="false" minWidth="25.0" prefWidth="75.0" text="id" visible="false" fx:id="individualDetailsIDColumn" />
-                  <TableColumn prefWidth="150.0" text="Property" fx:id="individualDetailsPropertyColumn" />
+                  <TableColumn minWidth="150.0" prefWidth="150.0" text="Property" fx:id="individualDetailsPropertyColumn" />
                   <TableColumn minWidth="220.0" prefWidth="220.0" text="Value" fx:id="individualDetailsValueColumn" />
                 </columns>
               </TableView>

@@ -140,8 +140,9 @@ public class RDFController {
                     BindingSet bindingSet = result.next();
                     Value uri = bindingSet.getValue(bindingNames.get(0));
                     Value label = bindingSet.getValue(bindingNames.get(1));
-                    System.out.println(uri.stringValue());
                     mainController.getCurrentClasses().add(new RDFClass(uri.stringValue(), label.stringValue()));
+                    mainController.getCurrentClassesLabel().add(label.stringValue());
+
                 }
             } finally {
                 connection.close();
@@ -171,6 +172,7 @@ public class RDFController {
                     Value uri = bindingSet.getValue(bindingNames.get(0));
                     Value label = bindingSet.getValue(bindingNames.get(1));
                     mainController.getCurrentProperties().add(new RDFProperty(uri.stringValue(), label.stringValue()));
+                    mainController.getCurrentPropertiesLabel().add(label.stringValue());
                 }
             } finally {
                 connection.close();
