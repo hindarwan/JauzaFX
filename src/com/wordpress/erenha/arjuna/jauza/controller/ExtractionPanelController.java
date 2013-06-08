@@ -5,10 +5,8 @@
 package com.wordpress.erenha.arjuna.jauza.controller;
 
 import com.wordpress.erenha.arjuna.jauza.model.CurrentSelection;
-import com.wordpress.erenha.arjuna.jauza.rdf.RDFClass;
-import com.wordpress.erenha.arjuna.jauza.rdf.RDFIndividual;
-import com.wordpress.erenha.arjuna.jauza.rdf.RDFIndividualProperty;
-import com.wordpress.erenha.arjuna.jauza.rdf.RDFProperty;
+import com.wordpress.erenha.arjuna.jauza.model.Individual;
+import com.wordpress.erenha.arjuna.jauza.model.IndividualDetail;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
@@ -41,27 +40,30 @@ public class ExtractionPanelController implements Initializable {
     @FXML //  fx:id="currentID"
     private TableColumn<CurrentSelection, String> currentSelectionIDColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="inv"
-    private TableView<RDFIndividual> individualTable; // Value injected by FXMLLoader
+    private TableView<Individual> individualTable; // Value injected by FXMLLoader
     @FXML //  fx:id="invClass"
-    private TableColumn<RDFIndividual, String> individualClassColumn; // Value injected by FXMLLoader
+    private TableColumn<Individual, String> individualClassColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="invID"
-    private TableColumn<RDFIndividual, String> individualIDColumn; // Value injected by FXMLLoader
-//    @FXML //  fx:id="invSelected"
-//    private TableColumn<Individual, Boolean> individualSelectedColumn; // Value injected by FXMLLoader
+    private TableColumn<Individual, String> individualIDColumn; // Value injected by FXMLLoader
+    @FXML //  fx:id="invSelected"
+    private TableColumn<Individual, Boolean> individualSelectedColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="invDetails"
-    private TableView<RDFIndividualProperty> individualDetailsTable; // Value injected by FXMLLoader
-//    @FXML //  fx:id="invDetailsID"
-//    private TableColumn<RDFIndividualProperty, String> individualDetailsIDColumn; // Value injected by FXMLLoader
+    private TableView<IndividualDetail> individualDetailsTable; // Value injected by FXMLLoader
+    @FXML //  fx:id="invDetailsID"
+    private TableColumn<IndividualDetail, String> individualDetailsIDColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="invDetailsProperty"
-    private TableColumn<RDFIndividualProperty, String> individualDetailsPropertyColumn; // Value injected by FXMLLoader
+    private TableColumn<IndividualDetail, String> individualDetailsPropertyColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="invDetailsValue"
-    private TableColumn<RDFIndividualProperty, String> individualDetailsValueColumn; // Value injected by FXMLLoader
+    private TableColumn<IndividualDetail, String> individualDetailsValueColumn; // Value injected by FXMLLoader
     //NON FXML
     private MainController mainController;
     //tabel model
 //    private ObservableList<CurrentSelection> currentSelections;
-    private ObservableList<RDFIndividual> individuals;
-    private ObservableList<RDFIndividualProperty> individualDetails;
+    private ObservableList<Individual> individuals;
+    private ObservableList<IndividualDetail> individualDetails;
+    //Class
+    private ObservableList<String> classes = FXCollections.observableArrayList("Dataset", "Catalog", "Distribution", "Observation");
+    private ObservableList<String> properties = FXCollections.observableArrayList("provinsi", "tahun", "jenisKelamin", "persentasePenduduk");
 
     /**
      * Initializes the controller class.
@@ -87,16 +89,15 @@ public class ExtractionPanelController implements Initializable {
     }
 
     private void initModel() {
-        individuals = FXCollections.observableList(new ArrayList<RDFIndividual>());
+        individuals = FXCollections.observableList(new ArrayList<Individual>());
         individualTable.setItems(individuals);
-        individualDetails = FXCollections.observableList(new ArrayList<RDFIndividualProperty>());
+        individualDetails = FXCollections.observableList(new ArrayList<IndividualDetail>());
         individualDetailsTable.setItems(individualDetails);
-        individualTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<RDFIndividual>() {
-
+        individualTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Individual>() {
             @Override
-            public void changed(ObservableValue<? extends RDFIndividual> ov, RDFIndividual t, RDFIndividual t1) {
+            public void changed(ObservableValue<? extends Individual> ov, Individual t, Individual t1) {
                 individualDetails.clear();
-                individualDetails.addAll(t1.getRdfIndividualProperty());
+                individualDetails.addAll(t1.getIndividualDetail());
             }
         });
 
@@ -108,41 +109,27 @@ public class ExtractionPanelController implements Initializable {
     }
 
     private void initInv() {
-        individualIDColumn.setCellValueFactory(new PropertyValueFactory("uri"));
-        individualClassColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<RDFIndividual, String>, ObservableValue<String>>() {
-
+        individualIDColumn.setCellValueFactory(new PropertyValueFactory("id"));
+        individualClassColumn.setCellValueFactory(new PropertyValueFactory("typeOf"));
+        individualClassColumn.setCellFactory(new Callback<TableColumn<Individual, String>, TableCell<Individual, String>>() {
             @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<RDFIndividual, String> p) {
-                return p.getValue().getRdfClass().labelProperty();
-            }
-        });
-        individualClassColumn.setCellFactory(new Callback<TableColumn<RDFIndividual, String>, TableCell<RDFIndividual, String>>() {
-
-            @Override
-            public TableCell<RDFIndividual, String> call(TableColumn<RDFIndividual, String> p) {
-                TableCell<RDFIndividual, String> cell = new ComboBoxTableCell<>(mainController.getCurrentClassesLabel());
+            public TableCell<Individual, String> call(TableColumn<Individual, String> p) {
+                TableCell<Individual, String> cell = new ComboBoxTableCell<>(classes);
                 return cell;
             }
         });
-//        individualSelectedColumn.setCellValueFactory(new PropertyValueFactory("selected"));
-//        individualSelectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(individualSelectedColumn));
+        individualSelectedColumn.setCellValueFactory(new PropertyValueFactory("selected"));
+        individualSelectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(individualSelectedColumn));
     }
 
     private void initInvDetails() {
-//        individualDetailsIDColumn.setCellValueFactory(new PropertyValueFactory("id"));
-        individualDetailsPropertyColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<RDFIndividualProperty, String>, ObservableValue<String>>() {
-
+        individualDetailsIDColumn.setCellValueFactory(new PropertyValueFactory("id"));
+        individualDetailsPropertyColumn.setCellValueFactory(new PropertyValueFactory("property"));
+        individualDetailsValueColumn.setCellValueFactory(new PropertyValueFactory("value"));
+        individualDetailsPropertyColumn.setCellFactory(new Callback<TableColumn<IndividualDetail, String>, TableCell<IndividualDetail, String>>() {
             @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<RDFIndividualProperty, String> p) {
-                return p.getValue().getRdfProperty().labelProperty();
-            }
-        });
-        individualDetailsValueColumn.setCellValueFactory(new PropertyValueFactory("propertyValue"));
-        individualDetailsPropertyColumn.setCellFactory(new Callback<TableColumn<RDFIndividualProperty, String>, TableCell<RDFIndividualProperty, String>>() {
-
-            @Override
-            public TableCell<RDFIndividualProperty, String> call(TableColumn<RDFIndividualProperty, String> p) {
-                TableCell<RDFIndividualProperty, String> cell = new ComboBoxTableCell<>(mainController.getCurrentPropertiesLabel());
+            public TableCell<IndividualDetail, String> call(TableColumn<IndividualDetail, String> p) {
+                TableCell<IndividualDetail, String> cell = new ComboBoxTableCell<>(properties);
                 return cell;
             }
         });
@@ -151,22 +138,21 @@ public class ExtractionPanelController implements Initializable {
     @FXML
     public void createInvAction(ActionEvent event) {
         int i = individuals.size();
-        List<RDFIndividualProperty> l = new ArrayList<>();
+        List<IndividualDetail> l = new ArrayList<>();
         for (CurrentSelection currentSelection : mainController.getCurrentSelections()) {
-            l.add(new RDFIndividualProperty(new RDFProperty("rdf:Property", "<<Choose Property>>"), currentSelection.getContent()));
+            l.add(new IndividualDetail(currentSelection.getId(), currentSelection.getContent(), "<<Choose Property>>"));
         }
-        individuals.add(new RDFIndividual("individual" + i,new RDFClass("rdfs:Class", "<<Choose Class>>"),l));
-//        individuals.add(new Individual("individual" + i, "<<Choose Class>>", l));
+        individuals.add(new Individual("individual" + i, "<<Choose Class>>", l));
     }
     private boolean step = false;
     private List<Integer> step1;
 
     @FXML
     public void suggestNextAction(ActionEvent event) {
-//        if (!step) {
-//            step1 = getStep();
-//        }
-//        List<IndividualDetail> individualDetail = individuals.get(individuals.size() - 1).getIndividualDetail();
+        if (!step) {
+            step1 = getStep();
+        }
+        List<IndividualDetail> individualDetail = individuals.get(individuals.size() - 1).getIndividualDetail();
         for (int i = 0; i < step1.size(); i++) {
 //            selectElementByJFXID(step1.get(i) + Integer.valueOf(individualDetail.get(i).getId()));
         }
@@ -179,24 +165,24 @@ public class ExtractionPanelController implements Initializable {
         List<Integer> id1 = new ArrayList<>();
         List<Integer> id2 = new ArrayList<>();
 
-//        boolean sufficient = false;
-//        for (int i = 0; i < individuals.size(); i++) {
-//            if (individuals.get(i).isSelected()) {
-//                List<IndividualDetail> individualDetail = individuals.get(i).getIndividualDetail();
-//                for (IndividualDetail individualDetail1 : individualDetail) {
-//                    if (!sufficient) {
-//                        id1.add(Integer.valueOf(individualDetail1.getId()));
-//                    } else {
-//                        id2.add(Integer.valueOf(individualDetail1.getId()));
-//                    }
-//                }
-//                sufficient = true;
-//            }
-//        }
-//        for (int i = 0; i < id1.size(); i++) {
-//            step.add(id2.get(i) - id1.get(i));
-//        }
-//        this.step = true;
+        boolean sufficient = false;
+        for (int i = 0; i < individuals.size(); i++) {
+            if (individuals.get(i).isSelected()) {
+                List<IndividualDetail> individualDetail = individuals.get(i).getIndividualDetail();
+                for (IndividualDetail individualDetail1 : individualDetail) {
+                    if (!sufficient) {
+                        id1.add(Integer.valueOf(individualDetail1.getId()));
+                    } else {
+                        id2.add(Integer.valueOf(individualDetail1.getId()));
+                    }
+                }
+                sufficient = true;
+            }
+        }
+        for (int i = 0; i < id1.size(); i++) {
+            step.add(id2.get(i) - id1.get(i));
+        }
+        this.step = true;
         return step;
     }
 }
