@@ -29,7 +29,9 @@ public class MainController implements Initializable {
     private ObservableList<CurrentSelection> currentSelections;
     private ObservableList<RDFContext> currentContext;
     private ObservableList<RDFClass> currentClasses;
+    private ObservableList<String> currentClassesLabel;
     private ObservableList<RDFProperty> currentProperties;
+    private ObservableList<String> currentPropertiesLabel;
     private RDFController rdfController;
     @FXML //  fx:id="annotationTab"
     private HBox annotationTab; // Value injected by FXMLLoader
@@ -55,7 +57,9 @@ public class MainController implements Initializable {
         currentSelections = FXCollections.observableList(new ArrayList<CurrentSelection>());
         currentContext = FXCollections.observableList(new ArrayList<RDFContext>());
         currentClasses = FXCollections.observableList(new ArrayList<RDFClass>());
+        currentClassesLabel = FXCollections.observableList(new ArrayList<String>());
         currentProperties = FXCollections.observableList(new ArrayList<RDFProperty>());
+        currentPropertiesLabel = FXCollections.observableList(new ArrayList<String>());
 
         annotationTabController.getBrowserController().setMainController(this);
         annotationTabController.getExtractionPanelController().setMainController(this);
@@ -88,6 +92,16 @@ public class MainController implements Initializable {
     public ObservableList<RDFProperty> getCurrentProperties() {
         return currentProperties;
     }
+
+    public ObservableList<String> getCurrentClassesLabel() {
+        return currentClassesLabel;
+    }
+
+    public ObservableList<String> getCurrentPropertiesLabel() {
+        return currentPropertiesLabel;
+    }
+    
+    
 
     public RDFController getRepository() {
         return rdfController;
