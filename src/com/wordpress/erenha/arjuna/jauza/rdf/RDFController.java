@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openrdf.model.Namespace;
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
@@ -25,11 +26,19 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryResult;
+import org.openrdf.repository.config.RepositoryConfig;
+import org.openrdf.repository.config.RepositoryConfigException;
+import org.openrdf.repository.http.HTTPRepository;
+import org.openrdf.repository.manager.RemoteRepositoryManager;
 import org.openrdf.repository.sail.SailRepository;
+import org.openrdf.repository.sail.config.SailRepositoryConfig;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
+import org.openrdf.sail.config.SailImplConfig;
 import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
+import org.openrdf.sail.inferencer.fc.config.ForwardChainingRDFSInferencerConfig;
 import org.openrdf.sail.nativerdf.NativeStore;
+import org.openrdf.sail.nativerdf.config.NativeStoreConfig;
 
 /**
  *
@@ -57,6 +66,26 @@ public class RDFController {
             repo = new SailRepository(new ForwardChainingRDFSInferencer(new NativeStore(dataDir, indexes)));
             repo.initialize();
         } catch (RepositoryException ex) {
+            Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void initRepository(String sesameServer, String repositoryId) {
+        try {
+            RemoteRepositoryManager manager = new RemoteRepositoryManager(sesameServer);
+            manager.initialize();
+//            String repositoryId = "jauzafx-db";
+            SailImplConfig config = new ForwardChainingRDFSInferencerConfig(new NativeStoreConfig("spoc,posc,cosp"));
+            SailRepositoryConfig repositoryTypeSpec = new SailRepositoryConfig(config);
+
+            RepositoryConfig repConfig = new RepositoryConfig(repositoryId, repositoryTypeSpec);
+            manager.addRepositoryConfig(repConfig);
+
+            repo = manager.getRepository(repositoryId);
+//            repo = new HTTPRepository(sesameServer, repositoryID);
+
+            repo.initialize();
+        } catch (RepositoryException | RepositoryConfigException ex) {
             Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -117,6 +146,22 @@ public class RDFController {
                 connection.close();
             }
 
+        } catch (RepositoryException ex) {
+            Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void getNamespaces() {
+        try {
+            RepositoryConnection connection = repo.getConnection();
+            RepositoryResult<Namespace> namespaces = connection.getNamespaces();
+            while (namespaces.hasNext()) {
+                Namespace ns = namespaces.next();
+                ns.getName();
+                ns.getPrefix();
+                System.out.print(ns.getPrefix() + ":");
+                System.out.println(ns.getName());
+            }
         } catch (RepositoryException ex) {
             Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -72,9 +72,16 @@ public class MainController implements Initializable {
 
         rdfController = new RDFController();
         rdfController.setMainController(this);
-        rdfController.initRepository("data");
+//        rdfController.initRepository("data");
+        String sesameServer = "http://localhost:8080/openrdf-sesame";
+//        String repositoryID = "opendata";
+//        String repositoryID = "jauzafx-db";
+        String repositoryID = "data-test";
+        rdfController.initRepository(sesameServer, repositoryID);
         rdfController.getClasses(); //load class in start
         rdfController.getProperties();
+        rdfController.getContext();
+        rdfController.getNamespaces();
     }
 
     public ObservableList<CurrentSelection> getCurrentSelections() {
