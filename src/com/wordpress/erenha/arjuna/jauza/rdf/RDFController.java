@@ -9,6 +9,7 @@ import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFClass;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFContext;
 import com.wordpress.erenha.arjuna.jauza.controller.MainController;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFNamespace;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFOntology;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -187,6 +188,36 @@ public class RDFController {
         }
     }
 
+    public void getOntologies() {
+        try {
+            mainController.getCurrentOntologies().clear();
+            RepositoryConnection connection = repo.getConnection();
+            String query = "PREFIX dc:<http://purl.org/dc/elements/1.1/> "
+                    + "SELECT DISTINCT ?c ?cLabel\n"
+                    + "WHERE\n"
+                    + "{\n"
+                    + "?c rdf:type owl:Ontology.\n"
+                    + "?c rdfs:label|dc:title ?cLabel.\n"
+                    + "}";
+            try {
+                TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
+                TupleQueryResult result = tupleQuery.evaluate();
+                List<String> bindingNames = result.getBindingNames();
+                while (result.hasNext()) {
+                    BindingSet bindingSet = result.next();
+                    Value uri = bindingSet.getValue(bindingNames.get(0));
+                    Value label = bindingSet.getValue(bindingNames.get(1));
+                    mainController.getCurrentOntologies().add(new RDFOntology(uri.stringValue(), label.stringValue()));
+                }
+            } finally {
+                connection.close();
+            }
+
+        } catch (RepositoryException | MalformedQueryException | QueryEvaluationException ex) {
+            Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public void getClasses() {
         try {
             mainController.getCurrentClasses().clear();
@@ -196,6 +227,38 @@ public class RDFController {
                     + "{\n"
                     + "?c rdf:type rdfs:Class.\n"
                     + "?c rdfs:label ?cLabel.\n"
+                    + "}";
+            try {
+                TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
+                TupleQueryResult result = tupleQuery.evaluate();
+                List<String> bindingNames = result.getBindingNames();
+                while (result.hasNext()) {
+                    BindingSet bindingSet = result.next();
+                    Value uri = bindingSet.getValue(bindingNames.get(0));
+                    Value label = bindingSet.getValue(bindingNames.get(1));
+                    mainController.getCurrentClasses().add(new RDFClass(uri.stringValue(), label.stringValue()));
+                    mainController.getCurrentClassesLabel().add(label.stringValue());
+                }
+            } finally {
+                connection.close();
+            }
+
+        } catch (RepositoryException | MalformedQueryException | QueryEvaluationException ex) {
+            Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void getClassesByNS(String ns) {
+        try {
+            mainController.getCurrentClasses().clear();
+            RepositoryConnection connection = repo.getConnection();
+            String query = "SELECT DISTINCT ?c ?cLabel\n"
+                    + "WHERE\n"
+                    + "{\n"
+                    + "?c rdf:type rdfs:Class.\n"
+                    + "?c rdfs:label ?cLabel.\n"
+//                    + "?c rdfs:isDefinedBy <" + ns + ">.\n"
+                    + "FILTER(STRSTARTS(STR(?c),\"" + ns + "\"))"
                     + "}";
             try {
                 TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
@@ -226,6 +289,38 @@ public class RDFController {
                     + "{\n"
                     + "?p rdf:type rdf:Property.\n"
                     + "?p rdfs:label ?pLabel.\n"
+                    + "}";
+            try {
+                TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
+                TupleQueryResult result = tupleQuery.evaluate();
+                List<String> bindingNames = result.getBindingNames();
+                while (result.hasNext()) {
+                    BindingSet bindingSet = result.next();
+                    Value uri = bindingSet.getValue(bindingNames.get(0));
+                    Value label = bindingSet.getValue(bindingNames.get(1));
+                    mainController.getCurrentProperties().add(new RDFProperty(uri.stringValue(), label.stringValue()));
+                    mainController.getCurrentPropertiesLabel().add(label.stringValue());
+                }
+            } finally {
+                connection.close();
+            }
+
+        } catch (RepositoryException | MalformedQueryException | QueryEvaluationException ex) {
+            Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void getPropertiesByNS(String ns) {
+        try {
+            mainController.getCurrentProperties().clear();
+            RepositoryConnection connection = repo.getConnection();
+            String query = "SELECT DISTINCT ?p ?pLabel\n"
+                    + "WHERE\n"
+                    + "{\n"
+                    + "?p rdf:type rdf:Property.\n"
+                    + "?p rdfs:label ?pLabel.\n"
+//                    + "?p rdfs:isDefinedBy <" + ns + ">.\n"
+                    + "FILTER(STRSTARTS(STR(?p),\"" + ns + "\"))"
                     + "}";
             try {
                 TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);

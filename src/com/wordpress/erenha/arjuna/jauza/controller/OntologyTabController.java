@@ -7,6 +7,7 @@ package com.wordpress.erenha.arjuna.jauza.controller;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFClass;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFContext;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFNamespace;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFOntology;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -14,6 +15,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -41,11 +44,11 @@ public class OntologyTabController implements Initializable {
     @FXML //  fx:id="namespaceTable"
     private TableView<RDFNamespace> namespaceTable; // Value injected by FXMLLoader
     @FXML //  fx:id="ontologyLabelColumn"
-    private TableColumn<RDFContext, String> ontologyLabelColumn; // Value injected by FXMLLoader
+    private TableColumn<RDFOntology, String> ontologyLabelColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="ontologyTable"
-    private TableView<RDFContext> ontologyTable; // Value injected by FXMLLoader
+    private TableView<RDFOntology> ontologyTable; // Value injected by FXMLLoader
     @FXML //  fx:id="ontologyURIColumn"
-    private TableColumn<RDFContext, String> ontologyURIColumn; // Value injected by FXMLLoader
+    private TableColumn<RDFOntology, String> ontologyURIColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="classesLabelColumn"
     private TableColumn<RDFClass, String> classesLabelColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="classesTable"
@@ -87,7 +90,7 @@ public class OntologyTabController implements Initializable {
 
         // initialize your logic here: all @FXML variables will have been injected
         initTableColumn();
-
+        initTableModel();
     }
 
     private void initTableColumn() {
@@ -100,8 +103,29 @@ public class OntologyTabController implements Initializable {
         propertiesLabelColumn.setCellValueFactory(new PropertyValueFactory("label"));
         propertiesURIColumn.setCellValueFactory(new PropertyValueFactory("uri"));
     }
+    
+    private void initTableModel(){
+        ontologyTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<RDFOntology>() {
 
-    public TableView<RDFContext> getOntologyTable() {
+            @Override
+            public void changed(ObservableValue<? extends RDFOntology> ov, RDFOntology t, RDFOntology t1) {
+                mainController.getRDFController().getClassesByNS(t1.getUri());
+                mainController.getRDFController().getPropertiesByNS(t1.getUri());
+            }
+        });
+        
+        namespaceTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<RDFNamespace>() {
+
+            @Override
+            public void changed(ObservableValue<? extends RDFNamespace> ov, RDFNamespace t, RDFNamespace t1) {
+                mainController.getRDFController().getClassesByNS(t1.getNamespace());
+                mainController.getRDFController().getPropertiesByNS(t1.getNamespace());
+            }
+        });
+        
+    }
+
+    public TableView<RDFOntology> getOntologyTable() {
         return ontologyTable;
     }
 
@@ -122,15 +146,16 @@ public class OntologyTabController implements Initializable {
         if (!urlFileImport.getText().trim().isEmpty()) {
             if (urlFileImport.getText().startsWith("http")) {
                 try {
-                    mainController.getRepository().add(new URL(urlFileImport.getText()));
+                    mainController.getRDFController().add(new URL(urlFileImport.getText()));
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(OntologyTabController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
-                mainController.getRepository().add(new File(urlFileImport.getText()));
+                mainController.getRDFController().add(new File(urlFileImport.getText()));
             }
-            mainController.getRepository().getClasses();
-            mainController.getRepository().getProperties();
+            mainController.getRDFController().getOntologies();
+            mainController.getRDFController().getClasses();
+            mainController.getRDFController().getProperties();
         }
     }
 
@@ -155,7 +180,7 @@ public class OntologyTabController implements Initializable {
         String prefix = namespacePrefixField.getText().trim();
         String ns = namespaceURIField.getText().trim();
         if (!ns.isEmpty() || !prefix.isEmpty()) {
-            mainController.getRepository().addNamespace(prefix, ns);
+            mainController.getRDFController().addNamespace(prefix, ns);
         }
     }
 }

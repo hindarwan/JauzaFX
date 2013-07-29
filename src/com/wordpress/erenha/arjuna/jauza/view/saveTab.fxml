@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="javafx.scene.layout.VBox" prefHeight="580.0" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.SaveTabController">
+  <children>
+    <SplitPane dividerPositions="0.2583170254403131" focusTraversable="true" prefHeight="356.0" prefWidth="1024.0" VBox.vgrow="ALWAYS">
+      <items>
+        <VBox id="VBox" alignment="CENTER">
+          <children>
+            <ToolBar>
+              <items>
+                <Label text="All Individual" />
+              </items>
+            </ToolBar>
+            <TableView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+              <columns>
+                <TableColumn minWidth="100.0" prefWidth="100.0" text="id" />
+                <TableColumn minWidth="150.0" prefWidth="150.0" text="Type" />
+              </columns>
+            </TableView>
+          </children>
+        </VBox>
+        <VBox id="VBox" alignment="CENTER">
+          <children>
+            <ToolBar>
+              <items>
+                <Label text="Individual Details" />
+              </items>
+            </ToolBar>
+            <TableView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+              <columns>
+                <TableColumn prefWidth="75.0" text="Column X" />
+                <TableColumn prefWidth="75.0" text="Column X" />
+              </columns>
+            </TableView>
+          </children>
+        </VBox>
+      </items>
+    </SplitPane>
+    <ToolBar prefHeight="75.0" prefWidth="1024.0">
+      <items>
+        <Button alignment="CENTER" mnemonicParsing="false" text="Save All" />
+      </items>
+    </ToolBar>
+  </children>
+</fx:root>

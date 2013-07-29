@@ -10,6 +10,7 @@ import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFContext;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.RDFController;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFNamespace;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFOntology;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -30,6 +31,7 @@ public class MainController implements Initializable {
     private ObservableList<CurrentSelection> currentSelections;
     private ObservableList<RDFContext> currentContext;
     private ObservableList<RDFNamespace> currentNamespaces;
+    private ObservableList<RDFOntology> currentOntologies;
     private ObservableList<RDFClass> currentClasses;
     private ObservableList<String> currentClassesLabel;
     private ObservableList<RDFProperty> currentProperties;
@@ -59,6 +61,7 @@ public class MainController implements Initializable {
         currentSelections = FXCollections.observableList(new ArrayList<CurrentSelection>());
         currentContext = FXCollections.observableList(new ArrayList<RDFContext>());
         currentNamespaces = FXCollections.observableList(new ArrayList<RDFNamespace>());
+        currentOntologies = FXCollections.observableList(new ArrayList<RDFOntology>());
         currentClasses = FXCollections.observableList(new ArrayList<RDFClass>());
         currentClassesLabel = FXCollections.observableList(new ArrayList<String>());
         currentProperties = FXCollections.observableList(new ArrayList<RDFProperty>());
@@ -69,7 +72,8 @@ public class MainController implements Initializable {
         annotationTabController.getExtractionPanelController().getCurrentSelectionTable().setItems(currentSelections);
 
         ontologyTabController.setMainController(this);
-        ontologyTabController.getOntologyTable().setItems(currentContext);
+//        ontologyTabController.getOntologyTable().setItems(currentContext);
+        ontologyTabController.getOntologyTable().setItems(currentOntologies);
         ontologyTabController.getNamespaceTable().setItems(currentNamespaces);
         ontologyTabController.getClassesTable().setItems(currentClasses);
         ontologyTabController.getPropertiesTable().setItems(currentProperties);
@@ -85,6 +89,7 @@ public class MainController implements Initializable {
         rdfController.getClasses(); //load class in start
         rdfController.getProperties();
         rdfController.getContext();
+        rdfController.getOntologies();
         rdfController.getNamespaces();
     }
 
@@ -100,6 +105,10 @@ public class MainController implements Initializable {
         return currentNamespaces;
     }
 
+    public ObservableList<RDFOntology> getCurrentOntologies() {
+        return currentOntologies;
+    }
+    
     public ObservableList<RDFClass> getCurrentClasses() {
         return currentClasses;
     }
@@ -118,7 +127,7 @@ public class MainController implements Initializable {
     
     
 
-    public RDFController getRepository() {
+    public RDFController getRDFController() {
         return rdfController;
     }
 }
