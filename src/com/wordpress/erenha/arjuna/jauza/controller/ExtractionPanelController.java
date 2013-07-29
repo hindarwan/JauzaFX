@@ -5,10 +5,10 @@
 package com.wordpress.erenha.arjuna.jauza.controller;
 
 import com.wordpress.erenha.arjuna.jauza.model.CurrentSelection;
-import com.wordpress.erenha.arjuna.jauza.rdf.RDFClass;
-import com.wordpress.erenha.arjuna.jauza.rdf.RDFIndividual;
-import com.wordpress.erenha.arjuna.jauza.rdf.RDFIndividualProperty;
-import com.wordpress.erenha.arjuna.jauza.rdf.RDFProperty;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFClass;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividual;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividualProperty;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;

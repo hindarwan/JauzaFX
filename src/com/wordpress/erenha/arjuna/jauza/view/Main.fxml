@@ -13,7 +13,7 @@
     <children>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="708.0" prefWidth="1024.0" styleClass="mainFxmlClass" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <MenuBar prefWidth="899.0">
+<!--                <MenuBar prefWidth="899.0">
                     <menus>
                         <Menu mnemonicParsing="false" text="File">
                             <items>
@@ -31,7 +31,7 @@
                             </items>
                         </Menu>
                     </menus>
-                </MenuBar>
+                </MenuBar>-->
                 <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                     <tabs>
                         <Tab text="Ontology">

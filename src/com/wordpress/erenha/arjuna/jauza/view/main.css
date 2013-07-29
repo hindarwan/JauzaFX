@@ -13,3 +13,7 @@
 .table-row-cell:empty .table-cell {
     -fx-border-width: 0px;
 }
+
+.tab-pane{
+    -fx-background-color: white;
+}

@@ -4,7 +4,11 @@
  */
 package com.wordpress.erenha.arjuna.jauza.rdf;
 
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFClass;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFContext;
 import com.wordpress.erenha.arjuna.jauza.controller.MainController;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFNamespace;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -154,13 +158,14 @@ public class RDFController {
     public void getNamespaces() {
         try {
             RepositoryConnection connection = repo.getConnection();
-            RepositoryResult<Namespace> namespaces = connection.getNamespaces();
-            while (namespaces.hasNext()) {
-                Namespace ns = namespaces.next();
-                ns.getName();
-                ns.getPrefix();
-                System.out.print(ns.getPrefix() + ":");
-                System.out.println(ns.getName());
+            try {
+                RepositoryResult<Namespace> namespaces = connection.getNamespaces();
+                while (namespaces.hasNext()) {
+                    Namespace ns = namespaces.next();
+                    mainController.getCurrentNamespaces().add(new RDFNamespace(ns.getName(), ns.getPrefix()));
+                }
+            } finally {
+                connection.close();
             }
         } catch (RepositoryException ex) {
             Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);

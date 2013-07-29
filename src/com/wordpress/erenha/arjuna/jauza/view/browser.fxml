@@ -15,7 +15,7 @@
       <Label prefWidth="64.0" text="Browser" />
       <Button fx:id="backButton" mnemonicParsing="false" onAction="#back" text="Back" />
       <Button fx:id="forwardButton" mnemonicParsing="false" onAction="#forward" text="Forward" />
-      <TextField fx:id="txt" onAction="#go" prefWidth="286.0" text="http://localhost/selectorgadget/" />
+      <TextField fx:id="txt" onAction="#go" prefWidth="286.0" text="http://bps.go.id" />
       <Button fx:id="goButton" mnemonicParsing="false" onAction="#go" text="Go" />
       <ToggleButton fx:id="inspectButton" mnemonicParsing="false" onAction="#inspect" text="Inspect" />
       <Button mnemonicParsing="false" onAction="#test" text="Test" visible="false" />

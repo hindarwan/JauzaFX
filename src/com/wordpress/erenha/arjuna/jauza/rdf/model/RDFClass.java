@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.wordpress.erenha.arjuna.jauza.rdf;
+package com.wordpress.erenha.arjuna.jauza.rdf.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -11,11 +11,12 @@ import javafx.beans.property.StringProperty;
  *
  * @author Hindarwan
  */
-public class RDFProperty {
+public class RDFClass {
+
     private final StringProperty uri;
     private final StringProperty label;
 
-    public RDFProperty(String uri, String label) {
+    public RDFClass(String uri, String label) {
         this.uri = new SimpleStringProperty(uri);
         this.label = new SimpleStringProperty(label);
     }

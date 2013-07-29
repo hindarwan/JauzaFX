@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.wordpress.erenha.arjuna.jauza.rdf;
+package com.wordpress.erenha.arjuna.jauza.rdf.model;
 
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 

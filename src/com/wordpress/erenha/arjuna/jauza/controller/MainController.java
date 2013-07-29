@@ -5,10 +5,11 @@
 package com.wordpress.erenha.arjuna.jauza.controller;
 
 import com.wordpress.erenha.arjuna.jauza.model.CurrentSelection;
-import com.wordpress.erenha.arjuna.jauza.rdf.RDFClass;
-import com.wordpress.erenha.arjuna.jauza.rdf.RDFContext;
-import com.wordpress.erenha.arjuna.jauza.rdf.RDFProperty;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFClass;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFContext;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.RDFController;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFNamespace;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -28,6 +29,7 @@ public class MainController implements Initializable {
 
     private ObservableList<CurrentSelection> currentSelections;
     private ObservableList<RDFContext> currentContext;
+    private ObservableList<RDFNamespace> currentNamespaces;
     private ObservableList<RDFClass> currentClasses;
     private ObservableList<String> currentClassesLabel;
     private ObservableList<RDFProperty> currentProperties;
@@ -56,6 +58,7 @@ public class MainController implements Initializable {
         //Global Model
         currentSelections = FXCollections.observableList(new ArrayList<CurrentSelection>());
         currentContext = FXCollections.observableList(new ArrayList<RDFContext>());
+        currentNamespaces = FXCollections.observableList(new ArrayList<RDFNamespace>());
         currentClasses = FXCollections.observableList(new ArrayList<RDFClass>());
         currentClassesLabel = FXCollections.observableList(new ArrayList<String>());
         currentProperties = FXCollections.observableList(new ArrayList<RDFProperty>());
@@ -67,6 +70,7 @@ public class MainController implements Initializable {
 
         ontologyTabController.setMainController(this);
         ontologyTabController.getOntologyTable().setItems(currentContext);
+        ontologyTabController.getNamespaceTable().setItems(currentNamespaces);
         ontologyTabController.getClassesTable().setItems(currentClasses);
         ontologyTabController.getPropertiesTable().setItems(currentProperties);
 
@@ -74,9 +78,9 @@ public class MainController implements Initializable {
         rdfController.setMainController(this);
 //        rdfController.initRepository("data");
         String sesameServer = "http://localhost:8080/openrdf-sesame";
-//        String repositoryID = "opendata";
+        String repositoryID = "opendata";
 //        String repositoryID = "jauzafx-db";
-        String repositoryID = "data-test";
+//        String repositoryID = "data-test";
         rdfController.initRepository(sesameServer, repositoryID);
         rdfController.getClasses(); //load class in start
         rdfController.getProperties();
@@ -90,6 +94,10 @@ public class MainController implements Initializable {
 
     public ObservableList<RDFContext> getCurrentContext() {
         return currentContext;
+    }
+
+    public ObservableList<RDFNamespace> getCurrentNamespaces() {
+        return currentNamespaces;
     }
 
     public ObservableList<RDFClass> getCurrentClasses() {
