@@ -57,6 +57,7 @@ public class RDFController {
         this.mainController = mainController;
     }
 
+    //for native stor repo
     public void initRepository(String data) {
         try {
             File dataDir = new File(data);
@@ -155,6 +156,20 @@ public class RDFController {
         }
     }
 
+    public void addNamespace(String prefix, String ns) {
+        try {
+            RepositoryConnection connection = repo.getConnection();
+            try {
+                connection.setNamespace(prefix, ns);
+            } finally {
+                connection.close();
+            }
+        } catch (RepositoryException ex) {
+            Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        getNamespaces();
+    }
+
     public void getNamespaces() {
         try {
             RepositoryConnection connection = repo.getConnection();
@@ -192,7 +207,6 @@ public class RDFController {
                     Value label = bindingSet.getValue(bindingNames.get(1));
                     mainController.getCurrentClasses().add(new RDFClass(uri.stringValue(), label.stringValue()));
                     mainController.getCurrentClassesLabel().add(label.stringValue());
-
                 }
             } finally {
                 connection.close();

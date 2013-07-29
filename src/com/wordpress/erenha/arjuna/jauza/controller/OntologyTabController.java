@@ -152,6 +152,10 @@ public class OntologyTabController implements Initializable {
     
     @FXML
     public void addNamespace(ActionEvent event) {
-        // handle the event here
+        String prefix = namespacePrefixField.getText().trim();
+        String ns = namespaceURIField.getText().trim();
+        if (!ns.isEmpty() || !prefix.isEmpty()) {
+            mainController.getRepository().addNamespace(prefix, ns);
+        }
     }
 }
