@@ -10,25 +10,25 @@
   <children>
     <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
-        <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+        <TabPane prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
           <tabs>
             <Tab text="Untitled Tab 1">
               <content>
                 <Accordion blendMode="EXCLUSION" cache="true" cacheHint="SCALE_AND_ROTATE" prefHeight="348.0">
                   <expandedPane>
+                    <TitledPane fx:id="x2" text="untitled">
+                      <content>
+                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                      </content>
+                    </TitledPane>
+                  </expandedPane>
+                  <panes>
+                    <fx:reference source="x2" />
                     <TitledPane fx:id="x1" text="untitled">
                       <content>
                         <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="323.0" prefWidth="596.0" />
                       </content>
                     </TitledPane>
-                  </expandedPane>
-                  <panes>
-                    <TitledPane text="untitled">
-                      <content>
-                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                      </content>
-                    </TitledPane>
-                    <fx:reference source="x1" />
                   </panes>
                 </Accordion>
               </content>
@@ -44,6 +44,56 @@
                     </TitledPane>
                   </children>
                 </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Untitled Tab">
+              <content>
+                <VBox id="VBox">
+                  <children>
+                    <TitledPane animated="false" text="untitled" VBox.vgrow="ALWAYS">
+                      <content>
+                        <VBox id="VBox" alignment="CENTER" spacing="5.0">
+                          <children>
+                            <TableView VBox.vgrow="ALWAYS">
+                              <columns>
+                                <TableColumn prefWidth="75.0" text="Column X" />
+                                <TableColumn prefWidth="75.0" text="Column X" />
+                              </columns>
+                            </TableView>
+                          </children>
+                        </VBox>
+                      </content>
+                    </TitledPane>
+                    <TitledPane animated="false" text="untitled" VBox.vgrow="ALWAYS">
+                      <content>
+                        <VBox id="VBox" alignment="CENTER" spacing="5.0">
+                          <children>
+                            <TableView VBox.vgrow="ALWAYS">
+                              <columns>
+                                <TableColumn prefWidth="75.0" text="Column X" />
+                                <TableColumn prefWidth="75.0" text="Column X" />
+                              </columns>
+                            </TableView>
+                          </children>
+                        </VBox>
+                      </content>
+                    </TitledPane>
+                    <TitledPane animated="false" text="untitled" VBox.vgrow="ALWAYS">
+                      <content>
+                        <VBox id="VBox" alignment="CENTER" spacing="5.0">
+                          <children>
+                            <TableView VBox.vgrow="ALWAYS">
+                              <columns>
+                                <TableColumn prefWidth="75.0" text="Column X" />
+                                <TableColumn prefWidth="75.0" text="Column X" />
+                              </columns>
+                            </TableView>
+                          </children>
+                        </VBox>
+                      </content>
+                    </TitledPane>
+                  </children>
+                </VBox>
               </content>
             </Tab>
           </tabs>

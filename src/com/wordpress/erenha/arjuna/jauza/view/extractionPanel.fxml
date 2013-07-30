@@ -6,70 +6,53 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root type="javafx.scene.layout.VBox" minWidth="256.0" prefHeight="580.0" prefWidth="256.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.ExtractionPanelController">
-  <SplitPane dividerPositions="0.33217993079584773, 0.6678200692041523" focusTraversable="true" orientation="VERTICAL" prefHeight="580.0" prefWidth="256.0" VBox.vgrow="ALWAYS">
-    <items>
-      <StackPane id="StackPane">
+<fx:root type="javafx.scene.layout.VBox" prefWidth="370.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.ExtractionPanelController">
+  <TitledPane animated="false" prefWidth="370.0" text="Extracted Content" VBox.vgrow="ALWAYS">
+    <content>
+      <VBox id="VBox" alignment="CENTER">
         <children>
-          <VBox id="VBox" alignment="CENTER">
-            <children>
-              <ToolBar>
-                <items>
-                  <Label prefWidth="98.0" text="Current Selection" />
-                  <Button mnemonicParsing="false" onAction="#createInvAction" text="Create Individual" />
-                </items>
-              </ToolBar>
-              <TableView id="tableExtInd" fx:id="currentSelectionTable" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
-                <columns>
-                  <TableColumn editable="false" minWidth="25.0" prefWidth="75.0" text="id" visible="false" fx:id="currentSelectionIDColumn" />
-                  <TableColumn minWidth="220.0" prefWidth="240.0" text="Extracted Content" fx:id="currentSelectionContentColumn" />
-                </columns>
-              </TableView>
-            </children>
-          </VBox>
+          <ToolBar>
+            <items>
+              <Button mnemonicParsing="false" onAction="#createInvAction" text="Create Individual" />
+            </items>
+          </ToolBar>
+          <TableView id="tableExtInd" fx:id="currentSelectionTable" editable="true" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+            <columns>
+              <TableColumn editable="false" minWidth="25.0" prefWidth="75.0" text="id" visible="false" fx:id="currentSelectionIDColumn" />
+              <TableColumn minWidth="220.0" prefWidth="240.0" text="Extracted Content" fx:id="currentSelectionContentColumn" />
+            </columns>
+          </TableView>
         </children>
-      </StackPane>
-      <StackPane id="StackPane">
+      </VBox>
+    </content>
+  </TitledPane>
+  <TitledPane animated="false" prefWidth="370.0" text="Individuals" VBox.vgrow="ALWAYS">
+    <content>
+      <VBox id="VBox" alignment="CENTER">
         <children>
-          <VBox id="VBox" alignment="CENTER">
-            <children>
-              <ToolBar>
-                <items>
-                  <Label prefWidth="64.0" text="Individuals" />
-                  <Button mnemonicParsing="false" onAction="#suggestNextAction" prefWidth="96.0" text="Suggest Next" visible="false" />
-                </items>
-              </ToolBar>
-              <TableView fx:id="individualTable" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
-                <columns>
-                  <TableColumn editable="false" minWidth="150.0" prefWidth="150.0" text="id" fx:id="individualIDColumn" />
-                  <TableColumn minWidth="220.0" prefWidth="220.0" text="Class" fx:id="individualClassColumn" />
-                </columns>
-              </TableView>
-            </children>
-          </VBox>
+          <TableView fx:id="individualTable" editable="true" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+            <columns>
+              <TableColumn editable="false" minWidth="150.0" prefWidth="150.0" text="id" fx:id="individualIDColumn" />
+              <TableColumn minWidth="220.0" prefWidth="220.0" text="Class" fx:id="individualClassColumn" />
+            </columns>
+          </TableView>
         </children>
-      </StackPane>
-      <StackPane id="StackPane">
+      </VBox>
+    </content>
+  </TitledPane>
+  <TitledPane animated="false" prefWidth="370.0" text="Individuals Details" VBox.vgrow="ALWAYS">
+    <content>
+      <VBox id="VBox" alignment="CENTER">
         <children>
-          <VBox id="VBox" alignment="CENTER">
-            <children>
-              <ToolBar>
-                <items>
-                  <Label text="Individual Details" />
-                  <Button mnemonicParsing="false" text="Save" visible="false" />
-                </items>
-              </ToolBar>
-              <TableView id="tableExtInd" fx:id="individualDetailsTable" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
-                <columns>
-                  <TableColumn editable="false" minWidth="25.0" prefWidth="75.0" text="id" visible="false" fx:id="individualDetailsIDColumn" />
-                  <TableColumn minWidth="150.0" prefWidth="150.0" text="Property" fx:id="individualDetailsPropertyColumn" />
-                  <TableColumn minWidth="220.0" prefWidth="220.0" text="Value" fx:id="individualDetailsValueColumn" />
-                </columns>
-              </TableView>
-            </children>
-          </VBox>
+          <TableView id="tableExtInd" fx:id="individualDetailsTable" editable="true" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+            <columns>
+              <TableColumn editable="false" minWidth="25.0" prefWidth="75.0" text="id" visible="false" fx:id="individualDetailsIDColumn" />
+              <TableColumn minWidth="150.0" prefWidth="150.0" text="Property" fx:id="individualDetailsPropertyColumn" />
+              <TableColumn minWidth="220.0" prefWidth="220.0" text="Value" fx:id="individualDetailsValueColumn" />
+            </columns>
+          </TableView>
         </children>
-      </StackPane>
-    </items>
-  </SplitPane>
+      </VBox>
+    </content>
+  </TitledPane>
 </fx:root>
