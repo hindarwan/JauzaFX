@@ -11,6 +11,7 @@ import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividualProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
@@ -120,6 +121,7 @@ public class ExtractionPanelController implements Initializable {
 
             @Override
             public TableCell<RDFIndividual, String> call(TableColumn<RDFIndividual, String> p) {
+                Collections.sort(mainController.getCurrentClassesLabel());
                 TableCell<RDFIndividual, String> cell = new ComboBoxTableCell<>(mainController.getCurrentClassesLabel());
                 return cell;
             }
@@ -142,6 +144,7 @@ public class ExtractionPanelController implements Initializable {
 
             @Override
             public TableCell<RDFIndividualProperty, String> call(TableColumn<RDFIndividualProperty, String> p) {
+                Collections.sort(mainController.getCurrentPropertiesLabel());
                 TableCell<RDFIndividualProperty, String> cell = new ComboBoxTableCell<>(mainController.getCurrentPropertiesLabel());
                 return cell;
             }

@@ -86,11 +86,13 @@ public class MainController implements Initializable {
 //        String repositoryID = "jauzafx-db";
 //        String repositoryID = "data-test";
         rdfController.initRepository(sesameServer, repositoryID); //init repo server
-        rdfController.getClasses(); //load class in start
-        rdfController.getProperties();
-        rdfController.getContext();
+//        rdfController.getClasses(); //load class in start
+//        rdfController.getProperties();
+//        rdfController.getContext();
         rdfController.getOntologies();
         rdfController.getNamespaces();
+        rdfController.getClassesInNSdefined();
+        rdfController.getPropertiesInNSdefined();
     }
 
     public ObservableList<CurrentSelection> getCurrentSelections() {

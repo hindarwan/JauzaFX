@@ -13,9 +13,11 @@ import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFOntology;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import org.openrdf.model.Namespace;
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
@@ -217,7 +219,7 @@ public class RDFController {
             Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void getClasses() {
         try {
             mainController.getCurrentClasses().clear();
@@ -237,7 +239,7 @@ public class RDFController {
                     Value uri = bindingSet.getValue(bindingNames.get(0));
                     Value label = bindingSet.getValue(bindingNames.get(1));
                     mainController.getCurrentClasses().add(new RDFClass(uri.stringValue(), label.stringValue()));
-                    mainController.getCurrentClassesLabel().add(label.stringValue());
+//                    mainController.getCurrentClassesLabel().add(label.stringValue());
                 }
             } finally {
                 connection.close();
@@ -247,7 +249,42 @@ public class RDFController {
             Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
+    public void getClassesInNSdefined() {
+        mainController.getCurrentClassesLabel().clear();
+        ObservableList<RDFNamespace> currentNamespaces = mainController.getCurrentNamespaces();
+        for (RDFNamespace ns : currentNamespaces) {
+            try {
+                RepositoryConnection connection = repo.getConnection();
+                String query = "SELECT DISTINCT ?c ?cLabel\n"
+                        + "WHERE\n"
+                        + "{\n"
+                        + "?c rdf:type rdfs:Class.\n"
+                        + "?c rdfs:label ?cLabel.\n"
+                        //                    + "?c rdfs:isDefinedBy <" + ns + ">.\n"
+                        + "FILTER(STRSTARTS(STR(?c),\"" + ns.getNamespace() + "\"))"
+                        + "}";
+                try {
+                    TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
+                    TupleQueryResult result = tupleQuery.evaluate();
+                    List<String> bindingNames = result.getBindingNames();
+                    while (result.hasNext()) {
+                        BindingSet bindingSet = result.next();
+                        Value uri = bindingSet.getValue(bindingNames.get(0));
+                        Value label = bindingSet.getValue(bindingNames.get(1));
+//                        mainController.getCurrentClasses().add(new RDFClass(uri.stringValue(), label.stringValue()));
+                        mainController.getCurrentClassesLabel().add(ns.getPrefix() + ":" + label.stringValue());
+                    }
+                } finally {
+                    connection.close();
+                }
+
+            } catch (RepositoryException | MalformedQueryException | QueryEvaluationException ex) {
+                Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     public void getClassesByNS(String ns) {
         try {
             mainController.getCurrentClasses().clear();
@@ -257,7 +294,7 @@ public class RDFController {
                     + "{\n"
                     + "?c rdf:type rdfs:Class.\n"
                     + "?c rdfs:label ?cLabel.\n"
-//                    + "?c rdfs:isDefinedBy <" + ns + ">.\n"
+                    //                    + "?c rdfs:isDefinedBy <" + ns + ">.\n"
                     + "FILTER(STRSTARTS(STR(?c),\"" + ns + "\"))"
                     + "}";
             try {
@@ -269,7 +306,7 @@ public class RDFController {
                     Value uri = bindingSet.getValue(bindingNames.get(0));
                     Value label = bindingSet.getValue(bindingNames.get(1));
                     mainController.getCurrentClasses().add(new RDFClass(uri.stringValue(), label.stringValue()));
-                    mainController.getCurrentClassesLabel().add(label.stringValue());
+//                    mainController.getCurrentClassesLabel().add(label.stringValue());
                 }
             } finally {
                 connection.close();
@@ -299,7 +336,7 @@ public class RDFController {
                     Value uri = bindingSet.getValue(bindingNames.get(0));
                     Value label = bindingSet.getValue(bindingNames.get(1));
                     mainController.getCurrentProperties().add(new RDFProperty(uri.stringValue(), label.stringValue()));
-                    mainController.getCurrentPropertiesLabel().add(label.stringValue());
+//                    mainController.getCurrentPropertiesLabel().add(label.stringValue());
                 }
             } finally {
                 connection.close();
@@ -309,7 +346,42 @@ public class RDFController {
             Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
+    public void getPropertiesInNSdefined() {
+        mainController.getCurrentPropertiesLabel().clear();
+        ObservableList<RDFNamespace> currentNamespaces = mainController.getCurrentNamespaces();
+        for (RDFNamespace ns : currentNamespaces) {
+            try {
+                RepositoryConnection connection = repo.getConnection();
+                String query = "SELECT DISTINCT ?p ?pLabel\n"
+                        + "WHERE\n"
+                        + "{\n"
+                        + "?p rdf:type rdf:Property.\n"
+                        + "?p rdfs:label ?pLabel.\n"
+                        //                    + "?p rdfs:isDefinedBy <" + ns + ">.\n"
+                        + "FILTER(STRSTARTS(STR(?p),\"" + ns.getNamespace() + "\"))"
+                        + "}";
+                try {
+                    TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
+                    TupleQueryResult result = tupleQuery.evaluate();
+                    List<String> bindingNames = result.getBindingNames();
+                    while (result.hasNext()) {
+                        BindingSet bindingSet = result.next();
+                        Value uri = bindingSet.getValue(bindingNames.get(0));
+                        Value label = bindingSet.getValue(bindingNames.get(1));
+//                        mainController.getCurrentClasses().add(new RDFClass(uri.stringValue(), label.stringValue()));
+                        mainController.getCurrentPropertiesLabel().add(ns.getPrefix() + ":" + label.stringValue());
+                    }
+                } finally {
+                    connection.close();
+                }
+
+            } catch (RepositoryException | MalformedQueryException | QueryEvaluationException ex) {
+                Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     public void getPropertiesByNS(String ns) {
         try {
             mainController.getCurrentProperties().clear();
@@ -319,7 +391,7 @@ public class RDFController {
                     + "{\n"
                     + "?p rdf:type rdf:Property.\n"
                     + "?p rdfs:label ?pLabel.\n"
-//                    + "?p rdfs:isDefinedBy <" + ns + ">.\n"
+                    //                    + "?p rdfs:isDefinedBy <" + ns + ">.\n"
                     + "FILTER(STRSTARTS(STR(?p),\"" + ns + "\"))"
                     + "}";
             try {
@@ -331,7 +403,7 @@ public class RDFController {
                     Value uri = bindingSet.getValue(bindingNames.get(0));
                     Value label = bindingSet.getValue(bindingNames.get(1));
                     mainController.getCurrentProperties().add(new RDFProperty(uri.stringValue(), label.stringValue()));
-                    mainController.getCurrentPropertiesLabel().add(label.stringValue());
+//                    mainController.getCurrentPropertiesLabel().add(label.stringValue());
                 }
             } finally {
                 connection.close();
