@@ -40,13 +40,11 @@
                         <Tab text="Annotation">
                             <fx:include fx:id="annotationTab" source="annotationTab.fxml" />
                         </Tab>
-                        <Tab text="Entity Matching">
+<!--                        <Tab text="Entity Matching">
                             <fx:include fx:id="individualTab" source="individualTab.fxml" />
-                        </Tab>
-                        <Tab text="Export">
-                            <content>
-                                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                            </content>
+                        </Tab>-->
+                        <Tab text="Save">
+                            <fx:include fx:id="saveTab" source="saveTab.fxml"/>
                         </Tab>
                     </tabs>
                 </TabPane>

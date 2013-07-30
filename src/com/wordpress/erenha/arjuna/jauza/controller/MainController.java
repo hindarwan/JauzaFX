@@ -9,6 +9,8 @@ import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFClass;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFContext;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.RDFController;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividual;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividualProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFNamespace;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFOntology;
 import java.net.URL;
@@ -36,6 +38,8 @@ public class MainController implements Initializable {
     private ObservableList<String> currentClassesLabel;
     private ObservableList<RDFProperty> currentProperties;
     private ObservableList<String> currentPropertiesLabel;
+    private ObservableList<RDFIndividual> currentIndividuals;
+    
     private RDFController rdfController;
     @FXML //  fx:id="annotationTab"
     private HBox annotationTab; // Value injected by FXMLLoader
@@ -49,6 +53,8 @@ public class MainController implements Initializable {
     private VBox ontologyTab; // Value injected by FXMLLoader
     @FXML
     private OntologyTabController ontologyTabController;
+    @FXML
+    private SaveTabController saveTabController;
 
     @Override // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
@@ -66,10 +72,14 @@ public class MainController implements Initializable {
         currentClassesLabel = FXCollections.observableList(new ArrayList<String>());
         currentProperties = FXCollections.observableList(new ArrayList<RDFProperty>());
         currentPropertiesLabel = FXCollections.observableList(new ArrayList<String>());
+        currentIndividuals = FXCollections.observableList(new ArrayList<RDFIndividual>());
+//        currentIndividualProperties = FXCollections.observableList(new ArrayList<RDFIndividualProperty>());
 
         annotationTabController.getBrowserController().setMainController(this);
         annotationTabController.getExtractionPanelController().setMainController(this);
         annotationTabController.getExtractionPanelController().getCurrentSelectionTable().setItems(currentSelections);
+        annotationTabController.getExtractionPanelController().getIndividualTable().setItems(currentIndividuals);
+
 
         ontologyTabController.setMainController(this);
 //        ontologyTabController.getOntologyTable().setItems(currentContext);
@@ -78,6 +88,10 @@ public class MainController implements Initializable {
         ontologyTabController.getClassesTable().setItems(currentClasses);
         ontologyTabController.getPropertiesTable().setItems(currentProperties);
 
+        saveTabController.setMainController(this);
+        saveTabController.getIndividualTable().setItems(currentIndividuals);
+        
+        
         rdfController = new RDFController();
         rdfController.setMainController(this);
 //        rdfController.initRepository("data"); //init repo in client
@@ -126,8 +140,10 @@ public class MainController implements Initializable {
     public ObservableList<String> getCurrentPropertiesLabel() {
         return currentPropertiesLabel;
     }
-    
-    
+
+    public ObservableList<RDFIndividual> getCurrentIndividuals() {
+        return currentIndividuals;
+    }
 
     public RDFController getRDFController() {
         return rdfController;

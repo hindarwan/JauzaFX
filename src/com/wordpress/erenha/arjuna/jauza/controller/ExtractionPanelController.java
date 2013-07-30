@@ -61,7 +61,7 @@ public class ExtractionPanelController implements Initializable {
     private MainController mainController;
     //tabel model
 //    private ObservableList<CurrentSelection> currentSelections;
-    private ObservableList<RDFIndividual> individuals;
+//    private ObservableList<RDFIndividual> individuals;
     private ObservableList<RDFIndividualProperty> individualDetails;
 
     /**
@@ -83,13 +83,17 @@ public class ExtractionPanelController implements Initializable {
         return currentSelectionTable;
     }
 
+    public TableView<RDFIndividual> getIndividualTable() {
+        return individualTable;
+    }
+
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
     }
 
     private void initModel() {
-        individuals = FXCollections.observableList(new ArrayList<RDFIndividual>());
-        individualTable.setItems(individuals);
+//        individuals = FXCollections.observableList(new ArrayList<RDFIndividual>());
+//        individualTable.setItems(individuals);
         individualDetails = FXCollections.observableList(new ArrayList<RDFIndividualProperty>());
         individualDetailsTable.setItems(individualDetails);
         individualTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<RDFIndividual>() {
@@ -153,12 +157,12 @@ public class ExtractionPanelController implements Initializable {
 
     @FXML
     public void createInvAction(ActionEvent event) {
-        int i = individuals.size();
+        int i = mainController.getCurrentIndividuals().size();
         List<RDFIndividualProperty> l = new ArrayList<>();
         for (CurrentSelection currentSelection : mainController.getCurrentSelections()) {
             l.add(new RDFIndividualProperty(new RDFProperty("rdf:Property", "<<Choose Property>>"), currentSelection.getContent()));
         }
-        individuals.add(new RDFIndividual("individual" + i,new RDFClass("rdfs:Class", "<<Choose Class>>"),l));
+        mainController.getCurrentIndividuals().add(new RDFIndividual("individual" + i,new RDFClass("rdfs:Class", "<<Choose Class>>"),l));
 //        individuals.add(new Individual("individual" + i, "<<Choose Class>>", l));
     }
     private boolean step = false;

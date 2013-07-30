@@ -8,19 +8,19 @@
 
 <fx:root type="javafx.scene.layout.VBox" prefHeight="580.0" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.SaveTabController">
   <children>
-    <SplitPane dividerPositions="0.2583170254403131" focusTraversable="true" prefHeight="356.0" prefWidth="1024.0" VBox.vgrow="ALWAYS">
+    <SplitPane dividerPositions="0.2964774951076321" focusTraversable="true" prefHeight="356.0" prefWidth="1024.0" VBox.vgrow="ALWAYS">
       <items>
-        <VBox id="VBox" alignment="CENTER">
+        <VBox id="VBox" alignment="CENTER" maxWidth="300.0" minWidth="300.0">
           <children>
             <ToolBar>
               <items>
                 <Label text="All Individual" />
               </items>
             </ToolBar>
-            <TableView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <TableView fx:id="individualTable" editable="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
               <columns>
-                <TableColumn minWidth="100.0" prefWidth="100.0" text="id" />
-                <TableColumn minWidth="150.0" prefWidth="150.0" text="Type" />
+                <TableColumn minWidth="100.0" prefWidth="100.0" text="id" fx:id="individualIDColumn" />
+                <TableColumn minWidth="150.0" prefWidth="150.0" text="Type" fx:id="individualTypeColumn" />
               </columns>
             </TableView>
           </children>
@@ -32,10 +32,10 @@
                 <Label text="Individual Details" />
               </items>
             </ToolBar>
-            <TableView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <TableView fx:id="individualDetailsTable" editable="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
               <columns>
-                <TableColumn prefWidth="75.0" text="Column X" />
-                <TableColumn prefWidth="75.0" text="Column X" />
+                <TableColumn minWidth="200.0" prefWidth="200.0" text="Property" fx:id="individualDetailsPropertyColumn" />
+                <TableColumn minWidth="400.0" prefWidth="400.0" text="Value" fx:id="individualDetailsValueColumn" />
               </columns>
             </TableView>
           </children>
@@ -44,7 +44,7 @@
     </SplitPane>
     <ToolBar prefHeight="75.0" prefWidth="1024.0">
       <items>
-        <Button alignment="CENTER" mnemonicParsing="false" text="Save All" />
+        <Button alignment="CENTER" mnemonicParsing="false" onAction="#saveAllIndividual" text="Save All" />
       </items>
     </ToolBar>
   </children>
