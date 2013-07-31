@@ -199,7 +199,7 @@ public class RDFController {
             Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public String getNamespaces(String prefix) {
         try {
             RepositoryConnection connection = repo.getConnection();
@@ -284,9 +284,12 @@ public class RDFController {
                         + "WHERE\n"
                         + "{\n"
                         + "?c rdf:type rdfs:Class.\n"
-                        + "?c rdfs:label ?cLabel.\n"
+                        //                        + "?c rdfs:label ?cLabel.\n"
                         //                    + "?c rdfs:isDefinedBy <" + ns + ">.\n"
-                        + "FILTER(STRSTARTS(STR(?c),\"" + ns.getNamespace() + "\"))"
+                        //                        + "FILTER(STRSTARTS(STR(?c),\"" + ns.getNamespace() + "\"))"
+                        //                        + "}"
+                        + "FILTER(STRSTARTS(STR(?c),\"" + ns.getNamespace() + "\")).\n"
+                        + "BIND(STRAFTER(STR(?c),\"" + ns.getNamespace() + "\") AS ?cLabel)"
                         + "}";
                 try {
                     TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
@@ -298,6 +301,7 @@ public class RDFController {
                         Value label = bindingSet.getValue(bindingNames.get(1));
 //                        mainController.getCurrentClasses().add(new RDFClass(uri.stringValue(), label.stringValue()));
                         mainController.getCurrentClassesLabel().add(ns.getPrefix() + ":" + label.stringValue());
+//                        mainController.getCurrentClassesLabel().add(label.stringValue());
                     }
                 } finally {
                     connection.close();
@@ -381,9 +385,10 @@ public class RDFController {
                         + "WHERE\n"
                         + "{\n"
                         + "?p rdf:type rdf:Property.\n"
-                        + "?p rdfs:label ?pLabel.\n"
+                        //                        + "?p rdfs:label ?pLabel.\n"
                         //                    + "?p rdfs:isDefinedBy <" + ns + ">.\n"
-                        + "FILTER(STRSTARTS(STR(?p),\"" + ns.getNamespace() + "\"))"
+                        + "FILTER(STRSTARTS(STR(?p),\"" + ns.getNamespace() + "\")).\n"
+                        + "BIND(STRAFTER(STR(?p),\"" + ns.getNamespace() + "\") AS ?pLabel)"
                         + "}";
                 try {
                     TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
@@ -395,8 +400,9 @@ public class RDFController {
                         Value label = bindingSet.getValue(bindingNames.get(1));
 //                        mainController.getCurrentClasses().add(new RDFClass(uri.stringValue(), label.stringValue()));
                         mainController.getCurrentPropertiesLabel().add(ns.getPrefix() + ":" + label.stringValue());
-                        mainController.getCurrentPropertiesToShow().add(new RDFProperty(uri.stringValue(), ns.getPrefix() + label.stringValue()));
-                        
+//                        mainController.getCurrentPropertiesLabel().add(label.stringValue());
+//                        mainController.getCurrentPropertiesToShow().add(new RDFProperty(uri.stringValue(), ns.getPrefix() + label.stringValue()));
+
                     }
                 } finally {
                     connection.close();
