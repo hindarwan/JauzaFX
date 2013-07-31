@@ -33,7 +33,7 @@
           <TableView fx:id="individualTable" editable="true" VBox.vgrow="ALWAYS">
             <columns>
               <TableColumn editable="false" minWidth="150.0" prefWidth="150.0" text="id" fx:id="individualIDColumn" />
-              <TableColumn minWidth="220.0" prefWidth="220.0" text="Class" fx:id="individualClassColumn" />
+              <TableColumn minWidth="220.0" prefWidth="220.0" text="Class" fx:id="individualClassColumn"/>
             </columns>
           </TableView>
         </children>

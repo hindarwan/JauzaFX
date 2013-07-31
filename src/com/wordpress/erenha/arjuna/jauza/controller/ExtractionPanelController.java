@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -118,7 +119,9 @@ public class ExtractionPanelController implements Initializable {
 
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<RDFIndividual, String> p) {
-                return p.getValue().getRdfClass().labelProperty();
+                StringProperty label = p.getValue().getRdfClass().labelProperty();
+                p.getValue().getRdfClass().setUri(label.getValue());
+                return label;
             }
         });
         individualClassColumn.setCellFactory(new Callback<TableColumn<RDFIndividual, String>, TableCell<RDFIndividual, String>>() {
@@ -140,6 +143,8 @@ public class ExtractionPanelController implements Initializable {
 
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<RDFIndividualProperty, String> p) {
+                StringProperty label = p.getValue().getRdfProperty().labelProperty();
+                p.getValue().getRdfProperty().setUri(label.getValue());
                 return p.getValue().getRdfProperty().labelProperty();
             }
         });
@@ -150,6 +155,7 @@ public class ExtractionPanelController implements Initializable {
             public TableCell<RDFIndividualProperty, String> call(TableColumn<RDFIndividualProperty, String> p) {
                 Collections.sort(mainController.getCurrentPropertiesLabel());
                 TableCell<RDFIndividualProperty, String> cell = new ComboBoxTableCell<>(mainController.getCurrentPropertiesLabel());
+                
                 return cell;
             }
         });
@@ -167,6 +173,11 @@ public class ExtractionPanelController implements Initializable {
     }
     private boolean step = false;
     private List<Integer> step1;
+    
+    @FXML
+    public void changeTypeAction(){
+        System.out.println("nothing");
+    }
 
     @FXML
     public void suggestNextAction(ActionEvent event) {

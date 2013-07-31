@@ -129,6 +129,7 @@ public class BrowserController implements Initializable {
     private void initEngine() {
         engine = webx.getEngine();
 //        engine.load(defaultAddress);
+        engine.load("http://localhost");
         engine.setOnStatusChanged(new EventHandler<WebEvent<String>>() {
             @Override
             public void handle(final WebEvent<String> event) {

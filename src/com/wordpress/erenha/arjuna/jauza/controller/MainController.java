@@ -38,6 +38,7 @@ public class MainController implements Initializable {
     private ObservableList<String> currentClassesLabel;
     private ObservableList<RDFProperty> currentProperties;
     private ObservableList<String> currentPropertiesLabel;
+    private ObservableList<RDFProperty> currentPropertiesToShow;
     private ObservableList<RDFIndividual> currentIndividuals;
     
     private RDFController rdfController;
@@ -141,6 +142,10 @@ public class MainController implements Initializable {
         return currentPropertiesLabel;
     }
 
+    public ObservableList<RDFProperty> getCurrentPropertiesToShow() {
+        return currentPropertiesToShow;
+    }
+    
     public ObservableList<RDFIndividual> getCurrentIndividuals() {
         return currentIndividuals;
     }

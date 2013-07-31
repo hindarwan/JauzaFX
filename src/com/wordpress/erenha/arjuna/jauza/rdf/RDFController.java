@@ -8,21 +8,31 @@ import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFClass;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFContext;
 import com.wordpress.erenha.arjuna.jauza.controller.MainController;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividual;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividualProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFNamespace;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFOntology;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.ObservableList;
+import org.openrdf.model.Graph;
+import org.openrdf.model.Literal;
 import org.openrdf.model.Namespace;
 import org.openrdf.model.Resource;
+import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.TreeModel;
+import org.openrdf.model.impl.URIImpl;
+import org.openrdf.model.util.GraphUtil;
+import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
@@ -187,6 +197,20 @@ public class RDFController {
             }
         } catch (RepositoryException ex) {
             Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public String getNamespaces(String prefix) {
+        try {
+            RepositoryConnection connection = repo.getConnection();
+            try {
+                return connection.getNamespace(prefix);
+            } finally {
+                connection.close();
+            }
+        } catch (RepositoryException ex) {
+            Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+            return "";
         }
     }
 
@@ -371,6 +395,8 @@ public class RDFController {
                         Value label = bindingSet.getValue(bindingNames.get(1));
 //                        mainController.getCurrentClasses().add(new RDFClass(uri.stringValue(), label.stringValue()));
                         mainController.getCurrentPropertiesLabel().add(ns.getPrefix() + ":" + label.stringValue());
+                        mainController.getCurrentPropertiesToShow().add(new RDFProperty(uri.stringValue(), ns.getPrefix() + label.stringValue()));
+                        
                     }
                 } finally {
                     connection.close();
@@ -410,6 +436,39 @@ public class RDFController {
             }
 
         } catch (RepositoryException | MalformedQueryException | QueryEvaluationException ex) {
+            Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void saveAllIndividual() {
+        String ns = "http://localhost:8080/resource/";
+        ObservableList<RDFIndividual> currentIndividuals = mainController.getCurrentIndividuals();
+        ValueFactory f = repo.getValueFactory();
+        Graph g = new TreeModel();
+        for (RDFIndividual individual : currentIndividuals) {
+            URI uriIndividual = f.createURI(ns, individual.getUri());
+            String[] type = individual.getRdfClass().getUri().split(":");
+            URI typeIndividual = f.createURI(getNamespaces(type[0]), type[1]);
+            Statement typeStatement = f.createStatement(uriIndividual, RDF.TYPE, typeIndividual);
+            g.add(typeStatement);
+            List<RDFIndividualProperty> propertyList = individual.getRdfIndividualProperty();
+            for (RDFIndividualProperty property : propertyList) {
+                String[] propertySplit = property.getRdfProperty().getUri().split(":");
+                URI uriProperty = f.createURI(getNamespaces(propertySplit[0]), propertySplit[1]);
+                Literal valueProperty = f.createLiteral(property.getPropertyValue());
+                Statement propertyStatement = f.createStatement(uriIndividual, uriProperty, valueProperty);
+                g.add(propertyStatement);
+            }
+        }
+        try {
+            RepositoryConnection connection = repo.getConnection();
+            try {
+                connection.add(g, new URIImpl(ns + "saved_on_" + System.currentTimeMillis()));
+                System.out.println("Individual saved on");
+            } finally {
+                connection.close();
+            }
+        } catch (RepositoryException ex) {
             Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

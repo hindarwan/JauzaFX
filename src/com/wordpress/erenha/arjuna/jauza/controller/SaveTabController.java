@@ -123,5 +123,6 @@ public class SaveTabController implements Initializable {
 
     public void saveAllIndividual(ActionEvent event) {
         // handle the event here
+        mainController.getRDFController().saveAllIndividual();
     }
 }
