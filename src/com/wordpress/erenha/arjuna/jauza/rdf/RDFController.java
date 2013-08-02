@@ -470,7 +470,7 @@ public class RDFController {
             RepositoryConnection connection = repo.getConnection();
             try {
                 connection.add(g, new URIImpl(ns + "saved_on_" + System.currentTimeMillis()));
-                System.out.println("Individual saved on");
+                System.out.println("Individual saved");
             } finally {
                 connection.close();
             }

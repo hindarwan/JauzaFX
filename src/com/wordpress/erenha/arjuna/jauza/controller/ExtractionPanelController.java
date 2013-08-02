@@ -20,6 +20,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableCell;
@@ -64,6 +66,7 @@ public class ExtractionPanelController implements Initializable {
 //    private ObservableList<CurrentSelection> currentSelections;
 //    private ObservableList<RDFIndividual> individuals;
     private ObservableList<RDFIndividualProperty> individualDetails;
+    private ObservableList<String> contentList;
 
     /**
      * Initializes the controller class.
@@ -98,7 +101,6 @@ public class ExtractionPanelController implements Initializable {
         individualDetails = FXCollections.observableList(new ArrayList<RDFIndividualProperty>());
         individualDetailsTable.setItems(individualDetails);
         individualTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<RDFIndividual>() {
-
             @Override
             public void changed(ObservableValue<? extends RDFIndividual> ov, RDFIndividual t, RDFIndividual t1) {
                 individualDetails.clear();
@@ -106,17 +108,57 @@ public class ExtractionPanelController implements Initializable {
             }
         });
 
+        contentList = FXCollections.observableList(new ArrayList<String>());
+//        currentSelectionTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<CurrentSelection>() {
+//            @Override
+//            public void changed(ObservableValue<? extends CurrentSelection> ov, CurrentSelection t, CurrentSelection t1) {
+//                if (t1 != null) {
+//                    contentList.clear();
+//                    if (!t1.getListContent().isEmpty()) {
+//                        contentList.addAll(t1.getListContent());
+//                    }
+//                }
+                
+//            }
+//        });
+        
+//        currentSelectionContentColumn.setOnEditStart(new EventHandler<TableColumn.CellEditEvent<CurrentSelection, String>>() {
+//            @Override
+//            public void handle(TableColumn.CellEditEvent<CurrentSelection, String> t) {
+//                contentList.clear();
+//                System.out.println("aaaaaaaa");
+//                List<String> listContent = t.getRowValue().getListContent();
+//                List<String> listContent = currentSelectionTable.getSelectionModel().getSelectedItem().getListContent();
+//                System.out.println("idx:" + currentSelectionTable.getSelectionModel().getSelectedIndex());
+//                for (String string : listContent) {
+//                    contentList.add(string);
+//                }
+//            }
+//        });
     }
 
     private void initCurrent() {
         currentSelectionIDColumn.setCellValueFactory(new PropertyValueFactory("id"));
         currentSelectionContentColumn.setCellValueFactory(new PropertyValueFactory("content"));
+//        currentSelectionContentColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CurrentSelection, String>, ObservableValue<String>>() {
+//            @Override
+//            public ObservableValue<String> call(TableColumn.CellDataFeatures<CurrentSelection, String> p) {
+//                return p.getValue().contentProperty();
+//            }
+//        });
+//
+//        currentSelectionContentColumn.setCellFactory(new Callback<TableColumn<CurrentSelection, String>, TableCell<CurrentSelection, String>>() {
+//            @Override
+//            public TableCell<CurrentSelection, String> call(TableColumn<CurrentSelection, String> p) {
+//                TableCell<CurrentSelection, String> cell = new ComboBoxTableCell<>(contentList);
+//                return cell;
+//            }
+//        });
     }
 
     private void initInv() {
         individualIDColumn.setCellValueFactory(new PropertyValueFactory("uri"));
         individualClassColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<RDFIndividual, String>, ObservableValue<String>>() {
-
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<RDFIndividual, String> p) {
                 StringProperty label = p.getValue().getRdfClass().labelProperty();
@@ -125,7 +167,6 @@ public class ExtractionPanelController implements Initializable {
             }
         });
         individualClassColumn.setCellFactory(new Callback<TableColumn<RDFIndividual, String>, TableCell<RDFIndividual, String>>() {
-
             @Override
             public TableCell<RDFIndividual, String> call(TableColumn<RDFIndividual, String> p) {
                 Collections.sort(mainController.getCurrentClassesLabel());
@@ -140,7 +181,6 @@ public class ExtractionPanelController implements Initializable {
     private void initInvDetails() {
 //        individualDetailsIDColumn.setCellValueFactory(new PropertyValueFactory("id"));
         individualDetailsPropertyColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<RDFIndividualProperty, String>, ObservableValue<String>>() {
-
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<RDFIndividualProperty, String> p) {
                 StringProperty label = p.getValue().getRdfProperty().labelProperty();
@@ -150,12 +190,11 @@ public class ExtractionPanelController implements Initializable {
         });
         individualDetailsValueColumn.setCellValueFactory(new PropertyValueFactory("propertyValue"));
         individualDetailsPropertyColumn.setCellFactory(new Callback<TableColumn<RDFIndividualProperty, String>, TableCell<RDFIndividualProperty, String>>() {
-
             @Override
             public TableCell<RDFIndividualProperty, String> call(TableColumn<RDFIndividualProperty, String> p) {
                 Collections.sort(mainController.getCurrentPropertiesLabel());
                 TableCell<RDFIndividualProperty, String> cell = new ComboBoxTableCell<>(mainController.getCurrentPropertiesLabel());
-                
+
                 return cell;
             }
         });
@@ -168,14 +207,27 @@ public class ExtractionPanelController implements Initializable {
         for (CurrentSelection currentSelection : mainController.getCurrentSelections()) {
             l.add(new RDFIndividualProperty(new RDFProperty("rdf:Property", "<<Choose Property>>"), currentSelection.getContent()));
         }
-        mainController.getCurrentIndividuals().add(new RDFIndividual("individual" + i,new RDFClass("rdfs:Class", "<<Choose Class>>"),l));
+        mainController.getCurrentIndividuals().add(new RDFIndividual("individual" + i, new RDFClass("rdfs:Class", "<<Choose Class>>"), l));
 //        individuals.add(new Individual("individual" + i, "<<Choose Class>>", l));
     }
+
+//    @FXML
+//    public void editExtracted(Event event) {
+//        CurrentSelection selectedItem = currentSelectionTable.getSelectionModel().getSelectedItem();
+//        final ObservableList<String> contenTemp = FXCollections.observableList(selectedItem.getListContent());
+//        currentSelectionContentColumn.setCellFactory(new Callback<TableColumn<CurrentSelection, String>, TableCell<CurrentSelection, String>>() {
+//            @Override
+//            public TableCell<CurrentSelection, String> call(TableColumn<CurrentSelection, String> p) {
+//                TableCell<CurrentSelection, String> cell = new ComboBoxTableCell<>(contenTemp);
+//                return cell;
+//            }
+//        });
+//    }
     private boolean step = false;
     private List<Integer> step1;
-    
+
     @FXML
-    public void changeTypeAction(){
+    public void changeTypeAction() {
         System.out.println("nothing");
     }
 

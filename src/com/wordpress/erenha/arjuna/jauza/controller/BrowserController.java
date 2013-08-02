@@ -5,16 +5,24 @@
 package com.wordpress.erenha.arjuna.jauza.controller;
 
 import com.wordpress.erenha.arjuna.jauza.model.CurrentSelection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialogs;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
@@ -152,7 +160,7 @@ public class BrowserController implements Initializable {
                 if (d == 100) {
                     progress.setVisible(false);
                     progressText.setVisible(false);
-                }else{
+                } else {
                     progress.setVisible(true);
                     progressText.setVisible(true);
                 }
@@ -187,25 +195,84 @@ public class BrowserController implements Initializable {
                 + "document.querySelector('[jfxid=\"32\"]').setAttribute('class', a + ' sg_selected');");
     }
 
+//    List<String> idListInBrowser = new ArrayList<>();
     private void getSelectedElement() {
-        mainController.getCurrentSelections().clear();
+        //        mainController.getCurrentSelections().clear();
+        ObservableList<CurrentSelection> currentSelections = mainController.getCurrentSelections();
+        List<String> idListInTable = new ArrayList<>();
+        for (CurrentSelection currentSelection : currentSelections) {
+            idListInTable.add(currentSelection.getId());
+        }
+
         Integer length = (Integer) engine.executeScript("document.querySelectorAll('[class*=\\\"sg_selected\\\"]').length");
         System.out.println("[INFO] selected : " + length);
-        if (length > 0) {
+
+        //hapus not selected
+        if (length == 0) {
+            mainController.getCurrentSelections().clear();
+        } else if (idListInTable.size() > length && length > 0) {
+            List<String> idListInBrowser = new ArrayList<>();
             for (int i = 0; i < length; i++) {
                 Element selectedElement = (Element) engine.executeScript("document.querySelectorAll('[class*=\\\"sg_selected\\\"]').item(" + i + ")");
                 String id = selectedElement.getAttribute("jfxid");
-                String content = selectedElement.getTextContent();
-                String link = selectedElement.getAttribute("href");
-                System.out.println("id : " + id);
-                System.out.println("content : " + content);
-                System.out.println("link : " + link);
-                NodeList links = selectedElement.getElementsByTagName("a");
-                for (int j = 0; j < links.getLength(); j++) {
-                    Element l = (Element) links.item(j);
-                    System.out.println("child link : " + l.getAttribute("href"));
+                idListInBrowser.add(id);
+            }
+            boolean removeAll = idListInTable.removeAll(idListInBrowser);
+            System.out.println(removeAll);
+            for (int i = 0; i < mainController.getCurrentSelections().size(); i++) {
+                if (idListInTable.contains(mainController.getCurrentSelections().get(i).getId())) {
+                    mainController.getCurrentSelections().remove(i);
                 }
-                mainController.getCurrentSelections().add(new CurrentSelection(id, content.trim()));
+            }
+        } else if (length > 0) {
+            for (int i = 0; i < length; i++) {
+                try {
+                    List<String> list = new ArrayList<>();
+                    Element selectedElement = (Element) engine.executeScript("document.querySelectorAll('[class*=\\\"sg_selected\\\"]').item(" + i + ")");
+                    String id = selectedElement.getAttribute("jfxid");
+                    String content = selectedElement.getTextContent();
+                    if (content != null && !content.trim().isEmpty()) {
+                        list.add(content.trim());
+                    }
+
+                    URL base = new URL(selectedElement.getBaseURI());
+                    if (selectedElement.getAttribute("href") != null) {
+                        URL url = new URL(base, selectedElement.getAttribute("href"));
+                        String link = url.toString();
+                        if (link != null && !link.trim().isEmpty()) {
+                            list.add(link.trim());
+                        }
+                    }
+
+                    NodeList links = selectedElement.getElementsByTagName("a");
+                    for (int j = 0; j < links.getLength(); j++) {
+                        Element l = (Element) links.item(j);
+                        URL baseInner = new URL(l.getBaseURI());
+                        if (l.getAttribute("href") != null) {
+                            URL urlInner = new URL(baseInner, l.getAttribute("href"));
+                            String linkInner = urlInner.toString();
+                            if (linkInner != null && !linkInner.trim().isEmpty()) {
+                                list.add(linkInner.trim());
+                            }
+                        }
+                    }
+                    //jika sudah ada di tabel
+                    if (idListInTable.contains(id)) {
+                        //do not add
+                    } else {
+                        if (list.size() > 1) {
+                            String resultInput = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose Content Extracted: ", "More than one element detected, choose one of content extracted", "Content Extracted", content.trim(), list);
+                            if (resultInput != null) {
+                                content = resultInput;
+                            }
+                        }
+                        mainController.getCurrentSelections().add(new CurrentSelection(id, content.trim(), list));
+
+                    }
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(BrowserController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
             }
         }
     }

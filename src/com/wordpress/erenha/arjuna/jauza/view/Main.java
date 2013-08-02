@@ -4,6 +4,7 @@
  */
 package com.wordpress.erenha.arjuna.jauza.view;
 
+import com.wordpress.erenha.arjuna.jauza.controller.MainController;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -19,8 +20,10 @@ public class Main extends Application {
     
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
-
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Main.fxml"));
+        Parent root = (Parent) fxmlLoader.load();
+        MainController controller = (MainController)fxmlLoader.getController();
+        controller.setPrimaryStage(primaryStage);
         Scene scene = new Scene(root);
         
         primaryStage.setScene(scene);
