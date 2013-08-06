@@ -8,6 +8,7 @@ import com.wordpress.erenha.arjuna.jauza.model.CurrentSelection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -21,16 +22,23 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialogs;
+import javafx.scene.control.Dialogs.DialogOptions;
+import javafx.scene.control.Dialogs.DialogResponse;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
+import javafx.util.Callback;
 import netscape.javascript.JSObject;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -195,7 +203,6 @@ public class BrowserController implements Initializable {
                 + "document.querySelector('[jfxid=\"32\"]').setAttribute('class', a + ' sg_selected');");
     }
 
-//    List<String> idListInBrowser = new ArrayList<>();
     private void getSelectedElement() {
         //        mainController.getCurrentSelections().clear();
         ObservableList<CurrentSelection> currentSelections = mainController.getCurrentSelections();
@@ -210,26 +217,14 @@ public class BrowserController implements Initializable {
         //hapus not selected
         if (length == 0) {
             mainController.getCurrentSelections().clear();
-        } else if (idListInTable.size() > length && length > 0) {
-            List<String> idListInBrowser = new ArrayList<>();
-            for (int i = 0; i < length; i++) {
-                Element selectedElement = (Element) engine.executeScript("document.querySelectorAll('[class*=\\\"sg_selected\\\"]').item(" + i + ")");
-                String id = selectedElement.getAttribute("jfxid");
-                idListInBrowser.add(id);
-            }
-            boolean removeAll = idListInTable.removeAll(idListInBrowser);
-            System.out.println(removeAll);
-            for (int i = 0; i < mainController.getCurrentSelections().size(); i++) {
-                if (idListInTable.contains(mainController.getCurrentSelections().get(i).getId())) {
-                    mainController.getCurrentSelections().remove(i);
-                }
-            }
         } else if (length > 0) {
+            List<String> idListInBrowser = new ArrayList<>();
             for (int i = 0; i < length; i++) {
                 try {
                     List<String> list = new ArrayList<>();
                     Element selectedElement = (Element) engine.executeScript("document.querySelectorAll('[class*=\\\"sg_selected\\\"]').item(" + i + ")");
                     String id = selectedElement.getAttribute("jfxid");
+                    idListInBrowser.add(id);
                     String content = selectedElement.getTextContent();
                     if (content != null && !content.trim().isEmpty()) {
                         list.add(content.trim());
@@ -261,24 +256,74 @@ public class BrowserController implements Initializable {
                         //do not add
                     } else {
                         if (list.size() > 1) {
-                            String resultInput = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose Content Extracted: ", "More than one element detected, choose one of content extracted", "Content Extracted", content.trim(), list);
-                            if (resultInput != null) {
-                                content = resultInput;
+//                            String resultInput = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose Content Extracted: ", "More than one element detected, choose one of content extracted", "Content Extracted", content.trim(), list);
+//                            if (resultInput != null) {
+//                                content = resultInput;
+//                            }
+                            final List<CheckBox> cbs = new ArrayList<>();
+                            GridPane grid = new GridPane();
+                            grid.setHgap(10);
+                            grid.setVgap(10);
+                            grid.setPadding(new Insets(0, 10, 0, 10));
+                            for (int j = 0; j < list.size(); j++) {
+                                CheckBox cb = new CheckBox(list.get(j));
+                                cbs.add(cb);
+                                grid.add(cb, 0, j);
                             }
+                            final List<String> sel = new ArrayList<>();
+                            Callback<Void, Void> myCallback = new Callback<Void, Void>() {
+                                @Override
+                                public Void call(Void param) {
+                                    for (int k = 0; k < cbs.size(); k++) {
+                                        if (cbs.get(k).isSelected()) {
+                                            sel.add(cbs.get(k).getText());
+                                        }
+                                    }
+
+                                    return null;
+                                }
+                            };
+                            Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid, "More than one element detected, choose one of content extracted", "Content Extracted", DialogOptions.OK, myCallback);
+                            if (sel.isEmpty()) {
+                                //hapus selected
+                                deSelectElementByJFXID(Integer.valueOf(id));
+                            } else {
+                                for (int k = 0; k < sel.size(); k++) {
+//                                    mainController.getCurrentSelections().add(new CurrentSelection(id + sel.get(k).trim(), sel.get(k).trim()));
+                                    mainController.getCurrentSelections().add(new CurrentSelection(id, sel.get(k).trim()));
+                                }
+
+                            }
+
+                        } else {
+                            mainController.getCurrentSelections().add(new CurrentSelection(id, content.trim()));
                         }
-                        mainController.getCurrentSelections().add(new CurrentSelection(id, content.trim(), list));
 
                     }
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(BrowserController.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
+            }         
+            idListInTable.removeAll(idListInBrowser);
+            Collection<CurrentSelection> toRemove = new ArrayList<>();
+            for (int c = 0; c < mainController.getCurrentSelections().size(); c++) {
+                if (idListInTable.contains(mainController.getCurrentSelections().get(c).getId())) {
+                    toRemove.add(mainController.getCurrentSelections().get(c));
+                }
             }
+            //remove deselected
+            mainController.getCurrentSelections().removeAll(toRemove);
         }
     }
 
     private void selectElementByJFXID(int id) {
         engine.executeScript("var a = document.querySelector('[jfxid=\"" + id + "\"]').getAttribute('class');"
                 + "document.querySelector('[jfxid=\"" + id + "\"]').setAttribute('class', a + ' sg_selected');");
+    }
+
+    private void deSelectElementByJFXID(int id) {
+        engine.executeScript("var a = document.querySelector('[jfxid=\"" + id + "\"]').getAttribute('class').replace('sg_selected','');"
+                + "document.querySelector('[jfxid=\"" + id + "\"]').setAttribute('class', a);");
     }
 }

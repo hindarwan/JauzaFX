@@ -15,20 +15,10 @@ import javafx.beans.property.StringProperty;
 public class CurrentSelection {
     private final StringProperty id;
     private final StringProperty content;
-    private List<String> listContent;
 
-    public CurrentSelection(String id, String content, List<String> list ) {
+    public CurrentSelection(String id, String content) {
         this.id = new SimpleStringProperty(id);
         this.content = new SimpleStringProperty(content);
-        this.listContent = list;
-    }
-
-    public List<String> getListContent() {
-        return listContent;
-    }
-    
-    public void setListContent(List<String> list){
-        this.listContent = list;
     }
 
     public String getContent() {
