@@ -13,6 +13,7 @@ import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividual;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividualProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFNamespace;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFOntology;
+import com.wordpress.erenha.arjuna.jauza.util.Config;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -73,7 +74,7 @@ public class MainController implements Initializable {
         assert individualTab != null : "fx:id=\"individualTab\" was not injected: check your FXML file 'Main.fxml'.";
         assert ontologyTab != null : "fx:id=\"ontologyTab\" was not injected: check your FXML file 'Main.fxml'.";
 
-        // initialize your logic here: all @FXML variables will have been injected
+        // initialize your logic here: all @FXML variables will have been injected       
         //Global Model
         currentSelections = FXCollections.observableList(new ArrayList<CurrentSelection>());
         currentContext = FXCollections.observableList(new ArrayList<RDFContext>());
@@ -87,6 +88,7 @@ public class MainController implements Initializable {
 //        currentIndividualProperties = FXCollections.observableList(new ArrayList<RDFIndividualProperty>());
 
         annotationTabController.getBrowserController().setMainController(this);
+        annotationTabController.getBrowserController().load(Config.defaultWebAddress);
         annotationTabController.getExtractionPanelController().setMainController(this);
         annotationTabController.getExtractionPanelController().getCurrentSelectionTable().setItems(currentSelections);
         annotationTabController.getExtractionPanelController().getIndividualTable().setItems(currentIndividuals);
@@ -106,8 +108,10 @@ public class MainController implements Initializable {
         rdfController = new RDFController();
         rdfController.setMainController(this);
 //        rdfController.initRepository("data"); //init repo in client
-        String sesameServer = "http://localhost:8080/openrdf-sesame";
-        String repositoryID = "opendata";
+        String sesameServer = Config.sesameServer;
+        String repositoryID = Config.sesameRepositoryID;
+//        String sesameServer = "http://localhost:8080/openrdf-sesame";
+//        String repositoryID = "opendata";
 //        String repositoryID = "jauzafx-db";
 //        String repositoryID = "data-test";
         rdfController.initRepository(sesameServer, repositoryID); //init repo server

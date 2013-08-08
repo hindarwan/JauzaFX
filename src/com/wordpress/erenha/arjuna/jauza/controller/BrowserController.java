@@ -5,6 +5,7 @@
 package com.wordpress.erenha.arjuna.jauza.controller;
 
 import com.wordpress.erenha.arjuna.jauza.model.CurrentSelection;
+import com.wordpress.erenha.arjuna.jauza.util.Config;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -70,7 +71,6 @@ public class BrowserController implements Initializable {
     private WebView webx; // Value injected by FXMLLoader
     //NON FXML
     private final String INSPECT_SCRIPT = "javascript:(function() { var s = document.createElement('div'); s.innerHTML = 'Loading...'; s.style.color = 'black'; s.style.padding = '5px'; s.style.margin = '5px'; s.style.position = 'fixed'; s.style.zIndex = '9999'; s.style.fontSize = '24px'; s.style.border = '1px solid black'; s.style.right = '5px'; s.style.top = '5px'; s.setAttribute('class', 'selector_gadget_loading'); s.style.background = 'white'; document.body.appendChild(s); s = document.createElement('script'); s.setAttribute('type', 'text/javascript'); s.setAttribute('src', 'http://localhost/selectorgadgetCustom/lib/selectorgadgetNotSuggestion.js?raw=true'); document.body.appendChild(s); })();";
-    private String defaultAddress = "http://bps.go.id";
     private WebEngine engine;
     private MainController mainController;
 
@@ -92,6 +92,7 @@ public class BrowserController implements Initializable {
 
         // initialize your logic here: all @FXML variables will have been injected
         // engine
+        Config.read();
         initEngine();
 
     }
@@ -144,8 +145,6 @@ public class BrowserController implements Initializable {
 
     private void initEngine() {
         engine = webx.getEngine();
-//        engine.load(defaultAddress);
-        engine.load("http://localhost");
         engine.setOnStatusChanged(new EventHandler<WebEvent<String>>() {
             @Override
             public void handle(final WebEvent<String> event) {
@@ -304,7 +303,7 @@ public class BrowserController implements Initializable {
                     Logger.getLogger(BrowserController.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-            }         
+            }
             idListInTable.removeAll(idListInBrowser);
             Collection<CurrentSelection> toRemove = new ArrayList<>();
             for (int c = 0; c < mainController.getCurrentSelections().size(); c++) {
@@ -325,5 +324,9 @@ public class BrowserController implements Initializable {
     private void deSelectElementByJFXID(int id) {
         engine.executeScript("var a = document.querySelector('[jfxid=\"" + id + "\"]').getAttribute('class').replace('sg_selected','');"
                 + "document.querySelector('[jfxid=\"" + id + "\"]').setAttribute('class', a);");
+    }
+
+    public void load(String url) {
+        engine.load(url);
     }
 }
