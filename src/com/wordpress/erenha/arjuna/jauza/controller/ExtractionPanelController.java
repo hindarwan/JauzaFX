@@ -105,6 +105,7 @@ public class ExtractionPanelController implements Initializable {
             public void changed(ObservableValue<? extends RDFIndividual> ov, RDFIndividual t, RDFIndividual t1) {
                 individualDetails.clear();
                 individualDetails.addAll(t1.getRdfIndividualProperty());
+                mainController.getRDFController().getPropertiesByClass(t1.getRdfClass().getUri());
             }
         });
 
@@ -118,10 +119,10 @@ public class ExtractionPanelController implements Initializable {
 //                        contentList.addAll(t1.getListContent());
 //                    }
 //                }
-                
+
 //            }
 //        });
-        
+
 //        currentSelectionContentColumn.setOnEditStart(new EventHandler<TableColumn.CellEditEvent<CurrentSelection, String>>() {
 //            @Override
 //            public void handle(TableColumn.CellEditEvent<CurrentSelection, String> t) {
@@ -162,7 +163,11 @@ public class ExtractionPanelController implements Initializable {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<RDFIndividual, String> p) {
                 StringProperty label = p.getValue().getRdfClass().labelProperty();
-                p.getValue().getRdfClass().setUri(label.getValue());
+                if (label.getValue().equals("<<Choose Class>>")) {
+                    p.getValue().getRdfClass().setUri("<<Choose Class>>");
+                } else {
+                    p.getValue().getRdfClass().setUri(mainController.getRDFController().toNamespaceFull(label.getValue()));
+                }
                 return label;
             }
         });
@@ -210,7 +215,6 @@ public class ExtractionPanelController implements Initializable {
         mainController.getCurrentIndividuals().add(new RDFIndividual("individual" + i, new RDFClass("rdfs:Class", "<<Choose Class>>"), l));
 //        individuals.add(new Individual("individual" + i, "<<Choose Class>>", l));
     }
-
 //    @FXML
 //    public void editExtracted(Event event) {
 //        CurrentSelection selectedItem = currentSelectionTable.getSelectionModel().getSelectedItem();
@@ -227,8 +231,9 @@ public class ExtractionPanelController implements Initializable {
     private List<Integer> step1;
 
     @FXML
-    public void changeTypeAction() {
-        System.out.println("nothing");
+    public void individualColumnCommit() {
+        
+        mainController.getRDFController().getPropertiesByClass(individualTable.getSelectionModel().getSelectedItem().getRdfClass().getUri());
     }
 
     @FXML

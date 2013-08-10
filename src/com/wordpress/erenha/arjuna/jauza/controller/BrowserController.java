@@ -10,7 +10,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -28,9 +27,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialogs;
 import javafx.scene.control.Dialogs.DialogOptions;
-import javafx.scene.control.Dialogs.DialogResponse;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
@@ -198,8 +195,13 @@ public class BrowserController implements Initializable {
     @FXML
     public void test(ActionEvent event) {
 
-        engine.executeScript("var a = document.querySelector('[jfxid=\"32\"]').getAttribute('class');"
-                + "document.querySelector('[jfxid=\"32\"]').setAttribute('class', a + ' sg_selected');");
+//        engine.executeScript("var a = document.querySelector('[jfxid=\"32\"]').getAttribute('class');"
+//                + "document.querySelector('[jfxid=\"32\"]').setAttribute('class', a + ' sg_selected');");
+        System.out.println(mainController.getRDFController().toNamespacePrefix("http://www.w3.org/ns/dcat#Dataset"));
+        System.out.println(mainController.getRDFController().toNamespacePrefix("http://www.w3.org/ns/dca#Dataset"));
+        System.out.println(mainController.getRDFController().toNamespaceFull("dcat:Dataset"));
+        System.out.println(mainController.getRDFController().toNamespaceFull("dca:Dataset"));
+        System.out.println(mainController.getRDFController().toNamespaceFull("http://www.w3.org/ns/dcat#Dataset134"));
     }
 
     private void getSelectedElement() {
@@ -291,9 +293,7 @@ public class BrowserController implements Initializable {
 //                                    mainController.getCurrentSelections().add(new CurrentSelection(id + sel.get(k).trim(), sel.get(k).trim()));
                                     mainController.getCurrentSelections().add(new CurrentSelection(id, sel.get(k).trim()));
                                 }
-
                             }
-
                         } else {
                             mainController.getCurrentSelections().add(new CurrentSelection(id, content.trim()));
                         }

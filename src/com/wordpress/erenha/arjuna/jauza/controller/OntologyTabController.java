@@ -154,8 +154,9 @@ public class OntologyTabController implements Initializable {
                 mainController.getRDFController().add(new File(urlFileImport.getText()));
             }
             mainController.getRDFController().getOntologies();
+            mainController.getRDFController().getNamespaces();
             mainController.getRDFController().getClasses();
-            mainController.getRDFController().getProperties();
+//            mainController.getRDFController().getProperties();
         }
     }
 

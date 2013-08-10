@@ -11,11 +11,6 @@
     <content>
       <VBox id="VBox" alignment="CENTER">
         <children>
-          <ToolBar>
-            <items>
-              <Button mnemonicParsing="false" onAction="#createInvAction" text="Create Individual" />
-            </items>
-          </ToolBar>
           <TableView id="tableExtInd" fx:id="currentSelectionTable" editable="true" VBox.vgrow="ALWAYS">
             <columns>
               <TableColumn editable="false" minWidth="25.0" prefWidth="75.0" text="id" visible="false" fx:id="currentSelectionIDColumn" />
@@ -30,7 +25,14 @@
     <content>
       <VBox id="VBox" alignment="CENTER">
         <children>
-          <TableView fx:id="individualTable" editable="true" VBox.vgrow="ALWAYS">
+          <ToolBar>
+            <items>
+              <Button mnemonicParsing="false" onAction="#createInvAction" text="Create Individual" />
+              <Button mnemonicParsing="false" text="Edit" />
+              <Button mnemonicParsing="false" text="Delete" />
+            </items>
+          </ToolBar>
+          <TableView fx:id="individualTable" VBox.vgrow="ALWAYS">
             <columns>
               <TableColumn editable="false" minWidth="150.0" prefWidth="150.0" text="id" fx:id="individualIDColumn" />
               <TableColumn minWidth="220.0" prefWidth="220.0" text="Class" fx:id="individualClassColumn" />
@@ -44,6 +46,13 @@
     <content>
       <VBox id="VBox" alignment="CENTER">
         <children>
+          <ToolBar>
+            <items>
+              <Button mnemonicParsing="false" text="Add Property" />
+              <Button mnemonicParsing="false" text="Edit" />
+              <Button mnemonicParsing="false" text="Delete" />
+            </items>
+          </ToolBar>
           <TableView id="tableExtInd" fx:id="individualDetailsTable" editable="true" VBox.vgrow="ALWAYS">
             <columns>
               <TableColumn editable="false" minWidth="25.0" prefWidth="75.0" text="id" visible="false" fx:id="individualDetailsIDColumn" />

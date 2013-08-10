@@ -120,8 +120,9 @@ public class MainController implements Initializable {
 //        rdfController.getContext();
         rdfController.getOntologies();
         rdfController.getNamespaces();
-        rdfController.getClassesInNSdefined();
-        rdfController.getPropertiesInNSdefined();
+        rdfController.getClasses(); //load class in start
+//        rdfController.getClassesInNSdefined();
+//        rdfController.getPropertiesInNSdefined();//set all properties
     }
 
     public ObservableList<CurrentSelection> getCurrentSelections() {
