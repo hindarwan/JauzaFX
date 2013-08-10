@@ -125,7 +125,7 @@ public class ExtractionPanelController implements Initializable {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<RDFIndividual, String> p) {
                 StringProperty label = p.getValue().getRdfClass().labelProperty();
                 if (label.getValue().equals("<<Choose Class>>")) {
-                    p.getValue().getRdfClass().setUri("<<Choose Class>>");
+                    p.getValue().getRdfClass().setUri("rdfs:Class");
                 } else {
                     p.getValue().getRdfClass().setUri(mainController.getRDFController().toNamespaceFull(label.getValue()));
                 }
@@ -149,7 +149,13 @@ public class ExtractionPanelController implements Initializable {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<RDFIndividualProperty, String> p) {
                 StringProperty label = p.getValue().getRdfProperty().labelProperty();
                 p.getValue().getRdfProperty().setUri(label.getValue());
-                return p.getValue().getRdfProperty().labelProperty();
+                
+                if (label.getValue().equals("<<Choose Property>>")) {
+                    p.getValue().getRdfProperty().setUri("rdf:Property");
+                } else {
+                    p.getValue().getRdfProperty().setUri(mainController.getRDFController().toNamespaceFull(label.getValue()));
+                }
+                return label;
             }
         });
         individualDetailsValueColumn.setCellValueFactory(new PropertyValueFactory("propertyValue"));

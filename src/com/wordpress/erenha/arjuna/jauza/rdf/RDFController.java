@@ -493,14 +493,12 @@ public class RDFController {
         Graph g = new TreeModel();
         for (RDFIndividual individual : currentIndividuals) {
             URI uriIndividual = f.createURI(ns, individual.getUri());
-            String[] type = individual.getRdfClass().getUri().split(":");
-            URI typeIndividual = f.createURI(getNamespaces(type[0]), type[1]);
+            URI typeIndividual = f.createURI(toNamespaceFull(individual.getRdfClass().getUri()));
             Statement typeStatement = f.createStatement(uriIndividual, RDF.TYPE, typeIndividual);
             g.add(typeStatement);
             List<RDFIndividualProperty> propertyList = individual.getRdfIndividualProperty();
             for (RDFIndividualProperty property : propertyList) {
-                String[] propertySplit = property.getRdfProperty().getUri().split(":");
-                URI uriProperty = f.createURI(getNamespaces(propertySplit[0]), propertySplit[1]);
+                URI uriProperty = f.createURI(toNamespaceFull(property.getRdfProperty().getUri()));
                 Literal valueProperty = f.createLiteral(property.getPropertyValue());
                 Statement propertyStatement = f.createStatement(uriIndividual, uriProperty, valueProperty);
                 g.add(propertyStatement);
