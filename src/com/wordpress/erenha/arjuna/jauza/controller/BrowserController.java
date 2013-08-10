@@ -284,7 +284,7 @@ public class BrowserController implements Initializable {
                                     return null;
                                 }
                             };
-                            Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid, "More than one element detected, choose one of content extracted", "Content Extracted", DialogOptions.OK, myCallback);
+                            Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid, "More than one element detected. \nSelect content extracted that you want.", "Content Extracted", DialogOptions.OK, myCallback);
                             if (sel.isEmpty()) {
                                 //hapus selected
                                 deSelectElementByJFXID(Integer.valueOf(id));

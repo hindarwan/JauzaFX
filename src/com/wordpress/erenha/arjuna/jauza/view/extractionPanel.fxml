@@ -48,7 +48,7 @@
         <children>
           <ToolBar>
             <items>
-              <Button mnemonicParsing="false" text="Add Property" />
+              <Button mnemonicParsing="false" onAction="#addPropertyAction" text="Add Property" />
               <Button mnemonicParsing="false" text="Edit" />
               <Button mnemonicParsing="false" text="Delete" />
             </items>

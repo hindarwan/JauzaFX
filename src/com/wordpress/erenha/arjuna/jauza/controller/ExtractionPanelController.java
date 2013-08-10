@@ -14,21 +14,30 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialogs;
+import javafx.scene.control.Dialogs;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 
 /**
@@ -63,17 +72,13 @@ public class ExtractionPanelController implements Initializable {
     //NON FXML
     private MainController mainController;
     //tabel model
-//    private ObservableList<CurrentSelection> currentSelections;
-//    private ObservableList<RDFIndividual> individuals;
     private ObservableList<RDFIndividualProperty> individualDetails;
-    private ObservableList<String> contentList;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
         // table
         initCurrent();
         initInv();
@@ -96,8 +101,6 @@ public class ExtractionPanelController implements Initializable {
     }
 
     private void initModel() {
-//        individuals = FXCollections.observableList(new ArrayList<RDFIndividual>());
-//        individualTable.setItems(individuals);
         individualDetails = FXCollections.observableList(new ArrayList<RDFIndividualProperty>());
         individualDetailsTable.setItems(individualDetails);
         individualTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<RDFIndividual>() {
@@ -108,53 +111,11 @@ public class ExtractionPanelController implements Initializable {
                 mainController.getRDFController().getPropertiesByClass(t1.getRdfClass().getUri());
             }
         });
-
-        contentList = FXCollections.observableList(new ArrayList<String>());
-//        currentSelectionTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<CurrentSelection>() {
-//            @Override
-//            public void changed(ObservableValue<? extends CurrentSelection> ov, CurrentSelection t, CurrentSelection t1) {
-//                if (t1 != null) {
-//                    contentList.clear();
-//                    if (!t1.getListContent().isEmpty()) {
-//                        contentList.addAll(t1.getListContent());
-//                    }
-//                }
-
-//            }
-//        });
-
-//        currentSelectionContentColumn.setOnEditStart(new EventHandler<TableColumn.CellEditEvent<CurrentSelection, String>>() {
-//            @Override
-//            public void handle(TableColumn.CellEditEvent<CurrentSelection, String> t) {
-//                contentList.clear();
-//                System.out.println("aaaaaaaa");
-//                List<String> listContent = t.getRowValue().getListContent();
-//                List<String> listContent = currentSelectionTable.getSelectionModel().getSelectedItem().getListContent();
-//                System.out.println("idx:" + currentSelectionTable.getSelectionModel().getSelectedIndex());
-//                for (String string : listContent) {
-//                    contentList.add(string);
-//                }
-//            }
-//        });
     }
 
     private void initCurrent() {
         currentSelectionIDColumn.setCellValueFactory(new PropertyValueFactory("id"));
         currentSelectionContentColumn.setCellValueFactory(new PropertyValueFactory("content"));
-//        currentSelectionContentColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CurrentSelection, String>, ObservableValue<String>>() {
-//            @Override
-//            public ObservableValue<String> call(TableColumn.CellDataFeatures<CurrentSelection, String> p) {
-//                return p.getValue().contentProperty();
-//            }
-//        });
-//
-//        currentSelectionContentColumn.setCellFactory(new Callback<TableColumn<CurrentSelection, String>, TableCell<CurrentSelection, String>>() {
-//            @Override
-//            public TableCell<CurrentSelection, String> call(TableColumn<CurrentSelection, String> p) {
-//                TableCell<CurrentSelection, String> cell = new ComboBoxTableCell<>(contentList);
-//                return cell;
-//            }
-//        });
     }
 
     private void initInv() {
@@ -179,8 +140,6 @@ public class ExtractionPanelController implements Initializable {
                 return cell;
             }
         });
-//        individualSelectedColumn.setCellValueFactory(new PropertyValueFactory("selected"));
-//        individualSelectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(individualSelectedColumn));
     }
 
     private void initInvDetails() {
@@ -205,36 +164,111 @@ public class ExtractionPanelController implements Initializable {
         });
     }
 
+    // TODO not handled exception
     @FXML
     public void createInvAction(ActionEvent event) {
-        int i = mainController.getCurrentIndividuals().size();
         List<RDFIndividualProperty> l = new ArrayList<>();
         for (CurrentSelection currentSelection : mainController.getCurrentSelections()) {
             l.add(new RDFIndividualProperty(new RDFProperty("rdf:Property", "<<Choose Property>>"), currentSelection.getContent()));
         }
-        mainController.getCurrentIndividuals().add(new RDFIndividual("individual" + i, new RDFClass("rdfs:Class", "<<Choose Class>>"), l));
-//        individuals.add(new Individual("individual" + i, "<<Choose Class>>", l));
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(0, 10, 0, 10));
+        Label idLabel = new Label("Identifier :");
+        grid.add(idLabel, 0, 2);
+        ToggleGroup groupID = new ToggleGroup();
+        RadioButton genID = new RadioButton("Use generated ID");
+        final RadioButton givenID = new RadioButton("Use given ID");
+        genID.setToggleGroup(groupID);
+        genID.selectedProperty().set(true);
+        givenID.setToggleGroup(groupID);
+        grid.add(genID, 0, 3);
+        grid.add(givenID, 0, 4);
+        final TextField givenIDField = new TextField();
+        givenIDField.disableProperty().set(true);
+        grid.add(givenIDField, 0, 5);
+
+        givenID.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
+                if (givenID.isSelected()) {
+                    givenIDField.disableProperty().set(false);
+                } else {
+                    givenIDField.disableProperty().set(true);
+                }
+            }
+        });
+        Label typeLabel = new Label("Type of Individual :");
+        grid.add(typeLabel, 0, 0);
+        Collections.sort(mainController.getCurrentClassesLabel());
+        final ComboBox<String> type = new ComboBox<>(mainController.getCurrentClassesLabel());
+        type.setPromptText("<<Choose Type>>");
+        grid.add(type, 0, 1);
+
+        final List<String> lst = new ArrayList<>();
+        lst.add(0, "null");
+        lst.add(1, "null");
+
+        Callback<Void, Void> myCallback = new Callback<Void, Void>() {
+            @Override
+            public Void call(Void param) {
+                String selectedItem = type.getSelectionModel().getSelectedItem();
+                lst.add(0, selectedItem);
+                if (givenID.isSelected() && !givenIDField.getText().isEmpty()) {
+                    lst.add(1, givenIDField.getText());
+                } else {
+                    lst.add(1, selectedItem.substring(selectedItem.indexOf(":") + 1) + System.currentTimeMillis());
+                }
+                return null;
+            }
+        };
+        Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid, "1. Choose type of individual.\n2. Give unique identifier or use generated identifier.", "Create Individual", Dialogs.DialogOptions.OK, myCallback);
+        if (!lst.get(0).equals("null") || !lst.get(1).equals("null")) {
+            mainController.getCurrentIndividuals().add(new RDFIndividual(lst.get(1), new RDFClass(mainController.getRDFController().toNamespaceFull(lst.get(0)), lst.get(0)), l));
+        }
     }
-//    @FXML
-//    public void editExtracted(Event event) {
-//        CurrentSelection selectedItem = currentSelectionTable.getSelectionModel().getSelectedItem();
-//        final ObservableList<String> contenTemp = FXCollections.observableList(selectedItem.getListContent());
-//        currentSelectionContentColumn.setCellFactory(new Callback<TableColumn<CurrentSelection, String>, TableCell<CurrentSelection, String>>() {
-//            @Override
-//            public TableCell<CurrentSelection, String> call(TableColumn<CurrentSelection, String> p) {
-//                TableCell<CurrentSelection, String> cell = new ComboBoxTableCell<>(contenTemp);
-//                return cell;
-//            }
-//        });
-//    }
-    private boolean step = false;
-    private List<Integer> step1;
 
     @FXML
-    public void individualColumnCommit() {
-        
-        mainController.getRDFController().getPropertiesByClass(individualTable.getSelectionModel().getSelectedItem().getRdfClass().getUri());
+    public void addPropertyAction(ActionEvent event) {
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(0, 10, 0, 10));
+        Label typeLabel = new Label("Property");
+        grid.add(typeLabel, 0, 0);
+        Collections.sort(mainController.getCurrentPropertiesLabel());
+        final ComboBox<String> type = new ComboBox<>(mainController.getCurrentPropertiesLabel());
+        type.setPromptText("<<Choose Property>>");
+        grid.add(type, 0, 1);
+        final TextField givenIDField = new TextField();
+        grid.add(givenIDField, 1, 1);
+
+        final List<String> lst = new ArrayList<>();
+        lst.add(0, "null");
+        lst.add(1, "null");
+
+        Callback<Void, Void> myCallback = new Callback<Void, Void>() {
+            @Override
+            public Void call(Void param) {
+                String selectedItem = type.getSelectionModel().getSelectedItem();
+                lst.add(0, selectedItem);
+                lst.add(1, givenIDField.getText());
+                return null;
+            }
+        };
+        Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid, "Add Property", "Add Property", Dialogs.DialogOptions.OK, myCallback);
+        if (!lst.get(0).equals("null") || !lst.get(1).equals("null")) {
+            RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(new RDFProperty(lst.get(0), lst.get(0)), lst.get(1));
+            individualDetails.add(rdfIndividualProperty);
+            individualTable.getSelectionModel().getSelectedItem().getRdfIndividualProperty().add(rdfIndividualProperty);
+        }
     }
+    /*
+     * Suggestion
+     */
+    private boolean step = false;
+    private List<Integer> step1;
 
     @FXML
     public void suggestNextAction(ActionEvent event) {
