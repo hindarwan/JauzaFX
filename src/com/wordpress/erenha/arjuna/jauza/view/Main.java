@@ -5,7 +5,6 @@
 package com.wordpress.erenha.arjuna.jauza.view;
 
 import com.wordpress.erenha.arjuna.jauza.controller.MainController;
-import com.wordpress.erenha.arjuna.jauza.util.Config;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
