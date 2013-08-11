@@ -107,8 +107,11 @@ public class ExtractionPanelController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends RDFIndividual> ov, RDFIndividual t, RDFIndividual t1) {
                 individualDetails.clear();
-                individualDetails.addAll(t1.getRdfIndividualProperty());
-                mainController.getRDFController().getPropertiesByClass(t1.getRdfClass().getUri());
+                if (t1 != null) {
+                    individualDetails.addAll(t1.getRdfIndividualProperty());
+                    mainController.getRDFController().getPropertiesByClass(t1.getRdfClass().getUri());
+                }
+
             }
         });
     }
@@ -149,7 +152,7 @@ public class ExtractionPanelController implements Initializable {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<RDFIndividualProperty, String> p) {
                 StringProperty label = p.getValue().getRdfProperty().labelProperty();
                 p.getValue().getRdfProperty().setUri(label.getValue());
-                
+
                 if (label.getValue().equals("<<Choose Property>>")) {
                     p.getValue().getRdfProperty().setUri("rdf:Property");
                 } else {
@@ -269,6 +272,20 @@ public class ExtractionPanelController implements Initializable {
             individualDetails.add(rdfIndividualProperty);
             individualTable.getSelectionModel().getSelectedItem().getRdfIndividualProperty().add(rdfIndividualProperty);
         }
+    }
+
+    public void deleteSelectedIndividualAction(ActionEvent event) {
+        RDFIndividual selectedItem = individualTable.getSelectionModel().getSelectedItem();
+//        individualTable.getSelectionModel().  
+        mainController.getCurrentIndividuals().remove(selectedItem);
+
+    }
+
+    public void deleteSelectedIndividualDetailsAction(ActionEvent event) {
+        RDFIndividualProperty selectedItem = individualDetailsTable.getSelectionModel().getSelectedItem();
+        individualDetails.remove(selectedItem);
+        individualTable.getSelectionModel().getSelectedItem().getRdfIndividualProperty().remove(selectedItem);
+
     }
     /*
      * Suggestion

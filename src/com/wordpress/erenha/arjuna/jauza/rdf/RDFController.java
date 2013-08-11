@@ -499,7 +499,9 @@ public class RDFController {
             List<RDFIndividualProperty> propertyList = individual.getRdfIndividualProperty();
             for (RDFIndividualProperty property : propertyList) {
                 URI uriProperty = f.createURI(toNamespaceFull(property.getRdfProperty().getUri()));
+                
                 Literal valueProperty = f.createLiteral(property.getPropertyValue());
+                
                 Statement propertyStatement = f.createStatement(uriIndividual, uriProperty, valueProperty);
                 g.add(propertyStatement);
             }
@@ -542,5 +544,10 @@ public class RDFController {
                 return prefixUrl;
             }
         }
+    }
+    
+    public boolean isLiteral(String property){
+        
+        return true;
     }
 }

@@ -28,8 +28,8 @@
           <ToolBar>
             <items>
               <Button mnemonicParsing="false" onAction="#createInvAction" text="Create Individual" />
-              <Button mnemonicParsing="false" text="Edit" />
-              <Button mnemonicParsing="false" text="Delete" />
+              <Button mnemonicParsing="false" onAction="#deleteSelectedIndividualAction" text="Delete" />
+              <Button mnemonicParsing="false" text="Edit" visible="false" />
             </items>
           </ToolBar>
           <TableView fx:id="individualTable" VBox.vgrow="ALWAYS">
@@ -49,8 +49,8 @@
           <ToolBar>
             <items>
               <Button mnemonicParsing="false" onAction="#addPropertyAction" text="Add Property" />
-              <Button mnemonicParsing="false" text="Edit" />
-              <Button mnemonicParsing="false" text="Delete" />
+              <Button mnemonicParsing="false" onAction="#deleteSelectedIndividualDetailsAction" text="Delete" />
+              <Button mnemonicParsing="false" text="Edit" visible="false" />
             </items>
           </ToolBar>
           <TableView id="tableExtInd" fx:id="individualDetailsTable" editable="true" VBox.vgrow="ALWAYS">
