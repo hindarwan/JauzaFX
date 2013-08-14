@@ -5,7 +5,6 @@
 package com.wordpress.erenha.arjuna.jauza.controller;
 
 import com.wordpress.erenha.arjuna.jauza.model.CurrentSelection;
-import com.wordpress.erenha.arjuna.jauza.util.Config;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -89,7 +88,7 @@ public class BrowserController implements Initializable {
 
         // initialize your logic here: all @FXML variables will have been injected
         // engine
-        Config.read();
+//        Config.read();
         initEngine();
 
     }

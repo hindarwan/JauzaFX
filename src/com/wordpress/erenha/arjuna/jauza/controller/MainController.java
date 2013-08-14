@@ -12,7 +12,7 @@ import com.wordpress.erenha.arjuna.jauza.rdf.RDFController;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividual;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFNamespace;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFOntology;
-import com.wordpress.erenha.arjuna.jauza.util.Config;
+import com.wordpress.erenha.arjuna.jauza.util.StaticValue;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -87,7 +87,8 @@ public class MainController implements Initializable {
 //        currentIndividualProperties = FXCollections.observableList(new ArrayList<RDFIndividualProperty>());
 
         annotationTabController.getBrowserController().setMainController(this);
-        annotationTabController.getBrowserController().load(Config.defaultWebAddress);
+//        annotationTabController.getBrowserController().load(Config.defaultWebAddress);
+        annotationTabController.getBrowserController().load(StaticValue.defaultWebAddress);
         annotationTabController.getExtractionPanelController().setMainController(this);
         annotationTabController.getExtractionPanelController().getCurrentSelectionTable().setItems(currentSelections);
         annotationTabController.getExtractionPanelController().getIndividualTable().setItems(currentIndividuals);
@@ -107,8 +108,10 @@ public class MainController implements Initializable {
         rdfController = new RDFController();
         rdfController.setMainController(this);
 //        rdfController.initRepository("data"); //init repo in client
-        String sesameServer = Config.sesameServer;
-        String repositoryID = Config.sesameRepositoryID;
+//        String sesameServer = Config.sesameServer;
+//        String repositoryID = Config.sesameRepositoryID;
+        String sesameServer = StaticValue.sesameServer;
+        String repositoryID = StaticValue.sesameRepositoryID;
 //        String sesameServer = "http://localhost:8080/openrdf-sesame";
 //        String repositoryID = "opendata";
 //        String repositoryID = "jauzafx-db";
