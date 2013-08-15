@@ -10,7 +10,6 @@ import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividual;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividualProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
 import com.wordpress.erenha.arjuna.jauza.util.StaticValue;
-import com.wordpress.erenha.arjuna.jauza.view.wizard.DemoWizard;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,17 +29,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialogs;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.SingleSelectionModel;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
@@ -90,9 +85,6 @@ public class ExtractionPanelController implements Initializable {
         valueSourceBox.getSelectionModel().selectFirst();
     }
 
-//    public TableView<CurrentSelection> getCurrentSelectionTable() {
-//        return currentSelectionTable;
-//    }
     public TableView<RDFIndividual> getIndividualTable() {
         return individualTable;
     }
@@ -131,59 +123,28 @@ public class ExtractionPanelController implements Initializable {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<RDFIndividual, String> p) {
                 StringProperty label = p.getValue().getRdfClass().labelProperty();
-                if (label.getValue().equals("<<Choose Class>>")) {
-                    p.getValue().getRdfClass().setUri("rdfs:Class");
-                } else {
-                    p.getValue().getRdfClass().setUri(mainController.getRDFController().toNamespaceFull(label.getValue()));
-                }
+                p.getValue().getRdfClass().setUri(mainController.getRDFController().toNamespaceFull(label.getValue()));
                 return label;
-            }
-        });
-        individualClassColumn.setCellFactory(new Callback<TableColumn<RDFIndividual, String>, TableCell<RDFIndividual, String>>() {
-            @Override
-            public TableCell<RDFIndividual, String> call(TableColumn<RDFIndividual, String> p) {
-                Collections.sort(mainController.getCurrentClassesLabel());
-                TableCell<RDFIndividual, String> cell = new ComboBoxTableCell<>(mainController.getCurrentClassesLabel());
-                return cell;
             }
         });
     }
 
     private void initInvDetails() {
-//        individualDetailsIDColumn.setCellValueFactory(new PropertyValueFactory("id"));
         individualDetailsPropertyColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<RDFIndividualProperty, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<RDFIndividualProperty, String> p) {
                 StringProperty label = p.getValue().getRdfProperty().labelProperty();
-                p.getValue().getRdfProperty().setUri(label.getValue());
-
-                if (label.getValue().equals("<<Choose Property>>")) {
-                    p.getValue().getRdfProperty().setUri("rdf:Property");
-                } else {
-                    p.getValue().getRdfProperty().setUri(mainController.getRDFController().toNamespaceFull(label.getValue()));
-                }
+                p.getValue().getRdfProperty().setUri(mainController.getRDFController().toNamespaceFull(label.getValue()));
                 return label;
             }
         });
         individualDetailsValueColumn.setCellValueFactory(new PropertyValueFactory("propertyValue"));
-        individualDetailsPropertyColumn.setCellFactory(new Callback<TableColumn<RDFIndividualProperty, String>, TableCell<RDFIndividualProperty, String>>() {
-            @Override
-            public TableCell<RDFIndividualProperty, String> call(TableColumn<RDFIndividualProperty, String> p) {
-                Collections.sort(mainController.getCurrentPropertiesLabel());
-                TableCell<RDFIndividualProperty, String> cell = new ComboBoxTableCell<>(mainController.getCurrentPropertiesLabel());
-
-                return cell;
-            }
-        });
     }
 
     // TODO not handled exception
     @FXML
     public void createInvAction(ActionEvent event) {
         List<RDFIndividualProperty> l = new ArrayList<>();
-        for (CurrentSelection currentSelection : mainController.getCurrentSelections()) {
-            l.add(new RDFIndividualProperty(new RDFProperty("rdf:Property", "<<Choose Property>>"), currentSelection.getContent()));
-        }
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -240,6 +201,7 @@ public class ExtractionPanelController implements Initializable {
         if (!lst.get(0).equals("null") || !lst.get(1).equals("null")) {
             RDFIndividual rdfIndividual = new RDFIndividual(lst.get(1), new RDFClass(mainController.getRDFController().toNamespaceFull(lst.get(0)), lst.get(0)), l);
             mainController.getCurrentIndividuals().add(rdfIndividual);
+            individualTable.getSelectionModel().clearSelection();
             individualTable.getSelectionModel().select(rdfIndividual);
         }
     }
@@ -374,7 +336,7 @@ public class ExtractionPanelController implements Initializable {
         if (respon == Dialogs.DialogResponse.OK && !lst.get(0).equals("null") || !lst.get(1).equals("null")) {
             switch (lst.get(1)) {
                 case "From current page":
-                    mainController.getAnnotationTabController().getBrowserController().initGetCurrentSelectedElement(lst.get(0));
+                    mainController.getAnnotationTabController().getBrowserController().initGetCurrentSelectedElement();
                     break;
                 case "From user input":
                     String userInput = Dialogs.showInputDialog(mainController.getPrimaryStage(), "User Input", "Give a suitable value for '" + lst.get(0) + "'property", "User Input");
@@ -395,12 +357,13 @@ public class ExtractionPanelController implements Initializable {
 
     @FXML
     public void addPropertyAction(ActionEvent event) {
-        String property = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose Property", "Choose property that you want to add", "Add Property", mainController.getCurrentPropertiesLabel().get(0), mainController.getCurrentPropertiesLabel());
+//        String property = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose Property", "Choose property that you want to add", "Add Property", mainController.getCurrentPropertiesLabel().get(0), mainController.getCurrentPropertiesLabel());
         switch (valueSourceBox.getValue()) {
             case "current page":
-                mainController.getAnnotationTabController().getBrowserController().initGetCurrentSelectedElement(property);
+                mainController.getAnnotationTabController().getBrowserController().initGetCurrentSelectedElement();
                 break;
             case "user input":
+                String property = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose Property", "Choose property that you want to add", "Add Property", mainController.getCurrentPropertiesLabel().get(0), mainController.getCurrentPropertiesLabel());
                 String userInput = Dialogs.showInputDialog(mainController.getPrimaryStage(), "User Input", "Give a suitable value for '" + property + "'property", "User Input");
                 if (!userInput.trim().isEmpty()) {
                     RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(new RDFProperty(property, property), userInput.trim());

@@ -49,7 +49,7 @@
                     </items>
                   </ChoiceBox>
                   <Button mnemonicParsing="false" onAction="#deleteSelectedIndividualDetailsAction" text="Delete" />
-                  <Button mnemonicParsing="false" text="Edit" visible="false" />
+                  <!--<Button mnemonicParsing="false" text="Edit" visible="false" />-->
                 </items>
               </ToolBar>
               <TableView id="tableExtInd" fx:id="individualDetailsTable" VBox.vgrow="ALWAYS">

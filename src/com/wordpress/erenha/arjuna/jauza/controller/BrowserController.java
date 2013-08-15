@@ -26,9 +26,14 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Dialogs;
 import javafx.scene.control.Dialogs.DialogOptions;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
@@ -37,6 +42,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
+import javafx.stage.Popup;
 import javafx.util.Callback;
 import netscape.javascript.JSObject;
 import org.w3c.dom.Element;
@@ -92,6 +98,15 @@ public class BrowserController implements Initializable {
         // engine
 //        Config.read();
         initEngine();
+
+    }
+    // Handler for WebView[fx:id="webx"] onMouseClicked
+
+    public void sesuatu(MouseEvent event) {
+        // handle the event here
+        System.out.println("sesuatu");
+
+
 
     }
 
@@ -331,7 +346,7 @@ public class BrowserController implements Initializable {
         engine.load(url);
     }
 
-    public void initGetCurrentSelectedElement(final String lst) {
+    public void initGetCurrentSelectedElement() {
         engine.executeScript(INSPECT_SCRIPT);
         webx.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -367,21 +382,18 @@ public class BrowserController implements Initializable {
                         }
                     }
                     if (list.size() > 1) {
-                        //                            String resultInput = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose Content Extracted: ", "More than one element detected, choose one of content extracted", "Content Extracted", content.trim(), list);
-                        //                            if (resultInput != null) {
-                        //                                content = resultInput;
                         String value = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose element", "More than one element detected. \nSelect content extracted that you want.", "Content Extracted", list.get(0), list);
                         if (value.isEmpty()) {
                             //hapus selected
                             deSelectElementByJFXID(Integer.valueOf(id));
-                            finishGetCurrentSelectedElement();
+//                            finishGetCurrentSelectedElement();
                         } else {
-                            wisuda2013(value.trim());
-                            finishGetCurrentSelectedElement();
+                            addProperty(id, value.trim(), t);
+//                            finishGetCurrentSelectedElement();
                         }
                     } else {
-                        wisuda2013(content.trim());
-                        finishGetCurrentSelectedElement();
+                        addProperty(id, content.trim(), t);
+//                        finishGetCurrentSelectedElement();
                     }
 
                 } catch (MalformedURLException ex) {
@@ -390,11 +402,34 @@ public class BrowserController implements Initializable {
 
             }
 
-            void wisuda2013(String value) {
-                RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(new RDFProperty(lst, lst), value);
-                mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().add(rdfIndividualProperty);
-                mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetailsTable().getSelectionModel().select(rdfIndividualProperty);
-                mainController.getAnnotationTabController().getExtractionPanelController().getIndividualTable().getSelectionModel().getSelectedItem().getRdfIndividualProperty().add(rdfIndividualProperty);
+            void addProperty(final String id, final String value, MouseEvent t) {
+                if (!mainController.getCurrentPropertiesLabel().isEmpty()) {
+                    final Popup popup = new Popup();
+                    final ListView<String> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
+                    listView.autosize();
+                    listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+                        @Override
+                        public void handle(MouseEvent t) {
+                            String t1 = listView.getSelectionModel().getSelectedItem();
+                            RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(new RDFProperty(t1, t1), value);
+                            mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().add(rdfIndividualProperty);
+                            mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetailsTable().getSelectionModel().select(rdfIndividualProperty);
+                            
+                            mainController.getAnnotationTabController().getExtractionPanelController().getIndividualTable().getSelectionModel().getSelectedItem().getRdfIndividualProperty().add(rdfIndividualProperty);
+                            
+                            popup.hide();
+                            deSelectElementByJFXID(Integer.valueOf(id));
+//                            finishGetCurrentSelectedElement();
+                    
+                        }
+                    });
+
+                    popup.getContent().add(listView);
+                    popup.setX(t.getScreenX());
+                    popup.setY(t.getScreenY());
+                    popup.show(mainController.getPrimaryStage());
+                }
             }
         });
 
