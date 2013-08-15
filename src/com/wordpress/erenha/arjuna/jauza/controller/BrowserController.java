@@ -5,6 +5,8 @@
 package com.wordpress.erenha.arjuna.jauza.controller;
 
 import com.wordpress.erenha.arjuna.jauza.model.CurrentSelection;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividualProperty;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -204,7 +206,7 @@ public class BrowserController implements Initializable {
     }
 
     private void getSelectedElement() {
-        //        mainController.getCurrentSelections().clear();
+//        mainController.getCurrentSelections().clear();
         ObservableList<CurrentSelection> currentSelections = mainController.getCurrentSelections();
         List<String> idListInTable = new ArrayList<>();
         for (CurrentSelection currentSelection : currentSelections) {
@@ -327,5 +329,79 @@ public class BrowserController implements Initializable {
 
     public void load(String url) {
         engine.load(url);
+    }
+
+    public void initGetCurrentSelectedElement(final String lst) {
+        engine.executeScript(INSPECT_SCRIPT);
+        webx.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+                try {
+                    List<String> list = new ArrayList<>();
+                    Element selectedElement = (Element) engine.executeScript("document.querySelectorAll('[class*=\\\"sg_selected\\\"]').item(" + 0 + ")");
+                    String id = selectedElement.getAttribute("jfxid");
+                    String content = selectedElement.getTextContent();
+                    if (content != null && !content.trim().isEmpty()) {
+                        list.add(content.trim());
+                    }
+
+                    URL base = new URL(selectedElement.getBaseURI());
+                    if (selectedElement.getAttribute("href") != null) {
+                        URL url = new URL(base, selectedElement.getAttribute("href"));
+                        String link = url.toString();
+                        if (link != null && !link.trim().isEmpty()) {
+                            list.add(link.trim());
+                        }
+                    }
+
+                    NodeList links = selectedElement.getElementsByTagName("a");
+                    for (int j = 0; j < links.getLength(); j++) {
+                        Element l = (Element) links.item(j);
+                        URL baseInner = new URL(l.getBaseURI());
+                        if (l.getAttribute("href") != null) {
+                            URL urlInner = new URL(baseInner, l.getAttribute("href"));
+                            String linkInner = urlInner.toString();
+                            if (linkInner != null && !linkInner.trim().isEmpty()) {
+                                list.add(linkInner.trim());
+                            }
+                        }
+                    }
+                    if (list.size() > 1) {
+                        //                            String resultInput = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose Content Extracted: ", "More than one element detected, choose one of content extracted", "Content Extracted", content.trim(), list);
+                        //                            if (resultInput != null) {
+                        //                                content = resultInput;
+                        String value = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose element", "More than one element detected. \nSelect content extracted that you want.", "Content Extracted", null, list);
+                        if (value.isEmpty()) {
+                            //hapus selected
+                            deSelectElementByJFXID(Integer.valueOf(id));
+                            finishGetCurrentSelectedElement();
+                        } else {
+                            wisuda2013(value.trim());
+                            finishGetCurrentSelectedElement();
+                        }
+                    } else {
+                        wisuda2013(content.trim());
+                        finishGetCurrentSelectedElement();
+                    }
+
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(BrowserController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+
+            void wisuda2013(String value) {
+                RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(new RDFProperty(lst, lst), value);
+                mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().add(rdfIndividualProperty);
+                mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetailsTable().getSelectionModel().select(rdfIndividualProperty);
+                mainController.getAnnotationTabController().getExtractionPanelController().getIndividualTable().getSelectionModel().getSelectedItem().getRdfIndividualProperty().add(rdfIndividualProperty);
+            }
+        });
+
+    }
+
+    public void finishGetCurrentSelectedElement() {
+        engine.executeScript(INSPECT_SCRIPT);
+        webx.setOnMouseClicked(null);
     }
 }

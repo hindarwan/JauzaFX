@@ -90,7 +90,7 @@ public class MainController implements Initializable {
 //        annotationTabController.getBrowserController().load(Config.defaultWebAddress);
         annotationTabController.getBrowserController().load(StaticValue.defaultWebAddress);
         annotationTabController.getExtractionPanelController().setMainController(this);
-        annotationTabController.getExtractionPanelController().getCurrentSelectionTable().setItems(currentSelections);
+//        annotationTabController.getExtractionPanelController().getCurrentSelectionTable().setItems(currentSelections);
         annotationTabController.getExtractionPanelController().getIndividualTable().setItems(currentIndividuals);
 
 
@@ -170,4 +170,9 @@ public class MainController implements Initializable {
     public RDFController getRDFController() {
         return rdfController;
     }
+
+    public AnnotationTabController getAnnotationTabController() {
+        return annotationTabController;
+    }
+    
 }

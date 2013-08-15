@@ -9,6 +9,8 @@ import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFClass;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividual;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividualProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
+import com.wordpress.erenha.arjuna.jauza.util.StaticValue;
+import com.wordpress.erenha.arjuna.jauza.view.wizard.DemoWizard;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,18 +25,23 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialogs;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
 /**
@@ -44,28 +51,20 @@ import javafx.util.Callback;
  */
 public class ExtractionPanelController implements Initializable {
 
-    @FXML //  fx:id="current"
-    private TableView<CurrentSelection> currentSelectionTable; // Value injected by FXMLLoader
-    @FXML //  fx:id="currentContent"
-    private TableColumn<CurrentSelection, String> currentSelectionContentColumn; // Value injected by FXMLLoader
-    @FXML //  fx:id="currentID"
-    private TableColumn<CurrentSelection, String> currentSelectionIDColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="inv"
     private TableView<RDFIndividual> individualTable; // Value injected by FXMLLoader
     @FXML //  fx:id="invClass"
     private TableColumn<RDFIndividual, String> individualClassColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="invID"
     private TableColumn<RDFIndividual, String> individualIDColumn; // Value injected by FXMLLoader
-//    @FXML //  fx:id="invSelected"
-//    private TableColumn<Individual, Boolean> individualSelectedColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="invDetails"
     private TableView<RDFIndividualProperty> individualDetailsTable; // Value injected by FXMLLoader
-//    @FXML //  fx:id="invDetailsID"
-//    private TableColumn<RDFIndividualProperty, String> individualDetailsIDColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="invDetailsProperty"
     private TableColumn<RDFIndividualProperty, String> individualDetailsPropertyColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="invDetailsValue"
     private TableColumn<RDFIndividualProperty, String> individualDetailsValueColumn; // Value injected by FXMLLoader
+    @FXML //  fx:id="valueSourceBox"
+    private ChoiceBox<String> valueSourceBox; // Value injected by FXMLLoader
     //NON FXML
     private MainController mainController;
     //tabel model
@@ -77,20 +76,33 @@ public class ExtractionPanelController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // table
-        initCurrent();
         initInv();
         initInvDetails();
         // table model
         initModel();
+        ObservableList<String> pilihan = FXCollections.observableArrayList(
+                "From user input",
+                "From current page",
+                "From sesame repository",
+                "From dbPedia");
 
+        valueSourceBox.setItems(pilihan);
+        valueSourceBox.getSelectionModel().selectFirst();
     }
 
-    public TableView<CurrentSelection> getCurrentSelectionTable() {
-        return currentSelectionTable;
-    }
-
+//    public TableView<CurrentSelection> getCurrentSelectionTable() {
+//        return currentSelectionTable;
+//    }
     public TableView<RDFIndividual> getIndividualTable() {
         return individualTable;
+    }
+
+    public TableView<RDFIndividualProperty> getIndividualDetailsTable() {
+        return individualDetailsTable;
+    }
+
+    public ObservableList<RDFIndividualProperty> getIndividualDetails() {
+        return individualDetails;
     }
 
     public void setMainController(MainController mainController) {
@@ -111,11 +123,6 @@ public class ExtractionPanelController implements Initializable {
 
             }
         });
-    }
-
-    private void initCurrent() {
-        currentSelectionIDColumn.setCellValueFactory(new PropertyValueFactory("id"));
-        currentSelectionContentColumn.setCellValueFactory(new PropertyValueFactory("content"));
     }
 
     private void initInv() {
@@ -182,18 +189,18 @@ public class ExtractionPanelController implements Initializable {
         grid.setVgap(10);
         grid.setPadding(new Insets(0, 10, 0, 10));
         Label idLabel = new Label("Identifier :");
-        grid.add(idLabel, 0, 2);
+        grid.add(idLabel, 0, 0);
         ToggleGroup groupID = new ToggleGroup();
         RadioButton genID = new RadioButton("Use generated ID");
         final RadioButton givenID = new RadioButton("Use given ID");
         genID.setToggleGroup(groupID);
         genID.selectedProperty().set(true);
         givenID.setToggleGroup(groupID);
-        grid.add(genID, 0, 3);
-        grid.add(givenID, 0, 4);
+        grid.add(genID, 0, 1);
+        grid.add(givenID, 0, 2);
         final TextField givenIDField = new TextField();
         givenIDField.disableProperty().set(true);
-        grid.add(givenIDField, 0, 5);
+        grid.add(givenIDField, 0, 3);
 
         givenID.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -206,11 +213,11 @@ public class ExtractionPanelController implements Initializable {
             }
         });
         Label typeLabel = new Label("Type of Individual :");
-        grid.add(typeLabel, 0, 0);
+        grid.add(typeLabel, 0, 4);
         Collections.sort(mainController.getCurrentClassesLabel());
         final ComboBox<String> type = new ComboBox<>(mainController.getCurrentClassesLabel());
         type.setPromptText("<<Choose Type>>");
-        grid.add(type, 0, 1);
+        grid.add(type, 0, 5);
 
         final List<String> lst = new ArrayList<>();
         lst.add(0, "null");
@@ -229,26 +236,57 @@ public class ExtractionPanelController implements Initializable {
                 return null;
             }
         };
-        Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid, "1. Choose type of individual.\n2. Give unique identifier or use generated identifier.", "Create Individual", Dialogs.DialogOptions.OK, myCallback);
+        Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid, StaticValue.annotation_create_individual, StaticValue.annotation_create_individual_title, Dialogs.DialogOptions.OK, myCallback);
         if (!lst.get(0).equals("null") || !lst.get(1).equals("null")) {
-            mainController.getCurrentIndividuals().add(new RDFIndividual(lst.get(1), new RDFClass(mainController.getRDFController().toNamespaceFull(lst.get(0)), lst.get(0)), l));
+            RDFIndividual rdfIndividual = new RDFIndividual(lst.get(1), new RDFClass(mainController.getRDFController().toNamespaceFull(lst.get(0)), lst.get(0)), l);
+            mainController.getCurrentIndividuals().add(rdfIndividual);
+            individualTable.getSelectionModel().select(rdfIndividual);
         }
     }
 
     @FXML
-    public void addPropertyAction(ActionEvent event) {
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(0, 10, 0, 10));
+    public void addPropertyAction1(ActionEvent event) {
+//        DemoWizard dw = new DemoWizard(null);
+        VBox vBox = new VBox(5.0);
+        GridPane grid1 = new GridPane();
+        grid1.setHgap(10);
+        grid1.setVgap(10);
+        grid1.setPadding(new Insets(0, 10, 0, 10));
         Label typeLabel = new Label("Property");
-        grid.add(typeLabel, 0, 0);
+        grid1.add(typeLabel, 0, 0);
+        Label valueLabel = new Label("Value");
+        grid1.add(valueLabel, 1, 0);
         Collections.sort(mainController.getCurrentPropertiesLabel());
         final ComboBox<String> type = new ComboBox<>(mainController.getCurrentPropertiesLabel());
+        type.setMinWidth(160.0);
         type.setPromptText("<<Choose Property>>");
-        grid.add(type, 0, 1);
-        final TextField givenIDField = new TextField();
-        grid.add(givenIDField, 1, 1);
+        grid1.add(type, 0, 1);
+
+        ObservableList<String> pilihan = FXCollections.observableArrayList(
+                "From user input",
+                "From current page",
+                "From sesame repository",
+                "From dbPedia");
+
+        final ComboBox<String> typeValue = new ComboBox<>(pilihan);
+//        typeValue.getSelectionModel().selectFirst();
+        typeValue.setMinWidth(160.0);
+
+        grid1.add(typeValue, 1, 1);
+
+        final VBox vBox2 = new VBox();
+        final GridPane grid2 = new GridPane();
+        grid2.setHgap(10);
+        grid2.setVgap(10);
+        grid2.setPadding(new Insets(0, 10, 0, 10));
+        Label valueCustomLabel = new Label("User Input");
+        grid2.add(valueCustomLabel, 0, 0);
+//        final TextField givenIDField = new TextField();
+//        grid2.add(givenIDField, 0, 1);
+
+        final TextArea givenIDField = new TextArea();
+        grid2.add(givenIDField, 0, 1);
+//        vBox2.getChildren().add(grid2);
 
         final List<String> lst = new ArrayList<>();
         lst.add(0, "null");
@@ -259,16 +297,132 @@ public class ExtractionPanelController implements Initializable {
             public Void call(Void param) {
                 String selectedItem = type.getSelectionModel().getSelectedItem();
                 lst.add(0, selectedItem);
-                lst.add(1, givenIDField.getText());
+//                lst.add(1, givenIDField.getText());
                 return null;
             }
         };
-        Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid, "Add Property", "Add Property", Dialogs.DialogOptions.OK, myCallback);
+
+        typeValue.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> ov, String t, String t1) {
+                if (!"From user input".equals(t1)) {
+                    vBox2.getChildren().clear();
+                } else {
+                    vBox2.getChildren().clear();
+                    vBox2.getChildren().add(grid2);
+                }
+            }
+        });
+
+        vBox.getChildren().addAll(grid1, vBox2);
+//        Dialogs.showCustomDialog(mainController.getPrimaryStage(), dw, "Add Property", "Add Property", Dialogs.DialogOptions.OK, myCallback);
+        Dialogs.showCustomDialog(mainController.getPrimaryStage(), vBox, "Add Property", "Add Property", Dialogs.DialogOptions.OK_CANCEL, myCallback);
         if (!lst.get(0).equals("null") || !lst.get(1).equals("null")) {
             RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(new RDFProperty(lst.get(0), lst.get(0)), lst.get(1));
             individualDetails.add(rdfIndividualProperty);
+            individualDetailsTable.getSelectionModel().select(rdfIndividualProperty);
             individualTable.getSelectionModel().getSelectedItem().getRdfIndividualProperty().add(rdfIndividualProperty);
+
         }
+    }
+
+    @FXML
+    public void addPropertyAction(ActionEvent event) {
+//        String property = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose Property", "Add Property", "Add Property", null, mainController.getCurrentPropertiesLabel());
+//        String method = Dialogs.showInputDialog(mainController.getPrimaryStage(), "From", "Add Property", "Add Property", null, mainController.getCurrentPropertiesLabel());
+        GridPane grid1 = new GridPane();
+        grid1.setHgap(10);
+        grid1.setVgap(10);
+        grid1.setPadding(new Insets(0, 10, 0, 10));
+        Label typeLabel = new Label("Property");
+        grid1.add(typeLabel, 0, 0);
+        Label valueLabel = new Label("Value Source");
+        grid1.add(valueLabel, 1, 0);
+        Collections.sort(mainController.getCurrentPropertiesLabel());
+        final ComboBox<String> type = new ComboBox<>(mainController.getCurrentPropertiesLabel());
+        type.setMinWidth(160.0);
+        type.setPromptText("<<Choose Property>>");
+        grid1.add(type, 0, 1);
+
+        ObservableList<String> pilihan = FXCollections.observableArrayList(
+                "From current page",
+                "From user input",
+                "From sesame repository",
+                "From dbPedia");
+
+        final ComboBox<String> typeValue = new ComboBox<>(pilihan);
+        typeValue.getSelectionModel().selectFirst();
+        typeValue.setMinWidth(160.0);
+        grid1.add(typeValue, 1, 1);
+
+
+        final List<String> lst = new ArrayList<>();
+        lst.add(0, "null");
+        lst.add(1, "null");
+
+        Callback<Void, Void> myCallback = new Callback<Void, Void>() {
+            @Override
+            public Void call(Void param) {
+                String typeSel = type.getSelectionModel().getSelectedItem();
+                lst.add(0, typeSel);
+                String typeValueSel = typeValue.getSelectionModel().getSelectedItem();
+                lst.add(1, typeValueSel);
+                return null;
+            }
+        };
+        Dialogs.DialogResponse respon = Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid1, "Add Property", "Add Property", Dialogs.DialogOptions.OK_CANCEL, myCallback);
+        if (respon == Dialogs.DialogResponse.OK && !lst.get(0).equals("null") || !lst.get(1).equals("null")) {
+            switch (lst.get(1)) {
+                case "From current page":
+                    mainController.getAnnotationTabController().getBrowserController().initGetCurrentSelectedElement(lst.get(0));
+                    break;
+                case "From user input":
+                    String userInput = Dialogs.showInputDialog(mainController.getPrimaryStage(), "User Input", "Give a suitable value for '" + lst.get(0) + "'property", "User Input");
+                    if (!userInput.trim().isEmpty()) {
+                        RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(new RDFProperty(lst.get(0), lst.get(0)), userInput.trim());
+                        individualDetails.add(rdfIndividualProperty);
+                        individualDetailsTable.getSelectionModel().select(rdfIndividualProperty);
+                        individualTable.getSelectionModel().getSelectedItem().getRdfIndividualProperty().add(rdfIndividualProperty);
+                    }
+                    break;
+                case "From sesame repository":
+                    break;
+                case "From dbPedia":
+                    break;
+            }
+        }
+//        else if (respon == Dialogs.DialogResponse.OK && !lst.get(0).equals("null") || !lst.get(1).equals("null")) {
+//            RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(new RDFProperty(lst.get(0), lst.get(0)), lst.get(1));
+//            individualDetails.add(rdfIndividualProperty);
+//            individualDetailsTable.getSelectionModel().select(rdfIndividualProperty);
+//            individualTable.getSelectionModel().getSelectedItem().getRdfIndividualProperty().add(rdfIndividualProperty);
+//
+//        }
+    }
+
+    private void userInput() {
+        final GridPane grid2 = new GridPane();
+        grid2.setHgap(10);
+        grid2.setVgap(10);
+        grid2.setPadding(new Insets(0, 10, 0, 10));
+        Label valueCustomLabel = new Label("User Input");
+        grid2.add(valueCustomLabel, 0, 0);
+//        final TextField givenIDField = new TextField();
+//        grid2.add(givenIDField, 0, 1);
+
+        final TextArea givenIDField = new TextArea();
+        final List<String> lst = new ArrayList<>();
+        lst.add(0, "null");
+
+        Callback<Void, Void> myCallback = new Callback<Void, Void>() {
+            @Override
+            public Void call(Void param) {
+                lst.add(0, givenIDField.getText());
+                return null;
+            }
+        };
+        grid2.add(givenIDField, 0, 1);
+        Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid2, "Enter value fo", "Add Property", Dialogs.DialogOptions.OK_CANCEL, myCallback);
     }
 
     public void deleteSelectedIndividualAction(ActionEvent event) {

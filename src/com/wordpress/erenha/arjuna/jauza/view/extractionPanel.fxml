@@ -2,66 +2,67 @@
 
 <?import java.lang.*?>
 <?import java.util.*?>
+<?import javafx.collections.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <fx:root type="javafx.scene.layout.VBox" prefWidth="370.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.ExtractionPanelController">
-  <TitledPane animated="false" prefWidth="370.0" text="Extracted Content" VBox.vgrow="ALWAYS">
-    <content>
-      <VBox id="VBox" alignment="CENTER">
-        <children>
-          <TableView id="tableExtInd" fx:id="currentSelectionTable" editable="true" VBox.vgrow="ALWAYS">
-            <columns>
-              <TableColumn editable="false" minWidth="25.0" prefWidth="75.0" text="id" visible="false" fx:id="currentSelectionIDColumn" />
-              <TableColumn minWidth="220.0" prefWidth="240.0" text="Extracted Content" fx:id="currentSelectionContentColumn" />
-            </columns>
-          </TableView>
-        </children>
-      </VBox>
-    </content>
-  </TitledPane>
-  <TitledPane animated="false" prefWidth="370.0" text="Individuals" VBox.vgrow="ALWAYS">
-    <content>
-      <VBox id="VBox" alignment="CENTER">
-        <children>
-          <ToolBar>
-            <items>
-              <Button mnemonicParsing="false" onAction="#createInvAction" text="Create Individual" />
-              <Button mnemonicParsing="false" onAction="#deleteSelectedIndividualAction" text="Delete" />
-              <Button mnemonicParsing="false" text="Edit" visible="false" />
-            </items>
-          </ToolBar>
-          <TableView fx:id="individualTable" VBox.vgrow="ALWAYS">
-            <columns>
-              <TableColumn editable="false" minWidth="150.0" prefWidth="150.0" text="id" fx:id="individualIDColumn" />
-              <TableColumn minWidth="220.0" prefWidth="220.0" text="Class" fx:id="individualClassColumn" />
-            </columns>
-          </TableView>
-        </children>
-      </VBox>
-    </content>
-  </TitledPane>
-  <TitledPane animated="false" prefWidth="370.0" text="Individuals Details" VBox.vgrow="ALWAYS">
-    <content>
-      <VBox id="VBox" alignment="CENTER">
-        <children>
-          <ToolBar>
-            <items>
-              <Button mnemonicParsing="false" onAction="#addPropertyAction" text="Add Property" />
-              <Button mnemonicParsing="false" onAction="#deleteSelectedIndividualDetailsAction" text="Delete" />
-              <Button mnemonicParsing="false" text="Edit" visible="false" />
-            </items>
-          </ToolBar>
-          <TableView id="tableExtInd" fx:id="individualDetailsTable" editable="true" VBox.vgrow="ALWAYS">
-            <columns>
-              <TableColumn editable="false" minWidth="25.0" prefWidth="75.0" text="id" visible="false" fx:id="individualDetailsIDColumn" />
-              <TableColumn minWidth="150.0" prefWidth="150.0" text="Property" fx:id="individualDetailsPropertyColumn" />
-              <TableColumn minWidth="220.0" prefWidth="220.0" text="Value" fx:id="individualDetailsValueColumn" />
-            </columns>
-          </TableView>
-        </children>
-      </VBox>
-    </content>
-  </TitledPane>
+  <SplitPane id="SplitPane" dividerPositions="0.5" orientation="VERTICAL" VBox.vgrow="ALWAYS">
+    <items>
+      <TitledPane animated="false" collapsible="false" prefWidth="370.0" text="Individuals">
+        <content>
+          <VBox id="VBox" alignment="CENTER">
+            <children>
+              <ToolBar>
+                <items>
+                  <Button mnemonicParsing="false" onAction="#createInvAction" text="Create Individual" />
+                  <Button mnemonicParsing="false" onAction="#deleteSelectedIndividualAction" text="Delete" />
+                  <Button mnemonicParsing="false" text="Edit" visible="false" />
+                </items>
+              </ToolBar>
+              <TableView fx:id="individualTable" VBox.vgrow="ALWAYS">
+                <columns>
+                  <TableColumn editable="false" minWidth="150.0" prefWidth="150.0" text="id" fx:id="individualIDColumn" />
+                  <TableColumn minWidth="220.0" prefWidth="220.0" text="Class" fx:id="individualClassColumn" />
+                </columns>
+              </TableView>
+            </children>
+          </VBox>
+        </content>
+      </TitledPane>
+      <TitledPane animated="false" collapsible="false" prefWidth="370.0" text="Individuals Details">
+        <content>
+          <VBox id="VBox" alignment="CENTER">
+            <children>
+              <ToolBar>
+                <items>
+                  <Button mnemonicParsing="false" onAction="#addPropertyAction" text="Add Property" />
+                  <Label text="Source" />
+                  <ChoiceBox id="valueSource" fx:id="valueSourceBox">
+                    <items>
+                      <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Item 1" />
+                        <String fx:value="Item 2" />
+                        <String fx:value="Item 3" />
+                      </FXCollections>
+                    </items>
+                  </ChoiceBox>
+                  <Button mnemonicParsing="false" onAction="#deleteSelectedIndividualDetailsAction" text="Delete" />
+                  <Button mnemonicParsing="false" text="Edit" visible="false" />
+                </items>
+              </ToolBar>
+              <TableView id="tableExtInd" fx:id="individualDetailsTable" VBox.vgrow="ALWAYS">
+                <columns>
+                  <TableColumn editable="false" minWidth="25.0" prefWidth="75.0" text="id" visible="false" fx:id="individualDetailsIDColumn" />
+                  <TableColumn minWidth="150.0" prefWidth="150.0" text="Property" fx:id="individualDetailsPropertyColumn" />
+                  <TableColumn minWidth="220.0" prefWidth="220.0" text="Value" fx:id="individualDetailsValueColumn" />
+                </columns>
+              </TableView>
+            </children>
+          </VBox>
+        </content>
+      </TitledPane>
+    </items>
+  </SplitPane>
 </fx:root>
