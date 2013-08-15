@@ -370,7 +370,7 @@ public class BrowserController implements Initializable {
                         //                            String resultInput = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose Content Extracted: ", "More than one element detected, choose one of content extracted", "Content Extracted", content.trim(), list);
                         //                            if (resultInput != null) {
                         //                                content = resultInput;
-                        String value = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose element", "More than one element detected. \nSelect content extracted that you want.", "Content Extracted", null, list);
+                        String value = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose element", "More than one element detected. \nSelect content extracted that you want.", "Content Extracted", list.get(0), list);
                         if (value.isEmpty()) {
                             //hapus selected
                             deSelectElementByJFXID(Integer.valueOf(id));

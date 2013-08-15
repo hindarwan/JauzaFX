@@ -81,10 +81,10 @@ public class ExtractionPanelController implements Initializable {
         // table model
         initModel();
         ObservableList<String> pilihan = FXCollections.observableArrayList(
-                "From user input",
-                "From current page",
-                "From sesame repository",
-                "From dbPedia");
+                "current page",
+                "user input",
+                "sesame repository",
+                "dbPedia");
 
         valueSourceBox.setItems(pilihan);
         valueSourceBox.getSelectionModel().selectFirst();
@@ -327,7 +327,7 @@ public class ExtractionPanelController implements Initializable {
     }
 
     @FXML
-    public void addPropertyAction(ActionEvent event) {
+    public void addPropertyAction2(ActionEvent event) {
 //        String property = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose Property", "Add Property", "Add Property", null, mainController.getCurrentPropertiesLabel());
 //        String method = Dialogs.showInputDialog(mainController.getPrimaryStage(), "From", "Add Property", "Add Property", null, mainController.getCurrentPropertiesLabel());
         GridPane grid1 = new GridPane();
@@ -391,13 +391,29 @@ public class ExtractionPanelController implements Initializable {
                     break;
             }
         }
-//        else if (respon == Dialogs.DialogResponse.OK && !lst.get(0).equals("null") || !lst.get(1).equals("null")) {
-//            RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(new RDFProperty(lst.get(0), lst.get(0)), lst.get(1));
-//            individualDetails.add(rdfIndividualProperty);
-//            individualDetailsTable.getSelectionModel().select(rdfIndividualProperty);
-//            individualTable.getSelectionModel().getSelectedItem().getRdfIndividualProperty().add(rdfIndividualProperty);
-//
-//        }
+    }
+
+    @FXML
+    public void addPropertyAction(ActionEvent event) {
+        String property = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose Property", "Choose property that you want to add", "Add Property", mainController.getCurrentPropertiesLabel().get(0), mainController.getCurrentPropertiesLabel());
+        switch (valueSourceBox.getValue()) {
+            case "current page":
+                mainController.getAnnotationTabController().getBrowserController().initGetCurrentSelectedElement(property);
+                break;
+            case "user input":
+                String userInput = Dialogs.showInputDialog(mainController.getPrimaryStage(), "User Input", "Give a suitable value for '" + property + "'property", "User Input");
+                if (!userInput.trim().isEmpty()) {
+                    RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(new RDFProperty(property, property), userInput.trim());
+                    individualDetails.add(rdfIndividualProperty);
+                    individualDetailsTable.getSelectionModel().select(rdfIndividualProperty);
+                    individualTable.getSelectionModel().getSelectedItem().getRdfIndividualProperty().add(rdfIndividualProperty);
+                }
+                break;
+            case "sesame repository":
+                break;
+            case "dbPedia":
+                break;
+        }
     }
 
     private void userInput() {
