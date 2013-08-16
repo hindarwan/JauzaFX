@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.*?>
 
 <fx:root type="javafx.scene.layout.VBox" prefWidth="370.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.ExtractionPanelController">
-  <SplitPane id="SplitPane" dividerPositions="0.5" orientation="VERTICAL" VBox.vgrow="ALWAYS">
+  <SplitPane id="SplitPane" dividerPositions="0.35174418604651164" orientation="VERTICAL" VBox.vgrow="ALWAYS">
     <items>
-      <TitledPane animated="false" collapsible="false" prefWidth="370.0" text="Individuals">
+      <TitledPane animated="false" collapsible="false" prefHeight="360.0" prefWidth="376.0" text="Individuals">
         <content>
           <VBox id="VBox" alignment="CENTER">
             <children>
@@ -31,34 +31,23 @@
           </VBox>
         </content>
       </TitledPane>
-      <TitledPane animated="false" collapsible="false" prefWidth="370.0" text="Individuals Details">
+      <TitledPane animated="false" collapsible="false" prefHeight="666.0" prefWidth="376.0" text="Individuals Details">
         <content>
           <VBox id="VBox" alignment="CENTER">
             <children>
-              <ToolBar>
-                <items>
-                  <Button mnemonicParsing="false" onAction="#addPropertyAction" text="Add Property" />
-                  <Label text="Source" />
-                  <ChoiceBox id="valueSource" fx:id="valueSourceBox">
-                    <items>
-                      <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="Item 1" />
-                        <String fx:value="Item 2" />
-                        <String fx:value="Item 3" />
-                      </FXCollections>
-                    </items>
-                  </ChoiceBox>
-                  <Button mnemonicParsing="false" onAction="#deleteSelectedIndividualDetailsAction" text="Delete" />
-                  <!--<Button mnemonicParsing="false" text="Edit" visible="false" />-->
-                </items>
-              </ToolBar>
-              <TableView id="tableExtInd" fx:id="individualDetailsTable" VBox.vgrow="ALWAYS">
+              <TableView id="tableExtInd" fx:id="individualDetailsTable" editable="true" prefHeight="602.0" VBox.vgrow="ALWAYS">
                 <columns>
                   <TableColumn editable="false" minWidth="25.0" prefWidth="75.0" text="id" visible="false" fx:id="individualDetailsIDColumn" />
                   <TableColumn minWidth="150.0" prefWidth="150.0" text="Property" fx:id="individualDetailsPropertyColumn" />
                   <TableColumn minWidth="220.0" prefWidth="220.0" text="Value" fx:id="individualDetailsValueColumn" />
                 </columns>
               </TableView>
+              <ToolBar>
+                <items>
+                  <Button mnemonicParsing="false" onAction="#addPropertyAction" text="Add From Other Source" />
+                  <!--<Button mnemonicParsing="false" text="Edit" visible="false" />-->
+                </items>
+              </ToolBar>
             </children>
           </VBox>
         </content>

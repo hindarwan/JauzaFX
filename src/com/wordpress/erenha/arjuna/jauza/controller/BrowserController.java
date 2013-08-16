@@ -142,7 +142,8 @@ public class BrowserController implements Initializable {
             webx.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent t) {
-                    getSelectedElement();
+//                    getSelectedElement();
+                    inspectMode(t);
                 }
             });
         } else {
@@ -210,14 +211,7 @@ public class BrowserController implements Initializable {
 
     @FXML
     public void test(ActionEvent event) {
-
-//        engine.executeScript("var a = document.querySelector('[jfxid=\"32\"]').getAttribute('class');"
-//                + "document.querySelector('[jfxid=\"32\"]').setAttribute('class', a + ' sg_selected');");
-        System.out.println(mainController.getRDFController().toNamespacePrefix("http://www.w3.org/ns/dcat#Dataset"));
-        System.out.println(mainController.getRDFController().toNamespacePrefix("http://www.w3.org/ns/dca#Dataset"));
-        System.out.println(mainController.getRDFController().toNamespaceFull("dcat:Dataset"));
-        System.out.println(mainController.getRDFController().toNamespaceFull("dca:Dataset"));
-        System.out.println(mainController.getRDFController().toNamespaceFull("http://www.w3.org/ns/dcat#Dataset134"));
+        clearSelectElement();
     }
 
     private void getSelectedElement() {
@@ -342,6 +336,13 @@ public class BrowserController implements Initializable {
                 + "document.querySelector('[jfxid=\"" + id + "\"]').setAttribute('class', a);");
     }
 
+    private void clearSelectElement() {
+        engine.executeScript("var node = document.querySelectorAll('[class*=\\\"sg_selected\\\"]');"
+                + "for(var i = 0, l = node.length; i < l; i++ ){"
+                + "    node[i].classList.remove(\"sg_selected\");"
+                + "}");
+    }
+
     public void load(String url) {
         engine.load(url);
     }
@@ -408,20 +409,14 @@ public class BrowserController implements Initializable {
                     final ListView<String> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
                     listView.autosize();
                     listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
                         @Override
                         public void handle(MouseEvent t) {
-                            String t1 = listView.getSelectionModel().getSelectedItem();
-                            RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(new RDFProperty(t1, t1), value);
-                            mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().add(rdfIndividualProperty);
-                            mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetailsTable().getSelectionModel().select(rdfIndividualProperty);
-                            
-                            mainController.getAnnotationTabController().getExtractionPanelController().getIndividualTable().getSelectionModel().getSelectedItem().getRdfIndividualProperty().add(rdfIndividualProperty);
-                            
+                            int selectedIndex = listView.getSelectionModel().getSelectedIndex();
+                            mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).setPropertyValue(value);
                             popup.hide();
                             deSelectElementByJFXID(Integer.valueOf(id));
 //                            finishGetCurrentSelectedElement();
-                    
+
                         }
                     });
 
@@ -438,5 +433,110 @@ public class BrowserController implements Initializable {
     public void finishGetCurrentSelectedElement() {
         engine.executeScript(INSPECT_SCRIPT);
         webx.setOnMouseClicked(null);
+    }
+
+    public void inspectMode(MouseEvent t) {
+        try {
+            List<String> list = new ArrayList<>();
+            Element selectedElement = (Element) engine.executeScript("document.querySelectorAll('[class*=\\\"sg_selected\\\"]').item(" + 0 + ")");
+            String id = selectedElement.getAttribute("jfxid");
+            String content = selectedElement.getTextContent();
+            if (content != null && !content.trim().isEmpty()) {
+                list.add(content.trim());
+            }
+
+            URL base = new URL(selectedElement.getBaseURI());
+            if (selectedElement.getAttribute("href") != null) {
+                URL url = new URL(base, selectedElement.getAttribute("href"));
+                String link = url.toString();
+                if (link != null && !link.trim().isEmpty()) {
+                    list.add(link.trim());
+                }
+            }
+
+            NodeList links = selectedElement.getElementsByTagName("a");
+            for (int j = 0; j < links.getLength(); j++) {
+                Element l = (Element) links.item(j);
+                URL baseInner = new URL(l.getBaseURI());
+                if (l.getAttribute("href") != null) {
+                    URL urlInner = new URL(baseInner, l.getAttribute("href"));
+                    String linkInner = urlInner.toString();
+                    if (linkInner != null && !linkInner.trim().isEmpty()) {
+                        list.add(linkInner.trim());
+                    }
+                }
+            }
+            int a = list.size();
+            a = 1;//TODO  :)
+            if (a > 1) {
+                showPopupPropertyMoreOne(id, list, t);
+            } else {
+                showPopupProperty(id, content.trim(), t);
+            }
+
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(BrowserController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    final Popup popup = new Popup();
+
+    private void showPopupProperty(final String id, final String value, MouseEvent t) {
+        if (!mainController.getCurrentPropertiesLabel().isEmpty()) {
+            if (popup.isShowing()) {
+                popup.hide();
+                clearSelectElement();
+                selectElementByJFXID(Integer.valueOf(id));
+            }
+            final ListView<String> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
+            listView.autosize();
+            listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent t) {
+                    int selectedIndex = listView.getSelectionModel().getSelectedIndex();
+                    mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).setPropertyValue(value);
+                    popup.hide();
+                    deSelectElementByJFXID(Integer.valueOf(id));
+
+                }
+            });
+
+            popup.getContent().add(listView);
+            popup.setX(t.getScreenX());
+            popup.setY(t.getScreenY());
+            popup.show(mainController.getPrimaryStage());
+        }
+    }
+
+    private void showPopupPropertyMoreOne(final String id, List<String> list, MouseEvent t) {
+        final String value = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose element", "More than one element detected. \nSelect content extracted that you want.", "Content Extracted", list.get(0), list);
+        if (value.isEmpty()) {
+            //hapus selected
+            deSelectElementByJFXID(Integer.valueOf(id));
+        } else {
+            if (!mainController.getCurrentPropertiesLabel().isEmpty()) {
+                if (popup.isShowing()) {
+                    popup.hide();
+                    clearSelectElement();
+                    selectElementByJFXID(Integer.valueOf(id));
+                }
+                final ListView<String> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
+                listView.autosize();
+                listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent t) {
+                        int selectedIndex = listView.getSelectionModel().getSelectedIndex();
+                        mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).setPropertyValue(value);
+                        popup.hide();
+                        deSelectElementByJFXID(Integer.valueOf(id));
+                    }
+                });
+
+                popup.getContent().add(listView);
+                popup.setX(t.getScreenX());
+                popup.setY(t.getScreenY());
+                popup.show(mainController.getPrimaryStage());
+            }
+        }
+
     }
 }
