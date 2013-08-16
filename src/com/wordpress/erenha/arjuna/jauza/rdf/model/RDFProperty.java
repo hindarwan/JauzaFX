@@ -43,4 +43,11 @@ public class RDFProperty {
     public StringProperty uriProperty() {
         return uri;
     }
+
+    @Override
+    public String toString() {
+        return label.get();
+    }
+    
+    
 }
