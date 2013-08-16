@@ -90,14 +90,14 @@ public class SaveTabController implements Initializable {
                 return p.getValue().getRdfClass().labelProperty();
             }
         });
-        individualTypeColumn.setCellFactory(new Callback<TableColumn<RDFIndividual, String>, TableCell<RDFIndividual, String>>() {
-            @Override
-            public TableCell<RDFIndividual, String> call(TableColumn<RDFIndividual, String> p) {
-                Collections.sort(mainController.getCurrentClassesLabel());
-                TableCell<RDFIndividual, String> cell = new ComboBoxTableCell<>(mainController.getCurrentClassesLabel());
-                return cell;
-            }
-        });
+//        individualTypeColumn.setCellFactory(new Callback<TableColumn<RDFIndividual, String>, TableCell<RDFIndividual, String>>() {
+//            @Override
+//            public TableCell<RDFIndividual, String> call(TableColumn<RDFIndividual, String> p) {
+////                Collections.sort(mainController.getCurrentClassesLabel());
+//                TableCell<RDFIndividual, String> cell = new ComboBoxTableCell<>(mainController.getCurrentClassesLabel());
+//                return cell;
+//            }
+//        });
 //        individualSelectedColumn.setCellValueFactory(new PropertyValueFactory("selected"));
 //        individualSelectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(individualSelectedColumn));
     }
@@ -111,14 +111,14 @@ public class SaveTabController implements Initializable {
             }
         });
         individualDetailsValueColumn.setCellValueFactory(new PropertyValueFactory("propertyValue"));
-        individualDetailsPropertyColumn.setCellFactory(new Callback<TableColumn<RDFIndividualProperty, String>, TableCell<RDFIndividualProperty, String>>() {
-            @Override
-            public TableCell<RDFIndividualProperty, String> call(TableColumn<RDFIndividualProperty, String> p) {
-                Collections.sort(mainController.getCurrentPropertiesLabel());
-                TableCell<RDFIndividualProperty, String> cell = new ComboBoxTableCell<>(mainController.getCurrentPropertiesLabel());
-                return cell;
-            }
-        });
+//        individualDetailsPropertyColumn.setCellFactory(new Callback<TableColumn<RDFIndividualProperty, String>, TableCell<RDFIndividualProperty, String>>() {
+//            @Override
+//            public TableCell<RDFIndividualProperty, String> call(TableColumn<RDFIndividualProperty, String> p) {
+//                Collections.sort(mainController.getCurrentPropertiesLabel());
+//                TableCell<RDFIndividualProperty, String> cell = new ComboBoxTableCell<>(mainController.getCurrentPropertiesLabel());
+//                return cell;
+//            }
+//        });
     }
 
     public void saveAllIndividual(ActionEvent event) {

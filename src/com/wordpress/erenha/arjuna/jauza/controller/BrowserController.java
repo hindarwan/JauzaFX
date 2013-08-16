@@ -406,7 +406,7 @@ public class BrowserController implements Initializable {
             void addProperty(final String id, final String value, MouseEvent t) {
                 if (!mainController.getCurrentPropertiesLabel().isEmpty()) {
                     final Popup popup = new Popup();
-                    final ListView<String> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
+                    final ListView<RDFProperty> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
                     listView.autosize();
                     listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
@@ -487,7 +487,7 @@ public class BrowserController implements Initializable {
                 clearSelectElement();
                 selectElementByJFXID(Integer.valueOf(id));
             }
-            final ListView<String> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
+            final ListView<RDFProperty> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
             listView.autosize();
             listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
@@ -519,7 +519,7 @@ public class BrowserController implements Initializable {
                     clearSelectElement();
                     selectElementByJFXID(Integer.valueOf(id));
                 }
-                final ListView<String> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
+                final ListView<RDFProperty> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
                 listView.autosize();
                 listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override

@@ -108,7 +108,7 @@ public class ExtractionPanelController implements Initializable {
                 individualDetails.clear();
                 if (t1 != null) {
                     individualDetails.addAll(t1.getRdfIndividualProperty());
-                    mainController.getRDFController().getPropertiesByClass(t1.getRdfClass().getUri());
+                    mainController.getRDFController().getPropertiesByClass(t1.getRdfClass());
                 }
 
             }
@@ -117,6 +117,7 @@ public class ExtractionPanelController implements Initializable {
 
     private void initInv() {
         individualIDColumn.setCellValueFactory(new PropertyValueFactory("uri"));
+//        individualClassColumn.setCellValueFactory(new PropertyValueFactory("label"));
         individualClassColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<RDFIndividual, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<RDFIndividual, String> p) {
@@ -179,38 +180,46 @@ public class ExtractionPanelController implements Initializable {
         });
         Label typeLabel = new Label("Type of Individual :");
         grid.add(typeLabel, 0, 4);
-        Collections.sort(mainController.getCurrentClassesLabel());
-        final ComboBox<String> type = new ComboBox<>(mainController.getCurrentClassesLabel());
+//        Collections.sort(mainController.getCurrentClassesLabel());
+//        final ComboBox<String> type = new ComboBox<>(mainController.getCurrentClassesLabel());
+        final ComboBox<RDFClass> type = new ComboBox<>(mainController.getCurrentClassesLabel());
         type.setPromptText("<<Choose Type>>");
         grid.add(type, 0, 5);
 
-        final List<String> lst = new ArrayList<>();
+        final List<Object> lst = new ArrayList<>();
         lst.add(0, "null");
         lst.add(1, "null");
 
         Callback<Void, Void> myCallback = new Callback<Void, Void>() {
             @Override
             public Void call(Void param) {
-                String selectedItem = type.getSelectionModel().getSelectedItem();
+                //                String selectedItem = type.getSelectionModel().getSelectedItem();
+                RDFClass selectedItem = type.getSelectionModel().getSelectedItem();
                 lst.add(0, selectedItem);
                 if (givenID.isSelected() && !givenIDField.getText().isEmpty()) {
                     lst.add(1, givenIDField.getText());
                 } else {
-                    lst.add(1, selectedItem.substring(selectedItem.indexOf(":") + 1) + System.currentTimeMillis());
+//                    lst.add(1, selectedItem.substring(selectedItem.indexOf(":") + 1) + System.currentTimeMillis());
+                    lst.add(1, selectedItem.toString().replaceAll(" ", "_") + System.currentTimeMillis());
                 }
                 return null;
             }
         };
         Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid, StaticValue.annotation_create_individual, StaticValue.annotation_create_individual_title, Dialogs.DialogOptions.OK, myCallback);
         if (!lst.get(0).equals("null") || !lst.get(1).equals("null")) {
-            RDFClass rdfClass = new RDFClass(mainController.getRDFController().toNamespaceFull(lst.get(0)), lst.get(0));
+            //            RDFClass rdfClass = new RDFClass(mainController.getRDFController().toNamespaceFull(lst.get(0)), lst.get(0));
+            RDFClass rdfClass = (RDFClass) lst.get(0);
             List<RDFIndividualProperty> l = new ArrayList<>();
-            mainController.getRDFController().getPropertiesByClass(rdfClass.getUri());
-            for (String string : mainController.getCurrentPropertiesLabel()) {
-                RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(new RDFProperty(mainController.getRDFController().toNamespaceFull(string), string), "");
+            mainController.getRDFController().getPropertiesByClass(rdfClass);
+//            for (String string : mainController.getCurrentPropertiesLabel()) {
+//                RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(new RDFProperty(mainController.getRDFController().toNamespaceFull(string), string), "");
+//                l.add(rdfIndividualProperty);
+//            }
+            for (RDFProperty string : mainController.getCurrentPropertiesLabel()) {
+                RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(string, "");
                 l.add(rdfIndividualProperty);
             }
-            RDFIndividual rdfIndividual = new RDFIndividual(lst.get(1), rdfClass, l);
+            RDFIndividual rdfIndividual = new RDFIndividual(lst.get(1).toString(), rdfClass, l);
             mainController.getCurrentIndividuals().add(rdfIndividual);
             individualTable.getSelectionModel().select(rdfIndividual);
 //            mainController.getAnnotationTabController().getBrowserController().initGetCurrentSelectedElement();
@@ -227,8 +236,8 @@ public class ExtractionPanelController implements Initializable {
         grid1.add(typeLabel, 0, 0);
         Label valueLabel = new Label("Value Source");
         grid1.add(valueLabel, 1, 0);
-        Collections.sort(mainController.getCurrentPropertiesLabel());
-        final ChoiceBox<String> type = new ChoiceBox<>(mainController.getCurrentPropertiesLabel());
+//        Collections.sort(mainController.getCurrentPropertiesLabel());
+        final ChoiceBox<RDFProperty> type = new ChoiceBox<>(mainController.getCurrentPropertiesLabel());
         type.setMinWidth(160.0);
         grid1.add(type, 0, 1);
 
@@ -242,14 +251,14 @@ public class ExtractionPanelController implements Initializable {
         grid1.add(typeValue, 1, 1);
 
 
-        final List<String> lst = new ArrayList<>();
+        final List<Object> lst = new ArrayList<>();
         lst.add(0, "null");
         lst.add(1, "null");
 
         Callback<Void, Void> myCallback = new Callback<Void, Void>() {
             @Override
             public Void call(Void param) {
-                String typeSel = type.getSelectionModel().getSelectedItem();
+                RDFProperty typeSel = type.getSelectionModel().getSelectedItem();
                 lst.add(0, typeSel);
                 String typeValueSel = typeValue.getSelectionModel().getSelectedItem();
                 lst.add(1, typeValueSel);
@@ -258,7 +267,7 @@ public class ExtractionPanelController implements Initializable {
         };
         Dialogs.DialogResponse respon = Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid1, "Add Property", "Add Property", Dialogs.DialogOptions.OK_CANCEL, myCallback);
         if (respon == Dialogs.DialogResponse.OK && !lst.get(0).equals("null") || !lst.get(1).equals("null")) {
-            switch (lst.get(1)) {
+            switch (lst.get(1).toString()) {
                 case "From sesame repository":
                     break;
                 case "From dbPedia":

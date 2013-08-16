@@ -245,10 +245,11 @@ public class RDFController {
         try {
             mainController.getCurrentClassesLabel().clear();
             RepositoryConnection connection = repo.getConnection();
-            String query = "SELECT DISTINCT ?c\n"
+            String query = "SELECT DISTINCT ?c ?cLabel\n"
                     + "WHERE\n"
                     + "{\n"
                     + "?c rdf:type rdfs:Class.\n"
+                    + "?c rdfs:label ?cLabel.\n"
                     + "}";
             try {
                 TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
@@ -257,8 +258,9 @@ public class RDFController {
                 while (result.hasNext()) {
                     BindingSet bindingSet = result.next();
                     Value uri = bindingSet.getValue(bindingNames.get(0));
+                    Value label = bindingSet.getValue(bindingNames.get(1));
 //                    mainController.getCurrentClasses().add(new RDFClass(uri.stringValue(), label.stringValue()));
-                    mainController.getCurrentClassesLabel().add(toNamespacePrefix(uri.stringValue()));
+                    mainController.getCurrentClassesLabel().add(new RDFClass(uri.stringValue(), label.stringValue()));
                 }
             } finally {
                 connection.close();
@@ -296,7 +298,7 @@ public class RDFController {
                         Value label = bindingSet.getValue(bindingNames.get(1));
 //                        mainController.getCurrentClasses().add(new RDFClass(uri.stringValue(), label.stringValue()));
 //                        mainController.getCurrentClassesLabel().add(ns.getPrefix() + ":" + label.stringValue());
-                        mainController.getCurrentClassesLabel().add(uri.stringValue());
+//                        mainController.getCurrentClassesLabel().add(uri.stringValue());
 //                        mainController.getCurrentClassesLabel().add(label.stringValue());
                     }
                 } finally {
@@ -395,7 +397,7 @@ public class RDFController {
                         Value uri = bindingSet.getValue(bindingNames.get(0));
                         Value label = bindingSet.getValue(bindingNames.get(1));
 //                        mainController.getCurrentClasses().add(new RDFClass(uri.stringValue(), label.stringValue()));
-                        mainController.getCurrentPropertiesLabel().add(ns.getPrefix() + ":" + label.stringValue());
+//                        mainController.getCurrentPropertiesLabel().add(ns.getPrefix() + ":" + label.stringValue());
 //                        mainController.getCurrentPropertiesLabel().add(label.stringValue());
 //                        mainController.getCurrentPropertiesToShow().add(new RDFProperty(uri.stringValue(), ns.getPrefix() + label.stringValue()));
 
@@ -470,7 +472,40 @@ public class RDFController {
                     BindingSet bindingSet = result.next();
                     Value uri = bindingSet.getValue(bindingNames.get(0));
 
-                    mainController.getCurrentPropertiesLabel().add(toNamespacePrefix(uri.stringValue()));
+//                    mainController.getCurrentPropertiesLabel().add(toNamespacePrefix(uri.stringValue()));
+//                    mainController.getCurrentPropertiesLabel().add(label.stringValue());
+                }
+            } finally {
+                connection.close();
+            }
+
+        } catch (RepositoryException | MalformedQueryException | QueryEvaluationException ex) {
+            Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void getPropertiesByClass(RDFClass rdfClass) {
+        try {
+            mainController.getCurrentPropertiesLabel().clear();
+            RepositoryConnection connection = repo.getConnection();
+            String query = "SELECT DISTINCT ?p ?pLabel\n"
+                    + "WHERE\n"
+                    + "{\n"
+                    + "?p rdf:type rdf:Property.\n"
+                    + "?p rdfs:domain <" + rdfClass.getUri() + ">.\n"
+                    + "?p rdfs:label ?pLabel.\n"
+                    + "}";
+            try {
+                TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
+                TupleQueryResult result = tupleQuery.evaluate();
+                List<String> bindingNames = result.getBindingNames();
+                while (result.hasNext()) {
+                    BindingSet bindingSet = result.next();
+                    Value uri = bindingSet.getValue(bindingNames.get(0));
+                    Value label = bindingSet.getValue(bindingNames.get(1));
+
+//                    mainController.getCurrentPropertiesLabel().add(toNamespacePrefix(uri.stringValue()));
+                    mainController.getCurrentPropertiesLabel().add(new RDFProperty(uri.stringValue(), label.stringValue()));
 //                    mainController.getCurrentPropertiesLabel().add(label.stringValue());
                 }
             } finally {
@@ -489,15 +524,15 @@ public class RDFController {
         Graph g = new TreeModel();
         for (RDFIndividual individual : currentIndividuals) {
             URI uriIndividual = f.createURI(ns, individual.getUri());
-            URI typeIndividual = f.createURI(toNamespaceFull(individual.getRdfClass().getUri()));
+            URI typeIndividual = f.createURI(individual.getRdfClass().getUri());
             Statement typeStatement = f.createStatement(uriIndividual, RDF.TYPE, typeIndividual);
             g.add(typeStatement);
             List<RDFIndividualProperty> propertyList = individual.getRdfIndividualProperty();
             for (RDFIndividualProperty property : propertyList) {
-                URI uriProperty = f.createURI(toNamespaceFull(property.getRdfProperty().getUri()));
-                
+                URI uriProperty = f.createURI(property.getRdfProperty().getUri());
+
                 Literal valueProperty = f.createLiteral(property.getPropertyValue());
-                
+
                 Statement propertyStatement = f.createStatement(uriIndividual, uriProperty, valueProperty);
                 g.add(propertyStatement);
             }
@@ -515,35 +550,34 @@ public class RDFController {
         }
     }
 
-    public String toNamespacePrefix(String url) {
-        for (RDFNamespace ns : mainController.getCurrentNamespaces()) {
-            if (url.startsWith(ns.getNamespace())) {
-                return ns.getPrefix() + url.replace(ns.getNamespace(), ":");
-            }
-        }
-        return url;
-    }
+//    public String toNamespacePrefix(String url) {
+//        for (RDFNamespace ns : mainController.getCurrentNamespaces()) {
+//            if (url.startsWith(ns.getNamespace())) {
+//                return ns.getPrefix() + url.replace(ns.getNamespace(), ":");
+//            }
+//        }
+//        return url;
+//    }
+//
+//    public String toNamespaceFull(String prefixUrl) {
+//        try {
+//            URL url = new URL(prefixUrl);
+//            return prefixUrl;
+//        } catch (MalformedURLException ex) {
+//            try {
+//                String[] split = prefixUrl.split(":");
+//                String namespaces = getNamespaces(split[0]);
+//                if (namespaces == null) {
+//                    return prefixUrl;
+//                }
+//                return namespaces + split[1];
+//            } catch (Exception e) {
+//                return prefixUrl;
+//            }
+//        }
+//    }
+    public boolean isLiteral(String property) {
 
-    public String toNamespaceFull(String prefixUrl) {
-        try {
-            URL url = new URL(prefixUrl);
-            return prefixUrl;
-        } catch (MalformedURLException ex) {
-            try {
-                String[] split = prefixUrl.split(":");
-                String namespaces = getNamespaces(split[0]);
-                if (namespaces == null) {
-                    return prefixUrl;
-                }
-                return namespaces + split[1];
-            } catch (Exception e) {
-                return prefixUrl;
-            }
-        }
-    }
-    
-    public boolean isLiteral(String property){
-        
         return true;
     }
 }

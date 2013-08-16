@@ -36,9 +36,9 @@ public class MainController implements Initializable {
     private ObservableList<RDFNamespace> currentNamespaces;
     private ObservableList<RDFOntology> currentOntologies;
     private ObservableList<RDFClass> currentClasses;
-    private ObservableList<String> currentClassesLabel;
+    private ObservableList<RDFClass> currentClassesLabel;
     private ObservableList<RDFProperty> currentProperties;
-    private ObservableList<String> currentPropertiesLabel;
+    private ObservableList<RDFProperty> currentPropertiesLabel;
     private ObservableList<RDFProperty> currentPropertiesToShow;
     private ObservableList<RDFIndividual> currentIndividuals;
     
@@ -80,9 +80,9 @@ public class MainController implements Initializable {
         currentNamespaces = FXCollections.observableList(new ArrayList<RDFNamespace>());
         currentOntologies = FXCollections.observableList(new ArrayList<RDFOntology>());
         currentClasses = FXCollections.observableList(new ArrayList<RDFClass>());
-        currentClassesLabel = FXCollections.observableList(new ArrayList<String>());
+        currentClassesLabel = FXCollections.observableList(new ArrayList<RDFClass>());
         currentProperties = FXCollections.observableList(new ArrayList<RDFProperty>());
-        currentPropertiesLabel = FXCollections.observableList(new ArrayList<String>());
+        currentPropertiesLabel = FXCollections.observableList(new ArrayList<RDFProperty>());
         currentIndividuals = FXCollections.observableList(new ArrayList<RDFIndividual>());
 //        currentIndividualProperties = FXCollections.observableList(new ArrayList<RDFIndividualProperty>());
 
@@ -151,11 +151,11 @@ public class MainController implements Initializable {
         return currentProperties;
     }
 
-    public ObservableList<String> getCurrentClassesLabel() {
+    public ObservableList<RDFClass> getCurrentClassesLabel() {
         return currentClassesLabel;
     }
 
-    public ObservableList<String> getCurrentPropertiesLabel() {
+    public ObservableList<RDFProperty> getCurrentPropertiesLabel() {
         return currentPropertiesLabel;
     }
 
