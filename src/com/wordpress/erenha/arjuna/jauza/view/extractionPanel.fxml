@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.*?>
 
 <fx:root type="javafx.scene.layout.VBox" prefWidth="370.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.ExtractionPanelController">
-  <SplitPane id="SplitPane" dividerPositions="0.35174418604651164" orientation="VERTICAL" VBox.vgrow="ALWAYS">
+  <SplitPane id="SplitPane" dividerPositions="0.2546218487394958" orientation="VERTICAL" VBox.vgrow="ALWAYS">
     <items>
-      <TitledPane animated="false" collapsible="false" prefHeight="360.0" prefWidth="376.0" text="Individuals">
+      <TitledPane animated="false" collapsible="false" maxHeight="300.0" minHeight="250.0" text="Individuals">
         <content>
           <VBox id="VBox" alignment="CENTER">
             <children>
@@ -31,7 +31,7 @@
           </VBox>
         </content>
       </TitledPane>
-      <TitledPane animated="false" collapsible="false" prefHeight="666.0" prefWidth="376.0" text="Individuals Details">
+      <TitledPane animated="false" collapsible="false" prefHeight="727.0" prefWidth="376.0" text="Individuals Details">
         <content>
           <VBox id="VBox" alignment="CENTER">
             <children>

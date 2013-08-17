@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -200,7 +201,7 @@ public class ExtractionPanelController implements Initializable {
                     lst.add(1, givenIDField.getText());
                 } else {
 //                    lst.add(1, selectedItem.substring(selectedItem.indexOf(":") + 1) + System.currentTimeMillis());
-                    lst.add(1, selectedItem.toString().replaceAll(" ", "_") + System.currentTimeMillis());
+                    lst.add(1, selectedItem.toString().replaceAll(" ", "_") + UUID.randomUUID().toString().replaceAll("-", ""));
                 }
                 return null;
             }
