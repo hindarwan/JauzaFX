@@ -97,7 +97,7 @@ public class MainController implements Initializable {
         ontologyTabController.setMainController(this);
 //        ontologyTabController.getOntologyTable().setItems(currentContext);
         ontologyTabController.getOntologyTable().setItems(currentOntologies);
-        ontologyTabController.getNamespaceTable().setItems(currentNamespaces);
+//        ontologyTabController.getNamespaceTable().setItems(currentNamespaces);
         ontologyTabController.getClassesTable().setItems(currentClasses);
         ontologyTabController.getPropertiesTable().setItems(currentProperties);
 

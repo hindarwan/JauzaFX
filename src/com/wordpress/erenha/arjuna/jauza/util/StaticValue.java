@@ -12,7 +12,7 @@ public class StaticValue {
     //config
     public final static String defaultWebAddress = "http://localhost";
     public final static String sesameServer = "http://localhost:8080/openrdf-sesame";
-    public final static String sesameRepositoryID = "onelink";
+    public final static String sesameRepositoryID = "onelinkDemo";
     //message
     public final static String annotation_create_individual_title = 
             "Create Individual";

@@ -11,59 +11,56 @@
   <children>
     <SplitPane dividerPositions="0.5" focusTraversable="true" orientation="VERTICAL" prefHeight="349.0" prefWidth="1024.0" VBox.vgrow="ALWAYS">
       <items>
-        <VBox id="VBox" alignment="CENTER" spacing="5.0">
+        <VBox id="VBox" alignment="CENTER">
           <children>
-            <TabPane prefHeight="216.0" prefWidth="1022.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
-              <stylesheets>
-                <URL value="@main.css" />
-              </stylesheets>
-              <tabs>
-                <Tab text="Ontology">
-                  <content>
-                    <VBox id="VBox">
-                      <children>
-                        <ToolBar>
-                          <items>
-                            <Label text="Load Other Ontology" />
-                            <TextField fx:id="urlFileImport" prefWidth="377.0" promptText="Enter a URL or browse file" />
-                            <Button mnemonicParsing="false" onAction="#browseFile" text="Browse" />
-                            <Button mnemonicParsing="false" onAction="#importOntology" text="Import" />
-                          </items>
-                        </ToolBar>
-                        <TableView fx:id="ontologyTable" prefHeight="205.0" prefWidth="1022.0" VBox.vgrow="ALWAYS">
-                          <columns>
-                            <TableColumn minWidth="500.0" prefWidth="500.0" text="URI" fx:id="ontologyURIColumn" />
-                            <TableColumn minWidth="400.0" prefWidth="400.0" text="Name" fx:id="ontologyLabelColumn" />
-                          </columns>
-                        </TableView>
-                      </children>
-                    </VBox>
-                  </content>
-                </Tab>
-                <Tab text="Namespace">
-                  <content>
-                    <VBox prefHeight="200.0" prefWidth="100.0">
-                      <children>
-                        <ToolBar>
-                          <items>
-                            <Label text="Add Other Namespace" />
-                            <TextField fx:id="namespaceURIField" prefWidth="325.0" promptText="namespace URI" />
-                            <TextField fx:id="namespacePrefixField" prefWidth="133.0" promptText="namespace prefix" />
-                            <Button mnemonicParsing="false" onAction="#addNamespace" text="Add" />
-                          </items>
-                        </ToolBar>
-                        <TableView fx:id="namespaceTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                          <columns>
-                            <TableColumn minWidth="500.0" prefWidth="500.0" text="Namespace URI" fx:id="namespaceURIColumn" />
-                            <TableColumn minWidth="300.0" prefWidth="300.0" text="Namespace Prefix" fx:id="namespacePrefixColumn" />
-                          </columns>
-                        </TableView>
-                      </children>
-                    </VBox>
-                  </content>
-                </Tab>
-              </tabs>
-            </TabPane>
+            <ToolBar>
+              <items>
+                <Label text="Load Other Ontology" />
+                <TextField fx:id="urlFileImport" prefWidth="377.0" promptText="Enter a URL or browse file" />
+                <Button mnemonicParsing="false" onAction="#browseFile" text="Browse" />
+                <Button mnemonicParsing="false" onAction="#importOntology" text="Import" />
+              </items>
+            </ToolBar>
+            <TableView fx:id="ontologyTable" prefHeight="205.0" prefWidth="1022.0" VBox.vgrow="ALWAYS">
+              <columns>
+                <TableColumn minWidth="500.0" prefWidth="500.0" text="URI" fx:id="ontologyURIColumn" />
+                <TableColumn minWidth="400.0" prefWidth="400.0" text="Name" fx:id="ontologyLabelColumn" />
+              </columns>
+            </TableView>
+            <!--            <VBox id="VBox">
+              <children>
+                <TabPane prefHeight="216.0" prefWidth="1022.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                  <stylesheets>
+                    <URL value="@main.css" />
+                  </stylesheets>
+                  <tabs>
+                    <Tab text="Ontology" />
+                    <Tab text="Namespace">
+                      <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                          <children>
+                            <ToolBar>
+                              <items>
+                                <Label text="Add Other Namespace" />
+                                <TextField fx:id="namespaceURIField" prefWidth="325.0" promptText="namespace URI" />
+                                <TextField fx:id="namespacePrefixField" prefWidth="133.0" promptText="namespace prefix" />
+                                <Button mnemonicParsing="false" onAction="#addNamespace" text="Add" />
+                              </items>
+                            </ToolBar>
+                            <TableView fx:id="namespaceTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                              <columns>
+                                <TableColumn minWidth="500.0" prefWidth="500.0" text="Namespace URI" fx:id="namespaceURIColumn" />
+                                <TableColumn minWidth="300.0" prefWidth="300.0" text="Namespace Prefix" fx:id="namespacePrefixColumn" />
+                              </columns>
+                            </TableView>
+                          </children>
+                        </VBox>
+                      </content>
+                    </Tab>
+                  </tabs>
+                </TabPane>
+              </children>
+            </VBox>-->
           </children>
         </VBox>
         <SplitPane dividerPositions="0.5" focusTraversable="true" prefHeight="160.0" prefWidth="200.0">

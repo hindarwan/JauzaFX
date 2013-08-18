@@ -32,16 +32,16 @@ import javafx.stage.FileChooser;
  */
 public class OntologyTabController implements Initializable {
 
-    @FXML //  fx:id="namespacePrefixColumn"
-    private TableColumn<RDFNamespace, String> namespacePrefixColumn; // Value injected by FXMLLoader
-    @FXML //  fx:id="namespacePrefixField"
-    private TextField namespacePrefixField; // Value injected by FXMLLoader
-    @FXML //  fx:id="namespaceURIColumn"
-    private TableColumn<RDFNamespace, String> namespaceURIColumn; // Value injected by FXMLLoader
-    @FXML //  fx:id="namespaceURIField"
-    private TextField namespaceURIField; // Value injected by FXMLLoader
-    @FXML //  fx:id="namespaceTable"
-    private TableView<RDFNamespace> namespaceTable; // Value injected by FXMLLoader
+//    @FXML //  fx:id="namespacePrefixColumn"
+//    private TableColumn<RDFNamespace, String> namespacePrefixColumn; // Value injected by FXMLLoader
+//    @FXML //  fx:id="namespacePrefixField"
+//    private TextField namespacePrefixField; // Value injected by FXMLLoader
+//    @FXML //  fx:id="namespaceURIColumn"
+//    private TableColumn<RDFNamespace, String> namespaceURIColumn; // Value injected by FXMLLoader
+//    @FXML //  fx:id="namespaceURIField"
+//    private TextField namespaceURIField; // Value injected by FXMLLoader
+//    @FXML //  fx:id="namespaceTable"
+//    private TableView<RDFNamespace> namespaceTable; // Value injected by FXMLLoader
     @FXML //  fx:id="ontologyLabelColumn"
     private TableColumn<RDFOntology, String> ontologyLabelColumn; // Value injected by FXMLLoader
     @FXML //  fx:id="ontologyTable"
@@ -74,11 +74,11 @@ public class OntologyTabController implements Initializable {
         assert ontologyLabelColumn != null : "fx:id=\"ontologyLabelColumn\" was not injected: check your FXML file 'ontologyTab.fxml'.";
         assert ontologyTable != null : "fx:id=\"ontologyTable\" was not injected: check your FXML file 'ontologyTab.fxml'.";
         assert ontologyURIColumn != null : "fx:id=\"ontologyURIColumn\" was not injected: check your FXML file 'ontologyTab.fxml'.";
-        assert namespacePrefixColumn != null : "fx:id=\"namespacePrefixColumn\" was not injected: check your FXML file 'ontologyTab.fxml'.";
-        assert namespacePrefixField != null : "fx:id=\"namespacePrefixField\" was not injected: check your FXML file 'ontologyTab.fxml'.";
-        assert namespaceURIColumn != null : "fx:id=\"namespaceURIColumn\" was not injected: check your FXML file 'ontologyTab.fxml'.";
-        assert namespaceURIField != null : "fx:id=\"namespaceURIField\" was not injected: check your FXML file 'ontologyTab.fxml'.";
-        assert namespaceTable != null : "fx:id=\"namespaceTable\" was not injected: check your FXML file 'ontologyTab.fxml'.";
+//        assert namespacePrefixColumn != null : "fx:id=\"namespacePrefixColumn\" was not injected: check your FXML file 'ontologyTab.fxml'.";
+//        assert namespacePrefixField != null : "fx:id=\"namespacePrefixField\" was not injected: check your FXML file 'ontologyTab.fxml'.";
+//        assert namespaceURIColumn != null : "fx:id=\"namespaceURIColumn\" was not injected: check your FXML file 'ontologyTab.fxml'.";
+//        assert namespaceURIField != null : "fx:id=\"namespaceURIField\" was not injected: check your FXML file 'ontologyTab.fxml'.";
+//        assert namespaceTable != null : "fx:id=\"namespaceTable\" was not injected: check your FXML file 'ontologyTab.fxml'.";
         assert classesLabelColumn != null : "fx:id=\"classesLabelColumn\" was not injected: check your FXML file 'ontologyTab.fxml'.";
         assert classesTable != null : "fx:id=\"classesTable\" was not injected: check your FXML file 'ontologyTab.fxml'.";
         assert classesURIColumn != null : "fx:id=\"classesURIColumn\" was not injected: check your FXML file 'ontologyTab.fxml'.";
@@ -95,8 +95,8 @@ public class OntologyTabController implements Initializable {
     private void initTableColumn() {
         ontologyLabelColumn.setCellValueFactory(new PropertyValueFactory("label"));
         ontologyURIColumn.setCellValueFactory(new PropertyValueFactory("uri"));
-        namespaceURIColumn.setCellValueFactory(new PropertyValueFactory("namespace"));
-        namespacePrefixColumn.setCellValueFactory(new PropertyValueFactory("prefix"));
+//        namespaceURIColumn.setCellValueFactory(new PropertyValueFactory("namespace"));
+//        namespacePrefixColumn.setCellValueFactory(new PropertyValueFactory("prefix"));
         classesLabelColumn.setCellValueFactory(new PropertyValueFactory("label"));
         classesURIColumn.setCellValueFactory(new PropertyValueFactory("uri"));
         propertiesLabelColumn.setCellValueFactory(new PropertyValueFactory("label"));
@@ -113,14 +113,14 @@ public class OntologyTabController implements Initializable {
             }
         });
         
-        namespaceTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<RDFNamespace>() {
-
-            @Override
-            public void changed(ObservableValue<? extends RDFNamespace> ov, RDFNamespace t, RDFNamespace t1) {
-                mainController.getRDFController().getClassesByNS(t1.getNamespace());
-                mainController.getRDFController().getPropertiesByNS(t1.getNamespace());
-            }
-        });
+//        namespaceTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<RDFNamespace>() {
+//
+//            @Override
+//            public void changed(ObservableValue<? extends RDFNamespace> ov, RDFNamespace t, RDFNamespace t1) {
+//                mainController.getRDFController().getClassesByNS(t1.getNamespace());
+//                mainController.getRDFController().getPropertiesByNS(t1.getNamespace());
+//            }
+//        });
         
     }
 
@@ -128,9 +128,9 @@ public class OntologyTabController implements Initializable {
         return ontologyTable;
     }
 
-    public TableView<RDFNamespace> getNamespaceTable() {
-        return namespaceTable;
-    }
+//    public TableView<RDFNamespace> getNamespaceTable() {
+//        return namespaceTable;
+//    }
 
     public TableView<RDFClass> getClassesTable() {
         return classesTable;
@@ -175,12 +175,12 @@ public class OntologyTabController implements Initializable {
         }
     }
     
-    @FXML
-    public void addNamespace(ActionEvent event) {
-        String prefix = namespacePrefixField.getText().trim();
-        String ns = namespaceURIField.getText().trim();
-        if (!ns.isEmpty() || !prefix.isEmpty()) {
-            mainController.getRDFController().addNamespace(prefix, ns);
-        }
-    }
+//    @FXML
+//    public void addNamespace(ActionEvent event) {
+//        String prefix = namespacePrefixField.getText().trim();
+//        String ns = namespaceURIField.getText().trim();
+//        if (!ns.isEmpty() || !prefix.isEmpty()) {
+//            mainController.getRDFController().addNamespace(prefix, ns);
+//        }
+//    }
 }

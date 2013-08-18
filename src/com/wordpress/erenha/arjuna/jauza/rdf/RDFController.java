@@ -17,9 +17,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Dialogs;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Namespace;
@@ -540,8 +542,9 @@ public class RDFController {
         try {
             RepositoryConnection connection = repo.getConnection();
             try {
-                connection.add(g, new URIImpl(ns + "saved_on_" + System.currentTimeMillis()));
-                System.out.println("Individual saved");
+                connection.add(g, new URIImpl(ns + UUID.randomUUID().toString().replaceAll("-", "")));
+                System.out.println("[INFO]: Individual saved");
+                Dialogs.showInformationDialog(mainController.getPrimaryStage(), "All Individuals Succesfully Saved",  "Information Dialog", "Save Individual");
             } finally {
                 connection.close();
             }
