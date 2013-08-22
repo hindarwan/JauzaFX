@@ -4,21 +4,17 @@
  */
 package com.wordpress.erenha.arjuna.jauza.rdf.model;
 
-import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 /**
  *
  * @author Hindarwan
  */
 public class RDFIndividualProperty {
     private RDFProperty rdfProperty;
-    private final StringProperty propertyValue;
+    private RDFValue rdfValue;
 
-    public RDFIndividualProperty(RDFProperty rdfProperty, String propertyValue) {
+    public RDFIndividualProperty(RDFProperty rdfProperty, RDFValue rdfValue) {
         this.rdfProperty = rdfProperty;
-        this.propertyValue = new SimpleStringProperty(propertyValue);
+        this.rdfValue = rdfValue;
     }
 
     public RDFProperty getRdfProperty() {
@@ -29,16 +25,12 @@ public class RDFIndividualProperty {
         this.rdfProperty = rdfProperty;
     }
 
-    public String getPropertyValue() {
-        return propertyValue.get();
+    public RDFValue getRdfValue() {
+        return rdfValue;
     }
 
-    public void setPropertyValue(String value) {
-        propertyValue.set(value);
+    public void setRdfValue(RDFValue rdfValue) {
+        this.rdfValue = rdfValue;
     }
 
-    public StringProperty propertyValueProperty() {
-        return propertyValue;
-    }
-    
 }

@@ -32,6 +32,8 @@ import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.TreeModel;
 import org.openrdf.model.impl.URIImpl;
+import org.openrdf.model.vocabulary.DC;
+import org.openrdf.model.vocabulary.FOAF;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
@@ -532,8 +534,10 @@ public class RDFController {
             List<RDFIndividualProperty> propertyList = individual.getRdfIndividualProperty();
             for (RDFIndividualProperty property : propertyList) {
                 URI uriProperty = f.createURI(property.getRdfProperty().getUri());
-
-                Literal valueProperty = f.createLiteral(property.getPropertyValue());
+                URI uriValue = f.createURI(property.getRdfValue().getUri());
+                
+//                if(uri)
+                Literal valueProperty = f.createLiteral(property.getRdfValue().getLabel());
 
                 Statement propertyStatement = f.createStatement(uriIndividual, uriProperty, valueProperty);
                 g.add(propertyStatement);
@@ -552,33 +556,8 @@ public class RDFController {
             Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
 
-//    public String toNamespacePrefix(String url) {
-//        for (RDFNamespace ns : mainController.getCurrentNamespaces()) {
-//            if (url.startsWith(ns.getNamespace())) {
-//                return ns.getPrefix() + url.replace(ns.getNamespace(), ":");
-//            }
-//        }
-//        return url;
-//    }
-//
-//    public String toNamespaceFull(String prefixUrl) {
-//        try {
-//            URL url = new URL(prefixUrl);
-//            return prefixUrl;
-//        } catch (MalformedURLException ex) {
-//            try {
-//                String[] split = prefixUrl.split(":");
-//                String namespaces = getNamespaces(split[0]);
-//                if (namespaces == null) {
-//                    return prefixUrl;
-//                }
-//                return namespaces + split[1];
-//            } catch (Exception e) {
-//                return prefixUrl;
-//            }
-//        }
-//    }
     public boolean isLiteral(String property) {
 
         return true;

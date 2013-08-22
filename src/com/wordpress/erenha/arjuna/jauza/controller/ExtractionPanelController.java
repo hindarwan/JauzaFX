@@ -8,6 +8,7 @@ import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFClass;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividual;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividualProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFValue;
 import com.wordpress.erenha.arjuna.jauza.util.StaticValue;
 import java.net.URL;
 import java.util.ArrayList;
@@ -76,11 +77,6 @@ public class ExtractionPanelController implements Initializable {
         initInvDetails();
         // table model
         initModel();
-        ObservableList<String> pilihan = FXCollections.observableArrayList(
-                "current page",
-                "user input",
-                "sesame repository",
-                "dbPedia");
 
     }
 
@@ -136,9 +132,16 @@ public class ExtractionPanelController implements Initializable {
                 return label;
             }
         });
-        individualDetailsValueColumn.setCellValueFactory(new PropertyValueFactory("propertyValue"));
-        individualDetailsValueColumn.setCellFactory(new Callback<TableColumn<RDFIndividualProperty, String>, TableCell<RDFIndividualProperty, String>>() {
+//        individualDetailsValueColumn.setCellValueFactory(new PropertyValueFactory("propertyValue"));
+        individualDetailsValueColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<RDFIndividualProperty, String>, ObservableValue<String>>() {
 
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<RDFIndividualProperty, String> p) {
+                StringProperty label = p.getValue().getRdfValue().labelProperty();
+                return label;
+            }
+        });
+        individualDetailsValueColumn.setCellFactory(new Callback<TableColumn<RDFIndividualProperty, String>, TableCell<RDFIndividualProperty, String>>() {
             @Override
             public TableCell<RDFIndividualProperty, String> call(TableColumn<RDFIndividualProperty, String> p) {
                 StringConverter converter = new DefaultStringConverter();
@@ -217,7 +220,7 @@ public class ExtractionPanelController implements Initializable {
 //                l.add(rdfIndividualProperty);
 //            }
             for (RDFProperty string : mainController.getCurrentPropertiesLabel()) {
-                RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(string, "");
+                RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(string, new RDFValue("", ""));
                 l.add(rdfIndividualProperty);
             }
             RDFIndividual rdfIndividual = new RDFIndividual(lst.get(1).toString(), rdfClass, l);
@@ -229,77 +232,24 @@ public class ExtractionPanelController implements Initializable {
 
     @FXML
     public void addPropertyAction(ActionEvent event) {
-        GridPane grid1 = new GridPane();
-        grid1.setHgap(10);
-        grid1.setVgap(10);
-        grid1.setPadding(new Insets(0, 10, 0, 10));
-        Label typeLabel = new Label("Property");
-        grid1.add(typeLabel, 0, 0);
-        Label valueLabel = new Label("Value Source");
-        grid1.add(valueLabel, 1, 0);
-//        Collections.sort(mainController.getCurrentPropertiesLabel());
-        final ChoiceBox<RDFProperty> type = new ChoiceBox<>(mainController.getCurrentPropertiesLabel());
-        type.setMinWidth(160.0);
-        grid1.add(type, 0, 1);
-
-        ObservableList<String> pilihan = FXCollections.observableArrayList(
-                "From sesame repository",
-                "From dbPedia");
-
-        final ChoiceBox<String> typeValue = new ChoiceBox<>(pilihan);
-        typeValue.getSelectionModel().selectFirst();
-        typeValue.setMinWidth(160.0);
-        grid1.add(typeValue, 1, 1);
-
-
-        final List<Object> lst = new ArrayList<>();
-        lst.add(0, "null");
-        lst.add(1, "null");
-
-        Callback<Void, Void> myCallback = new Callback<Void, Void>() {
-            @Override
-            public Void call(Void param) {
-                RDFProperty typeSel = type.getSelectionModel().getSelectedItem();
-                lst.add(0, typeSel);
-                String typeValueSel = typeValue.getSelectionModel().getSelectedItem();
-                lst.add(1, typeValueSel);
-                return null;
-            }
-        };
-        Dialogs.DialogResponse respon = Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid1, "Add Property", "Add Property", Dialogs.DialogOptions.OK_CANCEL, myCallback);
-        if (respon == Dialogs.DialogResponse.OK && !lst.get(0).equals("null") || !lst.get(1).equals("null")) {
-            switch (lst.get(1).toString()) {
-                case "From sesame repository":
-                    break;
-                case "From dbPedia":
-                    break;
-            }
+        ObservableList<String> pilihan = FXCollections.observableArrayList("From sesame repository", "From dbPedia");
+        String source = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose Resource Repository", "Match value with existing resource", "Match value", pilihan.get(0), pilihan);
+        switch (source) {
+            case "From sesame repository":
+                sesameRepository();
+                break;
+            case "From dbPedia":
+                break;
+            case "From SPARQL Endpoint":
+                break;
         }
+
+    }
+    
+    private void sesameRepository(){
+        RDFIndividualProperty selectedItem = individualDetailsTable.getSelectionModel().getSelectedItem();
     }
 
-    /**
-     * @FXML public void addPropertyAction(ActionEvent event) { // String
-     * property = Dialogs.showInputDialog(mainController.getPrimaryStage(),
-     * "Choose Property", "Choose property that you want to add", "Add
-     * Property", mainController.getCurrentPropertiesLabel().get(0),
-     * mainController.getCurrentPropertiesLabel()); switch
-     * (valueSourceBox.getValue()) { case "current page":
-     * mainController.getAnnotationTabController().getBrowserController().initGetCurrentSelectedElement();
-     * break; case "user input": String property =
-     * Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose
-     * Property", "Choose property that you want to add", "Add Property",
-     * mainController.getCurrentPropertiesLabel().get(0),
-     * mainController.getCurrentPropertiesLabel()); String userInput =
-     * Dialogs.showInputDialog(mainController.getPrimaryStage(), "User Input",
-     * "Give a suitable value for '" + property + "'property", "User Input"); if
-     * (!userInput.trim().isEmpty()) { RDFIndividualProperty
-     * rdfIndividualProperty = new RDFIndividualProperty(new
-     * RDFProperty(property, property), userInput.trim());
-     * individualDetails.add(rdfIndividualProperty);
-     * individualDetailsTable.getSelectionModel().select(rdfIndividualProperty);
-     * individualTable.getSelectionModel().getSelectedItem().getRdfIndividualProperty().add(rdfIndividualProperty);
-     * } break; case "sesame repository": break; case "dbPedia": break; } }
-     */
     private void userInput() {
         final GridPane grid2 = new GridPane();
         grid2.setHgap(10);

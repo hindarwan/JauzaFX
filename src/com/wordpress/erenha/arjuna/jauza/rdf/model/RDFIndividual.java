@@ -4,6 +4,7 @@
  */
 package com.wordpress.erenha.arjuna.jauza.rdf.model;
 
+import java.util.Collections;
 import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -49,6 +50,11 @@ public class RDFIndividual {
 
     public StringProperty uriProperty() {
         return uri;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString(); //To change body of generated methods, choose Tools | Templates.
     }
     
     

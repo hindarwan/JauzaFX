@@ -6,6 +6,7 @@ package com.wordpress.erenha.arjuna.jauza.controller;
 
 import com.wordpress.erenha.arjuna.jauza.model.CurrentSelection;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFValue;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -407,7 +408,7 @@ public class BrowserController implements Initializable {
                         @Override
                         public void handle(MouseEvent t) {
                             int selectedIndex = listView.getSelectionModel().getSelectedIndex();
-                            mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).setPropertyValue(value);
+                            mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).setRdfValue(new RDFValue(value, value));
                             popup.hide();
                             deSelectElementByJFXID(Integer.valueOf(id));
 //                            finishGetCurrentSelectedElement();
@@ -487,7 +488,7 @@ public class BrowserController implements Initializable {
                 @Override
                 public void handle(MouseEvent t) {
                     int selectedIndex = listView.getSelectionModel().getSelectedIndex();
-                    mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).setPropertyValue(value);
+                    mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).getRdfValue().setLabel(value);
                     popup.hide();
                     deSelectElementByJFXID(Integer.valueOf(id));
 
@@ -519,7 +520,7 @@ public class BrowserController implements Initializable {
                     @Override
                     public void handle(MouseEvent t) {
                         int selectedIndex = listView.getSelectionModel().getSelectedIndex();
-                        mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).setPropertyValue(value);
+                        mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).getRdfValue().setLabel(value);
                         popup.hide();
                         deSelectElementByJFXID(Integer.valueOf(id));
                     }
