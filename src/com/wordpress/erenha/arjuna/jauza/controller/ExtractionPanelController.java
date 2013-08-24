@@ -145,7 +145,7 @@ public class ExtractionPanelController implements Initializable {
             @Override
             public TableCell<RDFIndividualProperty, String> call(TableColumn<RDFIndividualProperty, String> p) {
                 StringConverter converter = new DefaultStringConverter();
-                TableCell<RDFIndividualProperty, String> cell = new TextFieldTableCell<RDFIndividualProperty, String>(converter);
+                TableCell<RDFIndividualProperty, String> cell = new TextFieldTableCell<>(converter);
                 return cell;
             }
         });
@@ -239,6 +239,7 @@ public class ExtractionPanelController implements Initializable {
                 sesameRepository();
                 break;
             case "From dbPedia":
+                dbPedia();
                 break;
             case "From SPARQL Endpoint":
                 break;
@@ -248,6 +249,10 @@ public class ExtractionPanelController implements Initializable {
     
     private void sesameRepository(){
         RDFIndividualProperty selectedItem = individualDetailsTable.getSelectionModel().getSelectedItem();
+    }
+    
+    private void dbPedia(){
+//        mainController.getPrimaryStage()
     }
 
     private void userInput() {

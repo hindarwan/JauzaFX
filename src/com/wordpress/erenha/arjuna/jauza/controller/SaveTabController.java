@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ResourceBundle;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -22,7 +23,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
+import javafx.util.converter.DefaultStringConverter;
 
 /**
  * FXML Controller class
@@ -110,15 +114,23 @@ public class SaveTabController implements Initializable {
                 return p.getValue().getRdfProperty().labelProperty();
             }
         });
-        individualDetailsValueColumn.setCellValueFactory(new PropertyValueFactory("propertyValue"));
-//        individualDetailsPropertyColumn.setCellFactory(new Callback<TableColumn<RDFIndividualProperty, String>, TableCell<RDFIndividualProperty, String>>() {
-//            @Override
-//            public TableCell<RDFIndividualProperty, String> call(TableColumn<RDFIndividualProperty, String> p) {
-//                Collections.sort(mainController.getCurrentPropertiesLabel());
-//                TableCell<RDFIndividualProperty, String> cell = new ComboBoxTableCell<>(mainController.getCurrentPropertiesLabel());
-//                return cell;
-//            }
-//        });
+        individualDetailsValueColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<RDFIndividualProperty, String>, ObservableValue<String>>() {
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<RDFIndividualProperty, String> p) {
+                StringProperty label = p.getValue().getRdfValue().labelProperty();
+                return label;
+            }
+        });
+        individualDetailsValueColumn.setCellFactory(new Callback<TableColumn<RDFIndividualProperty, String>, TableCell<RDFIndividualProperty, String>>() {
+
+            @Override
+            public TableCell<RDFIndividualProperty, String> call(TableColumn<RDFIndividualProperty, String> p) {
+                StringConverter converter = new DefaultStringConverter();
+                TableCell<RDFIndividualProperty, String> cell = new TextFieldTableCell<>(converter);
+                return cell;
+            }
+        });
     }
 
     public void saveAllIndividual(ActionEvent event) {

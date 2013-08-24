@@ -12,6 +12,7 @@ import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividual;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividualProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFNamespace;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFOntology;
+import com.wordpress.erenha.arjuna.jauza.util.StaticValue;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -35,6 +36,7 @@ import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.vocabulary.DC;
 import org.openrdf.model.vocabulary.FOAF;
 import org.openrdf.model.vocabulary.RDF;
+import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
@@ -522,7 +524,7 @@ public class RDFController {
     }
 
     public void saveAllIndividual() {
-        String ns = "http://localhost:8080/resource/";
+        String ns = StaticValue.nsResource;
         ObservableList<RDFIndividual> currentIndividuals = mainController.getCurrentIndividuals();
         ValueFactory f = repo.getValueFactory();
         Graph g = new TreeModel();
@@ -534,13 +536,19 @@ public class RDFController {
             List<RDFIndividualProperty> propertyList = individual.getRdfIndividualProperty();
             for (RDFIndividualProperty property : propertyList) {
                 URI uriProperty = f.createURI(property.getRdfProperty().getUri());
-                URI uriValue = f.createURI(property.getRdfValue().getUri());
-                
-//                if(uri)
-                Literal valueProperty = f.createLiteral(property.getRdfValue().getLabel());
 
-                Statement propertyStatement = f.createStatement(uriIndividual, uriProperty, valueProperty);
-                g.add(propertyStatement);
+                if (property.getRdfValue().getUri().isEmpty()) {
+                    Literal valueProperty = f.createLiteral(property.getRdfValue().getLabel());
+                    Statement propertyStatement = f.createStatement(uriIndividual, uriProperty, valueProperty);
+                    g.add(propertyStatement);
+                } else {
+                    URI valueProperty = f.createURI(property.getRdfValue().getUri());
+                    Statement propertyStatement = f.createStatement(uriIndividual, uriProperty, valueProperty);
+                    g.add(propertyStatement);
+                    Literal valueLabel = f.createLiteral(property.getRdfValue().getLabel());
+                    Statement valueStatement = f.createStatement(valueProperty, RDFS.LABEL, valueLabel);
+                    g.add(valueStatement);
+                }
             }
         }
         try {
@@ -548,7 +556,7 @@ public class RDFController {
             try {
                 connection.add(g, new URIImpl(ns + UUID.randomUUID().toString().replaceAll("-", "")));
                 System.out.println("[INFO]: Individual saved");
-                Dialogs.showInformationDialog(mainController.getPrimaryStage(), "All Individuals Succesfully Saved",  "Information Dialog", "Save Individual");
+                Dialogs.showInformationDialog(mainController.getPrimaryStage(), "All Individuals Succesfully Saved", "Information Dialog", "Save Individual");
             } finally {
                 connection.close();
             }
@@ -556,7 +564,6 @@ public class RDFController {
             Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
 
     public boolean isLiteral(String property) {
 
