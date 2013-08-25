@@ -10,12 +10,14 @@ import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividualProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFValue;
 import com.wordpress.erenha.arjuna.jauza.util.StaticValue;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -23,9 +25,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialogs;
 import javafx.scene.control.Label;
@@ -39,6 +43,8 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
@@ -134,7 +140,6 @@ public class ExtractionPanelController implements Initializable {
         });
 //        individualDetailsValueColumn.setCellValueFactory(new PropertyValueFactory("propertyValue"));
         individualDetailsValueColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<RDFIndividualProperty, String>, ObservableValue<String>>() {
-
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<RDFIndividualProperty, String> p) {
                 StringProperty label = p.getValue().getRdfValue().labelProperty();
@@ -246,13 +251,28 @@ public class ExtractionPanelController implements Initializable {
         }
 
     }
-    
-    private void sesameRepository(){
+
+    private void sesameRepository() {
         RDFIndividualProperty selectedItem = individualDetailsTable.getSelectionModel().getSelectedItem();
     }
-    
-    private void dbPedia(){
-//        mainController.getPrimaryStage()
+
+    private void dbPedia() {
+        try {
+            //        mainController.getPrimaryStage()
+            Stage stage = new Stage();
+            URL resource = getClass().getResource("dbPediaLookup.fxml");
+            System.out.println(resource);
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("dbPediaLookup.fxml"));
+            Parent root = (Parent) fxmlLoader.load();
+            Scene scene = new Scene(root);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(mainController.getPrimaryStage());
+            stage.centerOnScreen();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ex) {
+            Logger.getLogger(ExtractionPanelController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void userInput() {
