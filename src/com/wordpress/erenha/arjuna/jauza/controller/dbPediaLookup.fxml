@@ -12,8 +12,15 @@
       <children>
         <ToolBar>
           <items>
-            <TextField prefWidth="512.0" />
-            <Button mnemonicParsing="false" text="Search" />
+            <TextField fx:id="search_field" prefWidth="501.0" />
+            <Button mnemonicParsing="false" onAction="#searchAction" text="Search" />
+          </items>
+        </ToolBar>
+        <ListView fx:id="resultListView" prefHeight="368.0" prefWidth="600.0" VBox.vgrow="ALWAYS" />
+        <ToolBar>
+          <items>
+            <Pane prefHeight="21.0" prefWidth="523.0" />
+            <Button mnemonicParsing="false" onAction="#matchAction" text="Ok" />
           </items>
         </ToolBar>
       </children>

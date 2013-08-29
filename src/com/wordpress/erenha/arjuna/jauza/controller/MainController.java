@@ -174,5 +174,5 @@ public class MainController implements Initializable {
     public AnnotationTabController getAnnotationTabController() {
         return annotationTabController;
     }
-    
+
 }

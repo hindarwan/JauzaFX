@@ -45,6 +45,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
@@ -257,18 +258,24 @@ public class ExtractionPanelController implements Initializable {
     }
 
     private void dbPedia() {
+        RDFIndividualProperty selectedItem = individualDetailsTable.getSelectionModel().getSelectedItem();
+        String valueToMatch = selectedItem.getRdfValue().getLabel();
         try {
             //        mainController.getPrimaryStage()
             Stage stage = new Stage();
-            URL resource = getClass().getResource("dbPediaLookup.fxml");
-            System.out.println(resource);
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("dbPediaLookup.fxml"));
             Parent root = (Parent) fxmlLoader.load();
+            DbPediaLookupController controller = fxmlLoader.getController();
             Scene scene = new Scene(root);
+            stage.initStyle(StageStyle.UTILITY);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initOwner(mainController.getPrimaryStage());
             stage.centerOnScreen();
             stage.setScene(scene);
+            stage.setResizable(false);
+            controller.getSearch_field().setText(valueToMatch);
+            controller.setStage(stage);
+            controller.setMainController(mainController);
             stage.show();
         } catch (IOException ex) {
             Logger.getLogger(ExtractionPanelController.class.getName()).log(Level.SEVERE, null, ex);
