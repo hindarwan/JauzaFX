@@ -6,20 +6,19 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.DbPediaLookupController">
+<AnchorPane id="AnchorPane" prefHeight="314.0" prefWidth="429.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.SesameRepoLookupController">
   <children>
     <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
-        <ToolBar>
+        <ToolBar prefHeight="31.000099999997474" prefWidth="600.0">
           <items>
-            <TextField fx:id="search_field" onAction="#searchAction" prefWidth="501.0" />
-            <Button mnemonicParsing="false" onAction="#searchAction" text="Search" />
+            <Label text="Select an individual that match with property selected below" />
           </items>
         </ToolBar>
-        <ListView fx:id="resultListView" prefHeight="368.0" prefWidth="600.0" VBox.vgrow="ALWAYS" />
+        <ListView fx:id="resultListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
         <ToolBar>
           <items>
-            <Pane prefHeight="21.0" prefWidth="523.0" />
+            <Pane prefHeight="21.0" prefWidth="333.0" />
             <Button mnemonicParsing="false" onAction="#matchAction" text="Ok" />
           </items>
         </ToolBar>

@@ -24,6 +24,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -46,6 +47,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
@@ -247,25 +249,47 @@ public class ExtractionPanelController implements Initializable {
             case "From dbPedia":
                 dbPedia();
                 break;
-            case "From SPARQL Endpoint":
-                break;
         }
 
     }
 
     private void sesameRepository() {
-        RDFIndividualProperty selectedItem = individualDetailsTable.getSelectionModel().getSelectedItem();
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sesameRepoLookup.fxml"));
+            Parent root = (Parent) fxmlLoader.load();
+            final SesameRepoLookupController controller = fxmlLoader.getController();
+            Scene scene = new Scene(root);
+            stage.initStyle(StageStyle.UTILITY);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(mainController.getPrimaryStage());
+            stage.centerOnScreen();
+            stage.setScene(scene);
+            stage.setResizable(false);
+            controller.setStage(stage);
+            controller.setMainController(mainController);
+            stage.setOnShown(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent t) {
+                    controller.search();
+                }
+            });
+
+            stage.show();
+
+        } catch (IOException ex) {
+            Logger.getLogger(ExtractionPanelController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void dbPedia() {
         RDFIndividualProperty selectedItem = individualDetailsTable.getSelectionModel().getSelectedItem();
         String valueToMatch = selectedItem.getRdfValue().getLabel();
         try {
-            //        mainController.getPrimaryStage()
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("dbPediaLookup.fxml"));
             Parent root = (Parent) fxmlLoader.load();
-            DbPediaLookupController controller = fxmlLoader.getController();
+            final DbPediaLookupController controller = fxmlLoader.getController();
             Scene scene = new Scene(root);
             stage.initStyle(StageStyle.UTILITY);
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -276,7 +300,15 @@ public class ExtractionPanelController implements Initializable {
             controller.getSearch_field().setText(valueToMatch);
             controller.setStage(stage);
             controller.setMainController(mainController);
+            stage.setOnShown(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent t) {
+                    controller.searchAction(null);
+                }
+            });
+
             stage.show();
+
         } catch (IOException ex) {
             Logger.getLogger(ExtractionPanelController.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -12,11 +12,13 @@ import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividual;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividualProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFNamespace;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFOntology;
+import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFValue;
 import com.wordpress.erenha.arjuna.jauza.util.StaticValue;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -520,6 +522,66 @@ public class RDFController {
 
         } catch (RepositoryException | MalformedQueryException | QueryEvaluationException ex) {
             Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private RDFClass getClassFromProperty(RDFProperty property) {
+        try {
+            RepositoryConnection connection = repo.getConnection();
+
+            String query = "SELECT DISTINCT ?c ?cLabel\n"
+                    + "WHERE\n"
+                    + "{\n"
+                    + "<" + property.getUri() + "> rdfs:range ?c.\n"
+                    + "}";
+            try {
+                TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
+                TupleQueryResult result = tupleQuery.evaluate();
+                List<String> bindingNames = result.getBindingNames();
+                if (result.hasNext()) {
+                    BindingSet bindingSet = result.next();
+                    Value uri = bindingSet.getValue(bindingNames.get(0));
+                    return new RDFClass(uri.stringValue(), "");
+                }
+            } finally {
+                connection.close();
+            }
+            return null;
+        } catch (RepositoryException | MalformedQueryException | QueryEvaluationException ex) {
+            Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public List<RDFValue> getAllIndividualByTypeFromProperty(RDFProperty property) {
+        RDFClass rdfClass = getClassFromProperty(property);
+        List<RDFValue> list = new ArrayList<>();
+        try {
+            RepositoryConnection connection = repo.getConnection();
+            String query = "PREFIX dc:<http://purl.org/dc/elements/1.1/>\n"
+                    + "SELECT DISTINCT ?s ?sLabel\n"
+                    + "WHERE\n"
+                    + "{\n"
+                    + "?s rdf:type <" + rdfClass.getUri() + ">.\n"
+                    + "?s rdfs:label|dc:title ?sLabel.\n"
+                    + "}";
+            try {
+                TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
+                TupleQueryResult result = tupleQuery.evaluate();
+                List<String> bindingNames = result.getBindingNames();
+                while (result.hasNext()) {
+                    BindingSet bindingSet = result.next();
+                    Value uri = bindingSet.getValue(bindingNames.get(0));
+                    Value label = bindingSet.getValue(bindingNames.get(1));
+                    list.add(new RDFValue(uri.stringValue(), label.stringValue()));
+                }
+            } finally {
+                connection.close();
+            }
+            return list;
+        } catch (RepositoryException | MalformedQueryException | QueryEvaluationException ex) {
+            Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+            return list;
         }
     }
 

@@ -78,7 +78,6 @@ public class DbPediaLookupController implements Initializable {
 
     // Handler for Button[Button[id=null, styleClass=button]] onAction
     public void matchAction(ActionEvent event) {
-        // handle the event here
         if (!resultListView.getSelectionModel().isEmpty()) {
             RDFValue value = resultListRDF.get(resultListView.getSelectionModel().getSelectedIndex());
             mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetailsTable().getSelectionModel().getSelectedItem().getRdfValue().setLabel(value.getLabel());
