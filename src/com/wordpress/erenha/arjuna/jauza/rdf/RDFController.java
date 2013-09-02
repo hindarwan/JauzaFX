@@ -24,7 +24,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Dialogs;
+import jauzafx.scene.control.Dialogs;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Namespace;
