@@ -43,9 +43,9 @@
 <!--                        <Tab text="Entity Matching">
                             <fx:include fx:id="individualTab" source="individualTab.fxml" />
                         </Tab>-->
-                        <Tab text="Save">
+<!--                        <Tab text="Save">
                             <fx:include fx:id="saveTab" source="saveTab.fxml"/>
-                        </Tab>
+                        </Tab>-->
                     </tabs>
                 </TabPane>
             </children>

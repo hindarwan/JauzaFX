@@ -162,79 +162,83 @@ public class ExtractionPanelController implements Initializable {
     // TODO not handled exception
     @FXML
     public void createInvAction(ActionEvent event) {
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(0, 10, 0, 10));
-        Label idLabel = new Label("Identifier :");
-        grid.add(idLabel, 0, 0);
-        ToggleGroup groupID = new ToggleGroup();
-        RadioButton genID = new RadioButton("Use generated ID");
-        final RadioButton givenID = new RadioButton("Use given ID");
-        genID.setToggleGroup(groupID);
-        genID.selectedProperty().set(true);
-        givenID.setToggleGroup(groupID);
-        grid.add(genID, 0, 1);
-        grid.add(givenID, 0, 2);
-        final TextField givenIDField = new TextField();
-        givenIDField.disableProperty().set(true);
-        grid.add(givenIDField, 0, 3);
+        if (!mainController.getAnnotationTabController().getBrowserController().getInspectButton().isSelected()) {
+            Dialogs.showInformationDialog(mainController.getPrimaryStage(), "You must 'Start Annotation' button before 'Create Individual'", "Please press 'Start Annotation' first", "Create Individual");
+        } else {
+            GridPane grid = new GridPane();
+            grid.setHgap(10);
+            grid.setVgap(10);
+            grid.setPadding(new Insets(0, 10, 0, 10));
+            Label idLabel = new Label("Identifier :");
+            grid.add(idLabel, 0, 0);
+            ToggleGroup groupID = new ToggleGroup();
+            RadioButton genID = new RadioButton("Use generated ID");
+            final RadioButton givenID = new RadioButton("Use given ID");
+            genID.setToggleGroup(groupID);
+            genID.selectedProperty().set(true);
+            givenID.setToggleGroup(groupID);
+            grid.add(genID, 0, 1);
+            grid.add(givenID, 0, 2);
+            final TextField givenIDField = new TextField();
+            givenIDField.disableProperty().set(true);
+            grid.add(givenIDField, 0, 3);
 
-        givenID.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
-                if (givenID.isSelected()) {
-                    givenIDField.disableProperty().set(false);
-                } else {
-                    givenIDField.disableProperty().set(true);
+            givenID.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
+                    if (givenID.isSelected()) {
+                        givenIDField.disableProperty().set(false);
+                    } else {
+                        givenIDField.disableProperty().set(true);
+                    }
                 }
-            }
-        });
-        Label typeLabel = new Label("Type of Individual :");
-        grid.add(typeLabel, 0, 4);
+            });
+            Label typeLabel = new Label("Type of Individual :");
+            grid.add(typeLabel, 0, 4);
 //        Collections.sort(mainController.getCurrentClassesLabel());
 //        final ComboBox<String> type = new ComboBox<>(mainController.getCurrentClassesLabel());
-        final ComboBox<RDFClass> type = new ComboBox<>(mainController.getCurrentClassesLabel());
-        type.setPromptText("<<Choose Type>>");
-        grid.add(type, 0, 5);
+            final ComboBox<RDFClass> type = new ComboBox<>(mainController.getCurrentClassesLabel());
+            type.setPromptText("<<Choose Type>>");
+            grid.add(type, 0, 5);
 
-        final List<Object> lst = new ArrayList<>();
-        lst.add(0, "null");
-        lst.add(1, "null");
+            final List<Object> lst = new ArrayList<>();
+            lst.add(0, "null");
+            lst.add(1, "null");
 
-        Callback<Void, Void> myCallback = new Callback<Void, Void>() {
-            @Override
-            public Void call(Void param) {
-                //                String selectedItem = type.getSelectionModel().getSelectedItem();
-                RDFClass selectedItem = type.getSelectionModel().getSelectedItem();
-                lst.add(0, selectedItem);
-                if (givenID.isSelected() && !givenIDField.getText().isEmpty()) {
-                    lst.add(1, givenIDField.getText());
-                } else {
+            Callback<Void, Void> myCallback = new Callback<Void, Void>() {
+                @Override
+                public Void call(Void param) {
+                    //                String selectedItem = type.getSelectionModel().getSelectedItem();
+                    RDFClass selectedItem = type.getSelectionModel().getSelectedItem();
+                    lst.add(0, selectedItem);
+                    if (givenID.isSelected() && !givenIDField.getText().isEmpty()) {
+                        lst.add(1, givenIDField.getText());
+                    } else {
 //                    lst.add(1, selectedItem.substring(selectedItem.indexOf(":") + 1) + System.currentTimeMillis());
-                    lst.add(1, selectedItem.toString().replaceAll(" ", "_") + UUID.randomUUID().toString().replaceAll("-", ""));
+                        lst.add(1, selectedItem.toString().replaceAll(" ", "_") + UUID.randomUUID().toString().replaceAll("-", ""));
+                    }
+                    return null;
                 }
-                return null;
-            }
-        };
-        Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid, StaticValue.annotation_create_individual, StaticValue.annotation_create_individual_title, Dialogs.DialogOptions.OK, myCallback);
-        if (!lst.get(0).equals("null") || !lst.get(1).equals("null")) {
-            //            RDFClass rdfClass = new RDFClass(mainController.getRDFController().toNamespaceFull(lst.get(0)), lst.get(0));
-            RDFClass rdfClass = (RDFClass) lst.get(0);
-            List<RDFIndividualProperty> l = new ArrayList<>();
-            mainController.getRDFController().getPropertiesByClass(rdfClass);
+            };
+            Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid, StaticValue.annotation_create_individual, StaticValue.annotation_create_individual_title, Dialogs.DialogOptions.OK, myCallback);
+            if (!lst.get(0).equals("null") || !lst.get(1).equals("null")) {
+                //            RDFClass rdfClass = new RDFClass(mainController.getRDFController().toNamespaceFull(lst.get(0)), lst.get(0));
+                RDFClass rdfClass = (RDFClass) lst.get(0);
+                List<RDFIndividualProperty> l = new ArrayList<>();
+                mainController.getRDFController().getPropertiesByClass(rdfClass);
 //            for (String string : mainController.getCurrentPropertiesLabel()) {
 //                RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(new RDFProperty(mainController.getRDFController().toNamespaceFull(string), string), "");
 //                l.add(rdfIndividualProperty);
 //            }
-            for (RDFProperty string : mainController.getCurrentPropertiesLabel()) {
-                RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(string, new RDFValue("", ""));
-                l.add(rdfIndividualProperty);
-            }
-            RDFIndividual rdfIndividual = new RDFIndividual(lst.get(1).toString(), rdfClass, l);
-            mainController.getCurrentIndividuals().add(rdfIndividual);
-            individualTable.getSelectionModel().select(rdfIndividual);
+                for (RDFProperty string : mainController.getCurrentPropertiesLabel()) {
+                    RDFIndividualProperty rdfIndividualProperty = new RDFIndividualProperty(string, new RDFValue("", ""));
+                    l.add(rdfIndividualProperty);
+                }
+                RDFIndividual rdfIndividual = new RDFIndividual(lst.get(1).toString(), rdfClass, l);
+                mainController.getCurrentIndividuals().add(rdfIndividual);
+                individualTable.getSelectionModel().select(rdfIndividual);
 //            mainController.getAnnotationTabController().getBrowserController().initGetCurrentSelectedElement();
+            }
         }
     }
 

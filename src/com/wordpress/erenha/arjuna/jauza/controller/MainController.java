@@ -49,14 +49,12 @@ public class MainController implements Initializable {
     private AnnotationTabController annotationTabController;
     @FXML //  fx:id="individualTab"
     private VBox individualTab; // Value injected by FXMLLoader
-    @FXML
-    private IndividualTabController individualTabController;
     @FXML //  fx:id="ontologyTab"
     private VBox ontologyTab; // Value injected by FXMLLoader
     @FXML
     private OntologyTabController ontologyTabController;
-    @FXML
-    private SaveTabController saveTabController;
+//    @FXML
+//    private SaveTabController saveTabController;
     private Stage primaryStage;
 
     public Stage getPrimaryStage() {
@@ -101,8 +99,8 @@ public class MainController implements Initializable {
         ontologyTabController.getClassesTable().setItems(currentClasses);
         ontologyTabController.getPropertiesTable().setItems(currentProperties);
 
-        saveTabController.setMainController(this);
-        saveTabController.getIndividualTable().setItems(currentIndividuals);
+//        saveTabController.setMainController(this);
+//        saveTabController.getIndividualTable().setItems(currentIndividuals);
         
         
         rdfController = new RDFController();

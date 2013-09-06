@@ -102,8 +102,6 @@ public class BrowserController implements Initializable {
         // handle the event here
         System.out.println("sesuatu");
 
-
-
     }
 
     @FXML
@@ -142,7 +140,15 @@ public class BrowserController implements Initializable {
                     inspectMode(t);
                 }
             });
+            inspectButton.setText("Finish Annotation");
         } else {
+            if(!mainController.getCurrentIndividuals().isEmpty()){
+                Dialogs.DialogResponse confirm = Dialogs.showConfirmDialog(mainController.getPrimaryStage(), "Do you want to save individual to repository?", "Save Individual", "Save Individual");
+                if(confirm == Dialogs.DialogResponse.YES){
+                    mainController.getRDFController().saveAllIndividual();
+                }
+            }
+            
             System.out.println("[INFO] browser mode");
             engine.executeScript(INSPECT_SCRIPT);
             backButton.setDisable(false);
@@ -150,6 +156,7 @@ public class BrowserController implements Initializable {
             txt.setDisable(false);
             goButton.setDisable(false);
             webx.setOnMouseClicked(null);
+            inspectButton.setText("Start Annotation");
         }
     }
 
@@ -436,6 +443,7 @@ public class BrowserController implements Initializable {
             List<String> list = new ArrayList<>();
             Element selectedElement = (Element) engine.executeScript("document.querySelectorAll('[class*=\\\"sg_selected\\\"]').item(" + 0 + ")");
             String id = selectedElement.getAttribute("jfxid");
+            System.out.println("id: " + id);
             String content = selectedElement.getTextContent();
             if (content != null && !content.trim().isEmpty()) {
                 list.add(content.trim());
@@ -477,28 +485,36 @@ public class BrowserController implements Initializable {
     final Popup popup = new Popup();
 
     private void showPopupProperty(final String id, final String value, MouseEvent t) {
-        if (!mainController.getCurrentPropertiesLabel().isEmpty()) {
-            if (popup.isShowing()) {
-                popup.hide();
+        if (mainController.getAnnotationTabController().getExtractionPanelController().getIndividualTable().getSelectionModel().isEmpty()) {
+            Dialogs.showInformationDialog(mainController.getPrimaryStage(), "You must select an individual or 'Create Individual' first", "Please select an individual first", "Annotation");
+            clearSelectElement();
+        } else {
+            if (mainController.getCurrentPropertiesLabel().isEmpty()) {
+                Dialogs.showInformationDialog(mainController.getPrimaryStage(), "Individual type doesn't have property.", "No property found", "Annotation");
                 clearSelectElement();
-                selectElementByJFXID(Integer.valueOf(id));
-            }
-            final ListView<RDFProperty> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
-            listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent t) {
-                    int selectedIndex = listView.getSelectionModel().getSelectedIndex();
-                    mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).getRdfValue().setLabel(value);
+            }else{
+                if (popup.isShowing()) {
                     popup.hide();
-                    deSelectElementByJFXID(Integer.valueOf(id));
-
+                    clearSelectElement();
+                    selectElementByJFXID(Integer.valueOf(id));
                 }
-            });
+                final ListView<RDFProperty> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
+                listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent t) {
+                        int selectedIndex = listView.getSelectionModel().getSelectedIndex();
+                        mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).getRdfValue().setLabel(value);
+                        popup.hide();
+                        deSelectElementByJFXID(Integer.valueOf(id));
 
-            popup.getContent().add(listView);
-            popup.setX(t.getScreenX());
-            popup.setY(t.getScreenY());
-            popup.show(mainController.getPrimaryStage());
+                    }
+                });
+
+                popup.getContent().add(listView);
+                popup.setX(t.getScreenX());
+                popup.setY(t.getScreenY());
+                popup.show(mainController.getPrimaryStage());
+            }
         }
     }
 
@@ -533,5 +549,9 @@ public class BrowserController implements Initializable {
             }
         }
 
+    }
+
+    public ToggleButton getInspectButton() {
+        return inspectButton;
     }
 }
