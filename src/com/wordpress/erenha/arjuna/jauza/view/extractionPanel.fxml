@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 
 <fx:root type="javafx.scene.layout.VBox" prefWidth="370.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.ExtractionPanelController">
-  <SplitPane id="SplitPane" dividerPositions="0.2546218487394958" orientation="VERTICAL" VBox.vgrow="ALWAYS">
+  <SplitPane id="SplitPane" dividerPositions="0.2933204259438529" orientation="VERTICAL" VBox.vgrow="ALWAYS">
     <items>
       <TitledPane animated="false" collapsible="false" maxHeight="300.0" minHeight="250.0" text="Individuals">
         <content>
@@ -23,7 +23,7 @@
               </ToolBar>
               <TableView fx:id="individualTable" VBox.vgrow="ALWAYS">
                 <columns>
-                  <TableColumn editable="false" minWidth="150.0" prefWidth="150.0" text="id" fx:id="individualIDColumn" />
+                  <TableColumn editable="false" minWidth="150.0" prefWidth="150.0" text="Identifier" fx:id="individualIDColumn" />
                   <TableColumn minWidth="220.0" prefWidth="220.0" text="Class" fx:id="individualClassColumn" />
                 </columns>
               </TableView>
@@ -44,7 +44,7 @@
               </TableView>
               <ToolBar>
                 <items>
-                  <Button mnemonicParsing="false" onAction="#addPropertyAction" text="Add From Other Source" />
+                  <Button mnemonicParsing="false" onAction="#addPropertyAction" text="Match Value From ..." />
                   <!--<Button mnemonicParsing="false" text="Edit" visible="false" />-->
                 </items>
               </ToolBar>

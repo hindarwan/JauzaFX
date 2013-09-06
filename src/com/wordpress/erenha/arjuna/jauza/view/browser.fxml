@@ -20,7 +20,7 @@
       <Button mnemonicParsing="false" onAction="#test" text="Test" visible="false" />
     </items>
   </ToolBar>
-  <WebView fx:id="webx" prefHeight="580.0" prefWidth="768.0" VBox.vgrow="ALWAYS">
+  <WebView fx:id="webx" onMouseClicked="#mouseClick" prefHeight="580.0" prefWidth="768.0" VBox.vgrow="ALWAYS">
     <VBox.margin>
       <Insets fx:id="x1" />
     </VBox.margin>

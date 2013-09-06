@@ -4,45 +4,33 @@
  */
 package com.wordpress.erenha.arjuna.jauza.controller;
 
-import com.wordpress.erenha.arjuna.jauza.model.CurrentSelection;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
-import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFValue;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import jauzafx.scene.control.Dialogs;
-import jauzafx.scene.control.Dialogs.DialogOptions;
+import java.net.MalformedURLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
 import javafx.stage.Popup;
-import javafx.util.Callback;
 import netscape.javascript.JSObject;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * FXML Controller class
@@ -78,6 +66,18 @@ public class BrowserController implements Initializable {
         this.mainController = mainController;
     }
 
+    public TextField getTxt() {
+        return txt;
+    }
+
+    public ToggleButton getInspectButton() {
+        return inspectButton;
+    }
+
+    public void load(String url) {
+        engine.load(url);
+    }
+
     @Override // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
         assert backButton != null : "fx:id=\"backButton\" was not injected: check your FXML file 'browser.fxml'.";
@@ -96,18 +96,34 @@ public class BrowserController implements Initializable {
         initEngine();
 
     }
-    // Handler for WebView[fx:id="webx"] onMouseClicked
+    private String id;
+    private String content;
 
-    public void sesuatu(MouseEvent event) {
-        // handle the event here
-        System.out.println("sesuatu");
-
+    @FXML
+    public void mouseClick(MouseEvent event) {
+        if (inspectButton.isSelected()) {
+            if (!content.isEmpty()) {
+                showPopupProperty(id, content, event);
+            }
+        }
     }
 
     @FXML
     public void go(ActionEvent event) {
-        engine.load(txt.getText());
-        System.out.println("[INFO] browser: go to " + txt.getText());
+        URL url = null;
+        try {
+            url = new URL(txt.getText());
+        } catch (MalformedURLException ex) {
+            try {
+                url = new URL("http://" + txt.getText());
+            } catch (MalformedURLException ex1) {
+                Logger.getLogger(BrowserController.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }
+        if (url != null) {
+            engine.load(url.toString());
+            System.out.println("[INFO] browser: go to " + url.toString());
+        }
     }
 
     @FXML
@@ -133,29 +149,22 @@ public class BrowserController implements Initializable {
             forwardButton.setDisable(true);
             txt.setDisable(true);
             goButton.setDisable(true);
-            webx.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent t) {
-//                    getSelectedElement();
-                    inspectMode(t);
-                }
-            });
             inspectButton.setText("Finish Annotation");
         } else {
-            if(!mainController.getCurrentIndividuals().isEmpty()){
-                Dialogs.DialogResponse confirm = Dialogs.showConfirmDialog(mainController.getPrimaryStage(), "Do you want to save individual to repository?", "Save Individual", "Save Individual");
-                if(confirm == Dialogs.DialogResponse.YES){
+            if (!mainController.getCurrentIndividuals().isEmpty()) {
+                Dialogs.DialogResponse confirm = Dialogs.showConfirmDialog(mainController.getPrimaryStage(), "Do you want to save individual to repository?", "Save Individual", "Save Individual", Dialogs.DialogOptions.YES_NO);
+                if (confirm == Dialogs.DialogResponse.YES) {
                     mainController.getRDFController().saveAllIndividual();
                 }
+                mainController.getCurrentIndividuals().clear();
             }
-            
+
             System.out.println("[INFO] browser mode");
             engine.executeScript(INSPECT_SCRIPT);
             backButton.setDisable(false);
             forwardButton.setDisable(false);
             txt.setDisable(false);
             goButton.setDisable(false);
-            webx.setOnMouseClicked(null);
             inspectButton.setText("Start Annotation");
         }
     }
@@ -202,11 +211,15 @@ public class BrowserController implements Initializable {
 
 
         engine.setOnAlert(new EventHandler<WebEvent<String>>() {
+            //Annotation begin here
             @Override
             public void handle(WebEvent<String> e) {
                 if (e.getData().equals("jauza:002")) { //clear selection
                     System.out.println("[INFO] clear selection");
                 } else {
+                    System.out.println("[INFO] jfxid selected:" + e.getData());
+                    id = e.getData();
+                    content = contentInJFXID(e.getData());
                 }
             }
         });
@@ -215,118 +228,6 @@ public class BrowserController implements Initializable {
     @FXML
     public void test(ActionEvent event) {
         clearSelectElement();
-    }
-
-    private void getSelectedElement() {
-//        mainController.getCurrentSelections().clear();
-        ObservableList<CurrentSelection> currentSelections = mainController.getCurrentSelections();
-        List<String> idListInTable = new ArrayList<>();
-        for (CurrentSelection currentSelection : currentSelections) {
-            idListInTable.add(currentSelection.getId());
-        }
-
-        Integer length = (Integer) engine.executeScript("document.querySelectorAll('[class*=\\\"sg_selected\\\"]').length");
-        System.out.println("[INFO] selected : " + length);
-
-        //hapus not selected
-        if (length == 0) {
-            mainController.getCurrentSelections().clear();
-        } else if (length > 0) {
-            List<String> idListInBrowser = new ArrayList<>();
-            for (int i = 0; i < length; i++) {
-                try {
-                    List<String> list = new ArrayList<>();
-                    Element selectedElement = (Element) engine.executeScript("document.querySelectorAll('[class*=\\\"sg_selected\\\"]').item(" + i + ")");
-                    String id = selectedElement.getAttribute("jfxid");
-                    idListInBrowser.add(id);
-                    String content = selectedElement.getTextContent();
-                    if (content != null && !content.trim().isEmpty()) {
-                        list.add(content.trim());
-                    }
-
-                    URL base = new URL(selectedElement.getBaseURI());
-                    if (selectedElement.getAttribute("href") != null) {
-                        URL url = new URL(base, selectedElement.getAttribute("href"));
-                        String link = url.toString();
-                        if (link != null && !link.trim().isEmpty()) {
-                            list.add(link.trim());
-                        }
-                    }
-
-                    NodeList links = selectedElement.getElementsByTagName("a");
-                    for (int j = 0; j < links.getLength(); j++) {
-                        Element l = (Element) links.item(j);
-                        URL baseInner = new URL(l.getBaseURI());
-                        if (l.getAttribute("href") != null) {
-                            URL urlInner = new URL(baseInner, l.getAttribute("href"));
-                            String linkInner = urlInner.toString();
-                            if (linkInner != null && !linkInner.trim().isEmpty()) {
-                                list.add(linkInner.trim());
-                            }
-                        }
-                    }
-                    //jika sudah ada di tabel
-                    if (idListInTable.contains(id)) {
-                        //do not add
-                    } else {
-                        if (list.size() > 1) {
-//                            String resultInput = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose Content Extracted: ", "More than one element detected, choose one of content extracted", "Content Extracted", content.trim(), list);
-//                            if (resultInput != null) {
-//                                content = resultInput;
-//                            }
-                            final List<CheckBox> cbs = new ArrayList<>();
-                            GridPane grid = new GridPane();
-                            grid.setHgap(10);
-                            grid.setVgap(10);
-                            grid.setPadding(new Insets(0, 10, 0, 10));
-                            for (int j = 0; j < list.size(); j++) {
-                                CheckBox cb = new CheckBox(list.get(j));
-                                cbs.add(cb);
-                                grid.add(cb, 0, j);
-                            }
-                            final List<String> sel = new ArrayList<>();
-                            Callback<Void, Void> myCallback = new Callback<Void, Void>() {
-                                @Override
-                                public Void call(Void param) {
-                                    for (int k = 0; k < cbs.size(); k++) {
-                                        if (cbs.get(k).isSelected()) {
-                                            sel.add(cbs.get(k).getText());
-                                        }
-                                    }
-
-                                    return null;
-                                }
-                            };
-                            Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid, "More than one element detected. \nSelect content extracted that you want.", "Content Extracted", DialogOptions.OK, myCallback);
-                            if (sel.isEmpty()) {
-                                //hapus selected
-                                deSelectElementByJFXID(Integer.valueOf(id));
-                            } else {
-                                for (int k = 0; k < sel.size(); k++) {
-//                                    mainController.getCurrentSelections().add(new CurrentSelection(id + sel.get(k).trim(), sel.get(k).trim()));
-                                    mainController.getCurrentSelections().add(new CurrentSelection(id, sel.get(k).trim()));
-                                }
-                            }
-                        } else {
-                            mainController.getCurrentSelections().add(new CurrentSelection(id, content.trim()));
-                        }
-
-                    }
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(BrowserController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            }
-            idListInTable.removeAll(idListInBrowser);
-            Collection<CurrentSelection> toRemove = new ArrayList<>();
-            for (int c = 0; c < mainController.getCurrentSelections().size(); c++) {
-                if (idListInTable.contains(mainController.getCurrentSelections().get(c).getId())) {
-                    toRemove.add(mainController.getCurrentSelections().get(c));
-                }
-            }
-            //remove deselected
-            mainController.getCurrentSelections().removeAll(toRemove);
-        }
     }
 
     private void selectElementByJFXID(int id) {
@@ -346,145 +247,18 @@ public class BrowserController implements Initializable {
                 + "}");
     }
 
-    public void load(String url) {
-        engine.load(url);
-    }
-
-    public void initGetCurrentSelectedElement() {
-        engine.executeScript(INSPECT_SCRIPT);
-        webx.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent t) {
-                try {
-                    List<String> list = new ArrayList<>();
-                    Element selectedElement = (Element) engine.executeScript("document.querySelectorAll('[class*=\\\"sg_selected\\\"]').item(" + 0 + ")");
-                    String id = selectedElement.getAttribute("jfxid");
-                    String content = selectedElement.getTextContent();
-                    if (content != null && !content.trim().isEmpty()) {
-                        list.add(content.trim());
-                    }
-
-                    URL base = new URL(selectedElement.getBaseURI());
-                    if (selectedElement.getAttribute("href") != null) {
-                        URL url = new URL(base, selectedElement.getAttribute("href"));
-                        String link = url.toString();
-                        if (link != null && !link.trim().isEmpty()) {
-                            list.add(link.trim());
-                        }
-                    }
-
-                    NodeList links = selectedElement.getElementsByTagName("a");
-                    for (int j = 0; j < links.getLength(); j++) {
-                        Element l = (Element) links.item(j);
-                        URL baseInner = new URL(l.getBaseURI());
-                        if (l.getAttribute("href") != null) {
-                            URL urlInner = new URL(baseInner, l.getAttribute("href"));
-                            String linkInner = urlInner.toString();
-                            if (linkInner != null && !linkInner.trim().isEmpty()) {
-                                list.add(linkInner.trim());
-                            }
-                        }
-                    }
-                    if (list.size() > 1) {
-                        String value = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose element", "More than one element detected. \nSelect content extracted that you want.", "Content Extracted", list.get(0), list);
-                        if (value.isEmpty()) {
-                            //hapus selected
-                            deSelectElementByJFXID(Integer.valueOf(id));
-//                            finishGetCurrentSelectedElement();
-                        } else {
-                            addProperty(id, value.trim(), t);
-//                            finishGetCurrentSelectedElement();
-                        }
-                    } else {
-                        addProperty(id, content.trim(), t);
-//                        finishGetCurrentSelectedElement();
-                    }
-
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(BrowserController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            }
-
-            void addProperty(final String id, final String value, MouseEvent t) {
-                if (!mainController.getCurrentPropertiesLabel().isEmpty()) {
-                    final Popup popup = new Popup();
-                    final ListView<RDFProperty> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
-                    listView.autosize();
-                    listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent t) {
-                            int selectedIndex = listView.getSelectionModel().getSelectedIndex();
-                            mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).setRdfValue(new RDFValue(value, value));
-                            popup.hide();
-                            deSelectElementByJFXID(Integer.valueOf(id));
-//                            finishGetCurrentSelectedElement();
-
-                        }
-                    });
-
-                    popup.getContent().add(listView);
-                    popup.setX(t.getScreenX());
-                    popup.setY(t.getScreenY());
-                    popup.show(mainController.getPrimaryStage());
-                }
-            }
-        });
-
-    }
-
-    public void finishGetCurrentSelectedElement() {
-        engine.executeScript(INSPECT_SCRIPT);
-        webx.setOnMouseClicked(null);
-    }
-
-    public void inspectMode(MouseEvent t) {
-        try {
-            List<String> list = new ArrayList<>();
-            Element selectedElement = (Element) engine.executeScript("document.querySelectorAll('[class*=\\\"sg_selected\\\"]').item(" + 0 + ")");
-            String id = selectedElement.getAttribute("jfxid");
-            System.out.println("id: " + id);
-            String content = selectedElement.getTextContent();
-            if (content != null && !content.trim().isEmpty()) {
-                list.add(content.trim());
-            }
-
-            URL base = new URL(selectedElement.getBaseURI());
-            if (selectedElement.getAttribute("href") != null) {
-                URL url = new URL(base, selectedElement.getAttribute("href"));
-                String link = url.toString();
-                if (link != null && !link.trim().isEmpty()) {
-                    list.add(link.trim());
-                }
-            }
-
-            NodeList links = selectedElement.getElementsByTagName("a");
-            for (int j = 0; j < links.getLength(); j++) {
-                Element l = (Element) links.item(j);
-                URL baseInner = new URL(l.getBaseURI());
-                if (l.getAttribute("href") != null) {
-                    URL urlInner = new URL(baseInner, l.getAttribute("href"));
-                    String linkInner = urlInner.toString();
-                    if (linkInner != null && !linkInner.trim().isEmpty()) {
-                        list.add(linkInner.trim());
-                    }
-                }
-            }
-            int a = list.size();
-            a = 1;//TODO  :)
-            if (a > 1) {
-                showPopupPropertyMoreOne(id, list, t);
-            } else {
-                showPopupProperty(id, content.trim(), t);
-            }
-
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(BrowserController.class.getName()).log(Level.SEVERE, null, ex);
+    public String contentInJFXID(String id) {
+        Element selectedElement = (Element) engine.executeScript("document.querySelector('[jfxid=\"" + id + "\"]')");
+        String contents = selectedElement.getTextContent();
+        if (contents != null) {
+            return contents.trim();
+        } else {
+            return "";
         }
     }
     final Popup popup = new Popup();
 
-    private void showPopupProperty(final String id, final String value, MouseEvent t) {
+    private void showPopupProperty(final String id, final String value, MouseEvent mouseEvent) {
         if (mainController.getAnnotationTabController().getExtractionPanelController().getIndividualTable().getSelectionModel().isEmpty()) {
             Dialogs.showInformationDialog(mainController.getPrimaryStage(), "You must select an individual or 'Create Individual' first", "Please select an individual first", "Annotation");
             clearSelectElement();
@@ -492,7 +266,7 @@ public class BrowserController implements Initializable {
             if (mainController.getCurrentPropertiesLabel().isEmpty()) {
                 Dialogs.showInformationDialog(mainController.getPrimaryStage(), "Individual type doesn't have property.", "No property found", "Annotation");
                 clearSelectElement();
-            }else{
+            } else {
                 if (popup.isShowing()) {
                     popup.hide();
                     clearSelectElement();
@@ -506,52 +280,324 @@ public class BrowserController implements Initializable {
                         mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).getRdfValue().setLabel(value);
                         popup.hide();
                         deSelectElementByJFXID(Integer.valueOf(id));
-
                     }
                 });
 
                 popup.getContent().add(listView);
-                popup.setX(t.getScreenX());
-                popup.setY(t.getScreenY());
+                popup.setX(mouseEvent.getScreenX());
+                popup.setY(mouseEvent.getScreenY());
                 popup.show(mainController.getPrimaryStage());
             }
         }
     }
-
-    private void showPopupPropertyMoreOne(final String id, List<String> list, MouseEvent t) {
-        final String value = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose element", "More than one element detected. \nSelect content extracted that you want.", "Content Extracted", list.get(0), list);
-        if (value.isEmpty()) {
-            //hapus selected
-            deSelectElementByJFXID(Integer.valueOf(id));
-        } else {
-            if (!mainController.getCurrentPropertiesLabel().isEmpty()) {
-                if (popup.isShowing()) {
-                    popup.hide();
-                    clearSelectElement();
-                    selectElementByJFXID(Integer.valueOf(id));
-                }
-                final ListView<RDFProperty> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
-                listView.autosize();
-                listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent t) {
-                        int selectedIndex = listView.getSelectionModel().getSelectedIndex();
-                        mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).getRdfValue().setLabel(value);
-                        popup.hide();
-                        deSelectElementByJFXID(Integer.valueOf(id));
-                    }
-                });
-
-                popup.getContent().add(listView);
-                popup.setX(t.getScreenX());
-                popup.setY(t.getScreenY());
-                popup.show(mainController.getPrimaryStage());
-            }
-        }
-
-    }
-
-    public ToggleButton getInspectButton() {
-        return inspectButton;
-    }
+    //original inspect
+//    public void inspectMode(MouseEvent t) {
+//        try {
+//            List<String> list = new ArrayList<>();
+//            Element selectedElement = (Element) engine.executeScript("document.querySelectorAll('[class*=\\\"sg_selected\\\"]').item(" + 0 + ")");
+//            String id = selectedElement.getAttribute("jfxid");
+//            System.out.println("id: " + id);
+//            String content = selectedElement.getTextContent();
+//            if (content != null && !content.trim().isEmpty()) {
+//                list.add(content.trim());
+//            }
+//
+//            URL base = new URL(selectedElement.getBaseURI());
+//            if (selectedElement.getAttribute("href") != null) {
+//                URL url = new URL(base, selectedElement.getAttribute("href"));
+//                String link = url.toString();
+//                if (link != null && !link.trim().isEmpty()) {
+//                    list.add(link.trim());
+//                }
+//            }
+//
+//            NodeList links = selectedElement.getElementsByTagName("a");
+//            for (int j = 0; j < links.getLength(); j++) {
+//                Element l = (Element) links.item(j);
+//                URL baseInner = new URL(l.getBaseURI());
+//                if (l.getAttribute("href") != null) {
+//                    URL urlInner = new URL(baseInner, l.getAttribute("href"));
+//                    String linkInner = urlInner.toString();
+//                    if (linkInner != null && !linkInner.trim().isEmpty()) {
+//                        list.add(linkInner.trim());
+//                    }
+//                }
+//            }
+//            int a = list.size();
+//            a = 1;//TODO  :)
+//            if (a > 1) {
+//                showPopupPropertyMoreOne(id, list, t);
+//            } else {
+//                showPopupProperty(id, content.trim(), t);
+//            }
+//
+//        } catch (MalformedURLException ex) {
+//            Logger.getLogger(BrowserController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
+//    final Popup popup = new Popup();
+//
+//    private void showPopupProperty(final String id, final String value, MouseEvent t) {
+//        if (mainController.getAnnotationTabController().getExtractionPanelController().getIndividualTable().getSelectionModel().isEmpty()) {
+//            Dialogs.showInformationDialog(mainController.getPrimaryStage(), "You must select an individual or 'Create Individual' first", "Please select an individual first", "Annotation");
+//            clearSelectElement();
+//        } else {
+//            if (mainController.getCurrentPropertiesLabel().isEmpty()) {
+//                Dialogs.showInformationDialog(mainController.getPrimaryStage(), "Individual type doesn't have property.", "No property found", "Annotation");
+//                clearSelectElement();
+//            } else {
+//                if (popup.isShowing()) {
+//                    popup.hide();
+//                    clearSelectElement();
+//                    selectElementByJFXID(Integer.valueOf(id));
+//                }
+//                final ListView<RDFProperty> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
+//                listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//                    @Override
+//                    public void handle(MouseEvent t) {
+//                        int selectedIndex = listView.getSelectionModel().getSelectedIndex();
+//                        mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).getRdfValue().setLabel(value);
+//                        popup.hide();
+//                        deSelectElementByJFXID(Integer.valueOf(id));
+//
+//                    }
+//                });
+//
+//                popup.getContent().add(listView);
+//                popup.setX(t.getScreenX());
+//                popup.setY(t.getScreenY());
+//                popup.show(mainController.getPrimaryStage());
+//            }
+//        }
+//    }
+//
+//    private void showPopupPropertyMoreOne(final String id, List<String> list, MouseEvent t) {
+//        final String value = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose element", "More than one element detected. \nSelect content extracted that you want.", "Content Extracted", list.get(0), list);
+//        if (value.isEmpty()) {
+//            //hapus selected
+//            deSelectElementByJFXID(Integer.valueOf(id));
+//        } else {
+//            if (!mainController.getCurrentPropertiesLabel().isEmpty()) {
+//                if (popup.isShowing()) {
+//                    popup.hide();
+//                    clearSelectElement();
+//                    selectElementByJFXID(Integer.valueOf(id));
+//                }
+//                final ListView<RDFProperty> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
+//                listView.autosize();
+//                listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//                    @Override
+//                    public void handle(MouseEvent t) {
+//                        int selectedIndex = listView.getSelectionModel().getSelectedIndex();
+//                        mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).getRdfValue().setLabel(value);
+//                        popup.hide();
+//                        deSelectElementByJFXID(Integer.valueOf(id));
+//                    }
+//                });
+//
+//                popup.getContent().add(listView);
+//                popup.setX(t.getScreenX());
+//                popup.setY(t.getScreenY());
+//                popup.show(mainController.getPrimaryStage());
+//            }
+//        }
+//
+//    }
+//    private void getSelectedElement() {
+////        mainController.getCurrentSelections().clear();
+//        ObservableList<CurrentSelection> currentSelections = mainController.getCurrentSelections();
+//        List<String> idListInTable = new ArrayList<>();
+//        for (CurrentSelection currentSelection : currentSelections) {
+//            idListInTable.add(currentSelection.getId());
+//        }
+//
+//        Integer length = (Integer) engine.executeScript("document.querySelectorAll('[class*=\\\"sg_selected\\\"]').length");
+//        System.out.println("[INFO] selected : " + length);
+//
+//        //hapus not selected
+//        if (length == 0) {
+//            mainController.getCurrentSelections().clear();
+//        } else if (length > 0) {
+//            List<String> idListInBrowser = new ArrayList<>();
+//            for (int i = 0; i < length; i++) {
+//                try {
+//                    List<String> list = new ArrayList<>();
+//                    Element selectedElement = (Element) engine.executeScript("document.querySelectorAll('[class*=\\\"sg_selected\\\"]').item(" + i + ")");
+//                    String id = selectedElement.getAttribute("jfxid");
+//                    idListInBrowser.add(id);
+//                    String content = selectedElement.getTextContent();
+//                    if (content != null && !content.trim().isEmpty()) {
+//                        list.add(content.trim());
+//                    }
+//
+//                    URL base = new URL(selectedElement.getBaseURI());
+//                    if (selectedElement.getAttribute("href") != null) {
+//                        URL url = new URL(base, selectedElement.getAttribute("href"));
+//                        String link = url.toString();
+//                        if (link != null && !link.trim().isEmpty()) {
+//                            list.add(link.trim());
+//                        }
+//                    }
+//
+//                    NodeList links = selectedElement.getElementsByTagName("a");
+//                    for (int j = 0; j < links.getLength(); j++) {
+//                        Element l = (Element) links.item(j);
+//                        URL baseInner = new URL(l.getBaseURI());
+//                        if (l.getAttribute("href") != null) {
+//                            URL urlInner = new URL(baseInner, l.getAttribute("href"));
+//                            String linkInner = urlInner.toString();
+//                            if (linkInner != null && !linkInner.trim().isEmpty()) {
+//                                list.add(linkInner.trim());
+//                            }
+//                        }
+//                    }
+//                    //jika sudah ada di tabel
+//                    if (idListInTable.contains(id)) {
+//                        //do not add
+//                    } else {
+//                        if (list.size() > 1) {
+////                            String resultInput = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose Content Extracted: ", "More than one element detected, choose one of content extracted", "Content Extracted", content.trim(), list);
+////                            if (resultInput != null) {
+////                                content = resultInput;
+////                            }
+//                            final List<CheckBox> cbs = new ArrayList<>();
+//                            GridPane grid = new GridPane();
+//                            grid.setHgap(10);
+//                            grid.setVgap(10);
+//                            grid.setPadding(new Insets(0, 10, 0, 10));
+//                            for (int j = 0; j < list.size(); j++) {
+//                                CheckBox cb = new CheckBox(list.get(j));
+//                                cbs.add(cb);
+//                                grid.add(cb, 0, j);
+//                            }
+//                            final List<String> sel = new ArrayList<>();
+//                            Callback<Void, Void> myCallback = new Callback<Void, Void>() {
+//                                @Override
+//                                public Void call(Void param) {
+//                                    for (int k = 0; k < cbs.size(); k++) {
+//                                        if (cbs.get(k).isSelected()) {
+//                                            sel.add(cbs.get(k).getText());
+//                                        }
+//                                    }
+//
+//                                    return null;
+//                                }
+//                            };
+//                            Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid, "More than one element detected. \nSelect content extracted that you want.", "Content Extracted", DialogOptions.OK, myCallback);
+//                            if (sel.isEmpty()) {
+//                                //hapus selected
+//                                deSelectElementByJFXID(Integer.valueOf(id));
+//                            } else {
+//                                for (int k = 0; k < sel.size(); k++) {
+////                                    mainController.getCurrentSelections().add(new CurrentSelection(id + sel.get(k).trim(), sel.get(k).trim()));
+//                                    mainController.getCurrentSelections().add(new CurrentSelection(id, sel.get(k).trim()));
+//                                }
+//                            }
+//                        } else {
+//                            mainController.getCurrentSelections().add(new CurrentSelection(id, content.trim()));
+//                        }
+//
+//                    }
+//                } catch (MalformedURLException ex) {
+//                    Logger.getLogger(BrowserController.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//
+//            }
+//            idListInTable.removeAll(idListInBrowser);
+//            Collection<CurrentSelection> toRemove = new ArrayList<>();
+//            for (int c = 0; c < mainController.getCurrentSelections().size(); c++) {
+//                if (idListInTable.contains(mainController.getCurrentSelections().get(c).getId())) {
+//                    toRemove.add(mainController.getCurrentSelections().get(c));
+//                }
+//            }
+//            //remove deselected
+//            mainController.getCurrentSelections().removeAll(toRemove);
+//        }
+//    }
+//    public void initGetCurrentSelectedElement() {
+//        engine.executeScript(INSPECT_SCRIPT);
+//        webx.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent t) {
+//                try {
+//                    List<String> list = new ArrayList<>();
+//                    Element selectedElement = (Element) engine.executeScript("document.querySelectorAll('[class*=\\\"sg_selected\\\"]').item(" + 0 + ")");
+//                    String id = selectedElement.getAttribute("jfxid");
+//                    String content = selectedElement.getTextContent();
+//                    if (content != null && !content.trim().isEmpty()) {
+//                        list.add(content.trim());
+//                    }
+//
+//                    URL base = new URL(selectedElement.getBaseURI());
+//                    if (selectedElement.getAttribute("href") != null) {
+//                        URL url = new URL(base, selectedElement.getAttribute("href"));
+//                        String link = url.toString();
+//                        if (link != null && !link.trim().isEmpty()) {
+//                            list.add(link.trim());
+//                        }
+//                    }
+//
+//                    NodeList links = selectedElement.getElementsByTagName("a");
+//                    for (int j = 0; j < links.getLength(); j++) {
+//                        Element l = (Element) links.item(j);
+//                        URL baseInner = new URL(l.getBaseURI());
+//                        if (l.getAttribute("href") != null) {
+//                            URL urlInner = new URL(baseInner, l.getAttribute("href"));
+//                            String linkInner = urlInner.toString();
+//                            if (linkInner != null && !linkInner.trim().isEmpty()) {
+//                                list.add(linkInner.trim());
+//                            }
+//                        }
+//                    }
+//                    if (list.size() > 1) {
+//                        String value = Dialogs.showInputDialog(mainController.getPrimaryStage(), "Choose element", "More than one element detected. \nSelect content extracted that you want.", "Content Extracted", list.get(0), list);
+//                        if (value.isEmpty()) {
+//                            //hapus selected
+//                            deSelectElementByJFXID(Integer.valueOf(id));
+////                            finishGetCurrentSelectedElement();
+//                        } else {
+//                            addProperty(id, value.trim(), t);
+////                            finishGetCurrentSelectedElement();
+//                        }
+//                    } else {
+//                        addProperty(id, content.trim(), t);
+////                        finishGetCurrentSelectedElement();
+//                    }
+//
+//                } catch (MalformedURLException ex) {
+//                    Logger.getLogger(BrowserController.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//
+//            }
+//
+//            void addProperty(final String id, final String value, MouseEvent t) {
+//                if (!mainController.getCurrentPropertiesLabel().isEmpty()) {
+//                    final Popup popup = new Popup();
+//                    final ListView<RDFProperty> listView = new ListView<>(mainController.getCurrentPropertiesLabel());
+//                    listView.autosize();
+//                    listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//                        @Override
+//                        public void handle(MouseEvent t) {
+//                            int selectedIndex = listView.getSelectionModel().getSelectedIndex();
+//                            mainController.getAnnotationTabController().getExtractionPanelController().getIndividualDetails().get(selectedIndex).setRdfValue(new RDFValue(value, value));
+//                            popup.hide();
+//                            deSelectElementByJFXID(Integer.valueOf(id));
+////                            finishGetCurrentSelectedElement();
+//
+//                        }
+//                    });
+//
+//                    popup.getContent().add(listView);
+//                    popup.setX(t.getScreenX());
+//                    popup.setY(t.getScreenY());
+//                    popup.show(mainController.getPrimaryStage());
+//                }
+//            }
+//        });
+//
+//    }
+//    public void finishGetCurrentSelectedElement() {
+//        engine.executeScript(INSPECT_SCRIPT);
+//        webx.setOnMouseClicked(null);
+//    }
 }

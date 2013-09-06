@@ -599,17 +599,24 @@ public class RDFController {
             for (RDFIndividualProperty property : propertyList) {
                 URI uriProperty = f.createURI(property.getRdfProperty().getUri());
 
-                if (property.getRdfValue().getUri().isEmpty()) {
-                    Literal valueProperty = f.createLiteral(property.getRdfValue().getLabel());
-                    Statement propertyStatement = f.createStatement(uriIndividual, uriProperty, valueProperty);
-                    g.add(propertyStatement);
+                if (property.getRdfValue().getLabel().isEmpty() && property.getRdfValue().getUri().isEmpty()) {
+                    //do not save
+                } else if(property.getRdfValue().getLabel().isEmpty() ){
+                    URI valueResource = f.createURI(property.getRdfValue().getUri());
+                    Statement resourceStatement = f.createStatement(uriIndividual, uriProperty, valueResource);
+                    g.add(resourceStatement);
+                }
+                else if (property.getRdfValue().getUri().isEmpty()) {
+                    Literal valueLiteral = f.createLiteral(property.getRdfValue().getLabel());
+                    Statement literalStatement = f.createStatement(uriIndividual, uriProperty, valueLiteral);
+                    g.add(literalStatement);
                 } else {
-                    URI valueProperty = f.createURI(property.getRdfValue().getUri());
-                    Statement propertyStatement = f.createStatement(uriIndividual, uriProperty, valueProperty);
-                    g.add(propertyStatement);
-                    Literal valueLabel = f.createLiteral(property.getRdfValue().getLabel());
-                    Statement valueStatement = f.createStatement(valueProperty, RDFS.LABEL, valueLabel);
-                    g.add(valueStatement);
+                    URI valueResource = f.createURI(property.getRdfValue().getUri());
+                    Statement resourceStatement = f.createStatement(uriIndividual, uriProperty, valueResource);
+                    g.add(resourceStatement);
+                    Literal valueLiteral = f.createLiteral(property.getRdfValue().getLabel());
+                    Statement literalStatement = f.createStatement(valueResource, RDFS.LABEL, valueLiteral);
+                    g.add(literalStatement);
                 }
             }
         }
