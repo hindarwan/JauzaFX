@@ -248,6 +248,32 @@ public class ExtractionPanelController implements Initializable {
             }
         }
     }
+    
+    @FXML
+    public void addOtherProperty(ActionEvent event) {
+        if(individualTable.getSelectionModel().isEmpty()){
+            Dialogs.showInformationDialog(mainController.getPrimaryStage(), "You must select an individual to add property", "Please select an individual", "Add Other Property");
+        } else {
+            try {
+                Stage stage = new Stage();
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("addPropertyDialog.fxml"));
+                Parent root = (Parent) fxmlLoader.load();
+                final AddPropertyDialogController controller = fxmlLoader.getController();
+                Scene scene = new Scene(root);
+                stage.initStyle(StageStyle.UTILITY);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.initOwner(mainController.getPrimaryStage());
+                stage.centerOnScreen();
+                stage.setScene(scene);
+                stage.setResizable(false);
+                controller.setStage(stage);
+                controller.setMainController(mainController);
+                stage.show();
+            } catch (IOException ex) {
+                Logger.getLogger(ExtractionPanelController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 
     @FXML
     public void addPropertyAction(ActionEvent event) {

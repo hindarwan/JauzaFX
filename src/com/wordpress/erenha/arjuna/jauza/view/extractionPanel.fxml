@@ -44,6 +44,7 @@
               </TableView>
               <ToolBar>
                 <items>
+                  <Button mnemonicParsing="false" onAction="#addOtherProperty" text="Add Other Property " />
                   <Button mnemonicParsing="false" onAction="#addPropertyAction" text="Match Value From ..." />
                   <!--<Button mnemonicParsing="false" text="Edit" visible="false" />-->
                 </items>

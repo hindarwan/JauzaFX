@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="444.9998779296875" prefWidth="427.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.AddPropertyDialogController">
+  <children>
+    <VBox prefHeight="444.9998779296875" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+        <ToolBar>
+          <items>
+            <Label prefHeight="21.0" prefWidth="343.0" text="Choose vocabulary and select one of property you want to add" />
+            <ImageView fitHeight="48.49999916830726" fitWidth="64.66666412353516" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@../view/resource/info48.png" preserveRatio="false" smooth="false" />
+              </image>
+            </ImageView>
+          </items>
+        </ToolBar>
+        <ToolBar>
+          <items>
+            <Label prefWidth="89.0" text="Vocabulary " />
+            <ComboBox fx:id="vocabularyComboBox" prefHeight="21.0" prefWidth="110.0">
+              <items>
+                <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="Item 1" />
+                  <String fx:value="Item 2" />
+                  <String fx:value="Item 3" />
+                </FXCollections>
+              </items>
+            </ComboBox>
+          </items>
+        </ToolBar>
+        <ListView id="resultListView" fx:id="propertyListView" prefHeight="325.0" prefWidth="600.0">
+          <VBox.margin>
+            <Insets />
+          </VBox.margin>
+        </ListView>
+        <ToolBar>
+          <items>
+            <Pane prefHeight="21.0" prefWidth="341.0" />
+            <Button mnemonicParsing="false" onAction="#matchAction" text="Ok" />
+          </items>
+        </ToolBar>
+      </children>
+    </VBox>
+  </children>
+</AnchorPane>
