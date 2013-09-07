@@ -59,10 +59,10 @@ public class AddPropertyDialogController implements Initializable {
         // initialize your logic here: all @FXML variables will have been injected
         property = FXCollections.observableArrayList();
         propertyListView.setItems(property);
-        ObservableList<String> vocab = FXCollections.observableArrayList(DCTERMS.PREFIX, OWL.PREFIX, RDFS.PREFIX, SKOS.PREFIX);
+        ObservableList<String> vocab = FXCollections.observableArrayList("DCTERMS: Dublin Core Terms", "OWL: Web Ontology Language", "RDFS: RDF Schema Vocabulary", "SKOS: Simple Knowedge Organization System");
         vocabularyComboBox.setItems(vocab);
         vocabularyComboBox.getSelectionModel().selectFirst();
-        propertyFromNS(DCTERMS.PREFIX);
+        propertyFromNS("DCTERMS: Dublin Core Terms");
         vocabularyComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> ov, String t, String t1) {
@@ -74,16 +74,16 @@ public class AddPropertyDialogController implements Initializable {
 
     private void propertyFromNS(String vocab) {
         switch (vocab) {
-            case DCTERMS.PREFIX:
+            case "DCTERMS: Dublin Core Terms":
                 setPropertyToList(DCTERMS.class.getDeclaredFields());
                 break;
-            case OWL.PREFIX:
+            case "OWL: Web Ontology Language":
                 setPropertyToList(OWL.class.getDeclaredFields());
                 break;
-            case RDFS.PREFIX:
+            case "RDFS: RDF Schema Vocabulary":
                 setPropertyToList(RDFS.class.getDeclaredFields());
                 break;
-            case SKOS.PREFIX:
+            case "SKOS: Simple Knowedge Organization System":
                 setPropertyToList(SKOS.class.getDeclaredFields());
                 break;
         }
@@ -95,7 +95,10 @@ public class AddPropertyDialogController implements Initializable {
             if (field.getType().getCanonicalName().equals(URI.class.getCanonicalName())) {
                 try {
                     URI uri = (URI) field.get(null);
-                    property.add(new RDFProperty(uri.stringValue(), uri.getLocalName()));
+                    char a = uri.getLocalName().charAt(0);
+                    if (a >= 97 && a <= 122) {
+                        property.add(new RDFProperty(uri.stringValue(), uri.getLocalName()));
+                    }
                 } catch (IllegalArgumentException | IllegalAccessException ex) {
                     Logger.getLogger(AddPropertyDialogController.class.getName()).log(Level.SEVERE, null, ex);
                 }
