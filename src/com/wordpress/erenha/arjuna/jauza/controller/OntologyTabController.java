@@ -5,7 +5,6 @@
 package com.wordpress.erenha.arjuna.jauza.controller;
 
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFClass;
-import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFNamespace;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFOntology;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
 import java.io.File;
@@ -102,17 +101,28 @@ public class OntologyTabController implements Initializable {
         propertiesLabelColumn.setCellValueFactory(new PropertyValueFactory("label"));
         propertiesURIColumn.setCellValueFactory(new PropertyValueFactory("uri"));
     }
-    
-    private void initTableModel(){
-        ontologyTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<RDFOntology>() {
 
+    private void initTableModel() {
+        ontologyTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<RDFOntology>() {
             @Override
             public void changed(ObservableValue<? extends RDFOntology> ov, RDFOntology t, RDFOntology t1) {
                 mainController.getRDFController().getClassesByNS(t1.getUri());
                 mainController.getRDFController().getPropertiesByNS(t1.getUri());
+                classesLabelColumn.setText("Classes in \"" + t1.getLabel() + "\"");
+                propertiesLabelColumn.setText("Properties in \"" + t1.getLabel() + "\"");
             }
         });
-        
+
+        classesTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<RDFClass>() {
+            @Override
+            public void changed(ObservableValue<? extends RDFClass> ov, RDFClass t, RDFClass t1) {
+                if (t1 != null) {
+                    mainController.getRDFController().getPropertiesCommentByClass(t1);
+                    propertiesLabelColumn.setText("Properties for " + t1.toString().substring(0, t1.toString().indexOf('"', 1) + 1));
+                }
+            }
+        });
+
 //        namespaceTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<RDFNamespace>() {
 //
 //            @Override
@@ -121,7 +131,7 @@ public class OntologyTabController implements Initializable {
 //                mainController.getRDFController().getPropertiesByNS(t1.getNamespace());
 //            }
 //        });
-        
+
     }
 
     public TableView<RDFOntology> getOntologyTable() {
@@ -131,7 +141,6 @@ public class OntologyTabController implements Initializable {
 //    public TableView<RDFNamespace> getNamespaceTable() {
 //        return namespaceTable;
 //    }
-
     public TableView<RDFClass> getClassesTable() {
         return classesTable;
     }
@@ -174,7 +183,6 @@ public class OntologyTabController implements Initializable {
             urlFileImport.setText(file.toString());
         }
     }
-    
 //    @FXML
 //    public void addNamespace(ActionEvent event) {
 //        String prefix = namespacePrefixField.getText().trim();

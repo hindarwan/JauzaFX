@@ -4,7 +4,6 @@
  */
 package com.wordpress.erenha.arjuna.jauza.rdf.model;
 
-import java.util.Collections;
 import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

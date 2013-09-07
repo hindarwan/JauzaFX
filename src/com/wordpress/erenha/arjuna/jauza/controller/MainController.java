@@ -4,7 +4,6 @@
  */
 package com.wordpress.erenha.arjuna.jauza.controller;
 
-import com.wordpress.erenha.arjuna.jauza.model.CurrentSelection;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFClass;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFContext;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
@@ -31,7 +30,6 @@ import javafx.stage.Stage;
  */
 public class MainController implements Initializable {
 
-    private ObservableList<CurrentSelection> currentSelections;
     private ObservableList<RDFContext> currentContext;
     private ObservableList<RDFNamespace> currentNamespaces;
     private ObservableList<RDFOntology> currentOntologies;
@@ -73,7 +71,6 @@ public class MainController implements Initializable {
 
         // initialize your logic here: all @FXML variables will have been injected       
         //Global Model
-        currentSelections = FXCollections.observableList(new ArrayList<CurrentSelection>());
         currentContext = FXCollections.observableList(new ArrayList<RDFContext>());
         currentNamespaces = FXCollections.observableList(new ArrayList<RDFNamespace>());
         currentOntologies = FXCollections.observableList(new ArrayList<RDFOntology>());
@@ -123,10 +120,6 @@ public class MainController implements Initializable {
         rdfController.getClasses(); //load class in start
 //        rdfController.getClassesInNSdefined();
 //        rdfController.getPropertiesInNSdefined();//set all properties
-    }
-
-    public ObservableList<CurrentSelection> getCurrentSelections() {
-        return currentSelections;
     }
 
     public ObservableList<RDFContext> getCurrentContext() {

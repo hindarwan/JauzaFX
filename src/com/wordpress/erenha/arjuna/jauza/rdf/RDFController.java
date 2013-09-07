@@ -16,7 +16,6 @@ import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFValue;
 import com.wordpress.erenha.arjuna.jauza.util.StaticValue;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +34,6 @@ import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.TreeModel;
 import org.openrdf.model.impl.URIImpl;
-import org.openrdf.model.vocabulary.DC;
-import org.openrdf.model.vocabulary.FOAF;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.query.BindingSet;
@@ -323,11 +320,12 @@ public class RDFController {
         try {
             mainController.getCurrentClasses().clear();
             RepositoryConnection connection = repo.getConnection();
-            String query = "SELECT DISTINCT ?c ?cLabel\n"
+            String query = "SELECT DISTINCT ?c ?cLabel ?cComment\n"
                     + "WHERE\n"
                     + "{\n"
                     + "?c rdf:type rdfs:Class.\n"
                     + "?c rdfs:label ?cLabel.\n"
+                    + "?c rdfs:comment ?cComment.\n"
                     //                    + "?c rdfs:isDefinedBy <" + ns + ">.\n"
                     + "FILTER(STRSTARTS(STR(?c),\"" + ns + "\"))"
                     + "}";
@@ -339,8 +337,8 @@ public class RDFController {
                     BindingSet bindingSet = result.next();
                     Value uri = bindingSet.getValue(bindingNames.get(0));
                     Value label = bindingSet.getValue(bindingNames.get(1));
-                    mainController.getCurrentClasses().add(new RDFClass(uri.stringValue(), label.stringValue()));
-//                    mainController.getCurrentClassesLabel().add(label.stringValue());
+                    Value comment = bindingSet.getValue(bindingNames.get(2));
+                    mainController.getCurrentClasses().add(new RDFClass(uri.stringValue(), "\"" +label.stringValue() + "\"\n" + comment.stringValue()));
                 }
             } finally {
                 connection.close();
@@ -424,11 +422,12 @@ public class RDFController {
         try {
             mainController.getCurrentProperties().clear();
             RepositoryConnection connection = repo.getConnection();
-            String query = "SELECT DISTINCT ?p ?pLabel\n"
+            String query = "SELECT DISTINCT ?p ?pLabel ?pComment\n"
                     + "WHERE\n"
                     + "{\n"
                     + "?p rdf:type rdf:Property.\n"
                     + "?p rdfs:label ?pLabel.\n"
+                    + "?p rdfs:comment ?pComment.\n"
                     //                    + "?p rdfs:isDefinedBy <" + ns + ">.\n"
                     + "FILTER(STRSTARTS(STR(?p),\"" + ns + "\"))"
                     + "}";
@@ -440,7 +439,8 @@ public class RDFController {
                     BindingSet bindingSet = result.next();
                     Value uri = bindingSet.getValue(bindingNames.get(0));
                     Value label = bindingSet.getValue(bindingNames.get(1));
-                    mainController.getCurrentProperties().add(new RDFProperty(uri.stringValue(), label.stringValue()));
+                    Value comment = bindingSet.getValue(bindingNames.get(2));
+                    mainController.getCurrentProperties().add(new RDFProperty(uri.stringValue(), "\"" + label.stringValue() + "\"\n" + comment.stringValue()));
 //                    mainController.getCurrentPropertiesLabel().add(label.stringValue());
                 }
             } finally {
@@ -451,47 +451,7 @@ public class RDFController {
             Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    public void getPropertiesByClass(String rdfClass) {
-        try {
-            mainController.getCurrentPropertiesLabel().clear();
-            RepositoryConnection connection = repo.getConnection();
-            String query = "";
-            if (rdfClass.equals("<<Choose Class>>")) {
-                query = "SELECT DISTINCT ?p\n"
-                        + "WHERE\n"
-                        + "{\n"
-                        + "?p rdf:type rdf:Property.\n"
-                        + "}";
-            } else {
-//                toNamespaceFull(rdfClass);
-                query = "SELECT DISTINCT ?p\n"
-                        + "WHERE\n"
-                        + "{\n"
-                        + "?p rdf:type rdf:Property.\n"
-                        + "?p rdfs:domain <" + rdfClass + ">.\n"
-                        + "}";
-            }
-            try {
-                TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
-                TupleQueryResult result = tupleQuery.evaluate();
-                List<String> bindingNames = result.getBindingNames();
-                while (result.hasNext()) {
-                    BindingSet bindingSet = result.next();
-                    Value uri = bindingSet.getValue(bindingNames.get(0));
-
-//                    mainController.getCurrentPropertiesLabel().add(toNamespacePrefix(uri.stringValue()));
-//                    mainController.getCurrentPropertiesLabel().add(label.stringValue());
-                }
-            } finally {
-                connection.close();
-            }
-
-        } catch (RepositoryException | MalformedQueryException | QueryEvaluationException ex) {
-            Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
+    
     public void getPropertiesByClass(RDFClass rdfClass) {
         try {
             mainController.getCurrentPropertiesLabel().clear();
@@ -522,6 +482,40 @@ public class RDFController {
 
         } catch (RepositoryException | MalformedQueryException | QueryEvaluationException ex) {
             Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void getPropertiesCommentByClass(RDFClass rdfClass) {
+        if (rdfClass != null) {
+            try {
+                mainController.getCurrentProperties().clear();
+                RepositoryConnection connection = repo.getConnection();
+                String query = "SELECT DISTINCT ?p ?pLabel ?pComment\n"
+                        + "WHERE\n"
+                        + "{\n"
+                        + "?p rdf:type rdf:Property.\n"
+                        + "?p rdfs:domain <" + rdfClass.getUri() + ">.\n"
+                        + "?p rdfs:label ?pLabel.\n"
+                        + "?p rdfs:comment ?pComment.\n"
+                        + "}";
+                try {
+                    TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
+                    TupleQueryResult result = tupleQuery.evaluate();
+                    List<String> bindingNames = result.getBindingNames();
+                    while (result.hasNext()) {
+                        BindingSet bindingSet = result.next();
+                        Value uri = bindingSet.getValue(bindingNames.get(0));
+                        Value label = bindingSet.getValue(bindingNames.get(1));
+                        Value comment = bindingSet.getValue(bindingNames.get(2));
+                        mainController.getCurrentProperties().add(new RDFProperty(uri.stringValue(), "\"" + label.stringValue() + "\"\n" + comment.stringValue()));
+                    }
+                } finally {
+                    connection.close();
+                }
+
+            } catch (RepositoryException | MalformedQueryException | QueryEvaluationException ex) {
+                Logger.getLogger(RDFController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -601,12 +595,11 @@ public class RDFController {
 
                 if (property.getRdfValue().getLabel().isEmpty() && property.getRdfValue().getUri().isEmpty()) {
                     //do not save
-                } else if(property.getRdfValue().getLabel().isEmpty() ){
+                } else if (property.getRdfValue().getLabel().isEmpty()) {
                     URI valueResource = f.createURI(property.getRdfValue().getUri());
                     Statement resourceStatement = f.createStatement(uriIndividual, uriProperty, valueResource);
                     g.add(resourceStatement);
-                }
-                else if (property.getRdfValue().getUri().isEmpty()) {
+                } else if (property.getRdfValue().getUri().isEmpty()) {
                     Literal valueLiteral = f.createLiteral(property.getRdfValue().getLabel());
                     Statement literalStatement = f.createStatement(uriIndividual, uriProperty, valueLiteral);
                     g.add(literalStatement);

@@ -67,32 +67,20 @@
           <items>
             <VBox id="VBox" alignment="CENTER">
               <children>
-                <ToolBar>
-                  <items>
-                    <Label text="Classes" />
-                    <Button mnemonicParsing="false" text="Button" visible="false" />
-                  </items>
-                </ToolBar>
                 <TableView fx:id="classesTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                   <columns>
-                    <TableColumn minWidth="200.0" prefWidth="200.0" text="URI" fx:id="classesURIColumn" />
-                    <TableColumn minWidth="200.0" prefWidth="200.0" text="Class Name" fx:id="classesLabelColumn" />
+                    <TableColumn minWidth="150.0" prefWidth="150.0" text="Class Name" visible="false" fx:id="classesURIColumn" />
+                    <TableColumn minWidth="400.0" prefWidth="500.0" text="Classes" fx:id="classesLabelColumn" />
                   </columns>
                 </TableView>
               </children>
             </VBox>
             <VBox id="VBox" alignment="CENTER">
               <children>
-                <ToolBar>
-                  <items>
-                    <Label text="Properties" />
-                    <Button mnemonicParsing="false" text="Button" visible="false" />
-                  </items>
-                </ToolBar>
                 <TableView fx:id="propertiesTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                   <columns>
-                    <TableColumn minWidth="200.0" prefWidth="200.0" text="URI" fx:id="propertiesURIColumn" />
-                    <TableColumn minWidth="200.0" prefWidth="200.0" text="Property Name" fx:id="propertiesLabelColumn" />
+                    <TableColumn minWidth="150.0" prefWidth="150.0" text="Property Name" visible="false" fx:id="propertiesURIColumn" />
+                    <TableColumn minWidth="400.0" prefWidth="500.0" text="Properties" fx:id="propertiesLabelColumn" />
                   </columns>
                 </TableView>
               </children>

@@ -4,7 +4,6 @@
  */
 package com.wordpress.erenha.arjuna.jauza.controller;
 
-import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividual;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFIndividualProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFValue;
@@ -25,9 +24,7 @@ import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import org.openrdf.model.URI;
 import org.openrdf.model.vocabulary.DCTERMS;
-import org.openrdf.model.vocabulary.FOAF;
 import org.openrdf.model.vocabulary.OWL;
-import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.model.vocabulary.SKOS;
 

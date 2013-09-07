@@ -38,7 +38,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -352,31 +351,6 @@ public class ExtractionPanelController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(ExtractionPanelController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    private void userInput() {
-        final GridPane grid2 = new GridPane();
-        grid2.setHgap(10);
-        grid2.setVgap(10);
-        grid2.setPadding(new Insets(0, 10, 0, 10));
-        Label valueCustomLabel = new Label("User Input");
-        grid2.add(valueCustomLabel, 0, 0);
-//        final TextField givenIDField = new TextField();
-//        grid2.add(givenIDField, 0, 1);
-
-        final TextArea givenIDField = new TextArea();
-        final List<String> lst = new ArrayList<>();
-        lst.add(0, "null");
-
-        Callback<Void, Void> myCallback = new Callback<Void, Void>() {
-            @Override
-            public Void call(Void param) {
-                lst.add(0, givenIDField.getText());
-                return null;
-            }
-        };
-        grid2.add(givenIDField, 0, 1);
-        Dialogs.showCustomDialog(mainController.getPrimaryStage(), grid2, "Enter value fo", "Add Property", Dialogs.DialogOptions.OK_CANCEL, myCallback);
     }
 
     public void deleteSelectedIndividualAction(ActionEvent event) {
