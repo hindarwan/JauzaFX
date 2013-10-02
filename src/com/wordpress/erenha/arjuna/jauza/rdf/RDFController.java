@@ -580,7 +580,7 @@ public class RDFController {
     }
 
     public void saveAllIndividual() {
-        String ns = StaticValue.nsResource;
+        String ns = StaticValue.baseURL + "/resource/";
         ObservableList<RDFIndividual> currentIndividuals = mainController.getCurrentIndividuals();
         ValueFactory f = repo.getValueFactory();
         Graph g = new TreeModel();

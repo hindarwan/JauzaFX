@@ -10,7 +10,7 @@
 <?import javafx.scene.web.*?>
 
 <fx:root type="javafx.scene.layout.VBox" prefHeight="580.0" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="com.wordpress.erenha.arjuna.jauza.controller.BrowserController">
-  <ToolBar>
+  <ToolBar onMouseClicked="#hidePopup">
     <items>
       <Button fx:id="backButton" mnemonicParsing="false" onAction="#back" text="Back" />
       <Button fx:id="forwardButton" mnemonicParsing="false" onAction="#forward" text="Forward" />

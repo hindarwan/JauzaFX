@@ -5,6 +5,7 @@
 package com.wordpress.erenha.arjuna.jauza.controller;
 
 import com.wordpress.erenha.arjuna.jauza.rdf.model.RDFProperty;
+import com.wordpress.erenha.arjuna.jauza.util.StaticValue;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
@@ -58,7 +59,7 @@ public class BrowserController implements Initializable {
     @FXML //  fx:id="webx"
     private WebView webx; // Value injected by FXMLLoader
     //NON FXML
-    private final String INSPECT_SCRIPT = "javascript:(function() { var s = document.createElement('div'); s.innerHTML = 'Loading...'; s.style.color = 'black'; s.style.padding = '5px'; s.style.margin = '5px'; s.style.position = 'fixed'; s.style.zIndex = '9999'; s.style.fontSize = '24px'; s.style.border = '1px solid black'; s.style.right = '5px'; s.style.top = '5px'; s.setAttribute('class', 'selector_gadget_loading'); s.style.background = 'white'; document.body.appendChild(s); s = document.createElement('script'); s.setAttribute('type', 'text/javascript'); s.setAttribute('src', 'http://localhost:8888/selectorgadgetCustom/lib/selectorgadgetNotSuggestion.js?raw=true'); document.body.appendChild(s); })();";
+    private final String INSPECT_SCRIPT = "javascript:(function() { var s = document.createElement('div'); s.innerHTML = 'Loading...'; s.style.color = 'black'; s.style.padding = '5px'; s.style.margin = '5px'; s.style.position = 'fixed'; s.style.zIndex = '9999'; s.style.fontSize = '24px'; s.style.border = '1px solid black'; s.style.right = '5px'; s.style.top = '5px'; s.setAttribute('class', 'selector_gadget_loading'); s.style.background = 'white'; document.body.appendChild(s); s = document.createElement('script'); s.setAttribute('type', 'text/javascript'); s.setAttribute('src', '" + StaticValue.baseURL + "/selectorgadgetCustom/lib/selectorgadgetNotSuggestion.js?raw=true'); document.body.appendChild(s); })();";
     private WebEngine engine;
     private MainController mainController;
 
@@ -101,9 +102,15 @@ public class BrowserController implements Initializable {
 
     @FXML
     public void mouseClick(MouseEvent event) {
+        if (popup.isShowing()) {
+            popup.hide();
+            clearSelectElement();
+        }
         if (inspectButton.isSelected()) {
             if (!content.isEmpty()) {
                 showPopupProperty(id, content, event);
+            }else{
+                clearSelectElement();
             }
         }
     }
@@ -142,6 +149,10 @@ public class BrowserController implements Initializable {
 
     @FXML
     public void inspect(ActionEvent event) {
+        if (popup.isShowing()) {
+            popup.hide();
+            clearSelectElement();
+        }
         if (inspectButton.isSelected()) {
             System.out.println("[INFO] inspect mode");
             engine.executeScript(INSPECT_SCRIPT);
@@ -166,6 +177,13 @@ public class BrowserController implements Initializable {
             txt.setDisable(false);
             goButton.setDisable(false);
             inspectButton.setText("Start Annotation");
+        }
+    }
+
+    public void hidePopup(MouseEvent event) {
+        if (popup.isShowing()) {
+            popup.hide();
+            clearSelectElement();
         }
     }
 
